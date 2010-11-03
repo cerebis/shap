@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="global-hit">
+	<element name="model" property="model"/>
+	<element name="description" property="description"/>
+	<element name="score" property="score"/>
+	<element name="evalue" property="evalue"/>
+	<element name="ndom" property="ndom"/>
+	<addDefaults/>
+</element>
+</info>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<!-- Transaction Template for programmatic transaction support -->
+<bean id="sharedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+	<property name="transactionManager" ref="txManager"/>
+    <property name="isolationLevelName" value="ISOLATION_READ_COMMITTED"/>
+    <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED"/>
+    <property name="name" value="programatic transaction"/>
+    <property name="timeout" value="60"/>
+</bean>
+
+<bean id="simpleExecutable" class="org.mzd.shap.exec.SimpleExecutableFactoryBean">
+	<lookup-method name="createDelegate" bean="delegate"/>
+</bean>
+
+<bean id="detectionAfterAdvice" class="org.mzd.shap.spring.task.aop.DetectionAfterAdvice">
+	<property name="featureDao" ref="featureDao"/>
+	<property name="taskDao" ref="taskDao"/>
+</bean>
+
+<bean id="detectionBeforeAdvice" class="org.mzd.shap.spring.task.aop.DetectionBeforeAdvice">
+	<property name="sequenceDao" ref="sequenceDao"/>
+	<property name="taskDao" ref="taskDao"/>
+</bean>
+
+<bean id="annotationAfterAdvice" class="org.mzd.shap.spring.task.aop.AnnotationAfterAdvice">
+	<property name="annotationDao" ref="annotationDao"/>
+	<property name="taskDao" ref="taskDao"/>
+</bean>
+
+<bean id="annotationBeforeAdvice" class="org.mzd.shap.spring.task.aop.AnnotationBeforeAdvice">
+	<property name="featureDao" ref="featureDao"/>
+	<property name="taskDao" ref="taskDao"/>
+</bean>
+
+<bean id="errorAdvice" class="org.mzd.shap.spring.task.aop.ErrorAdvice">
+	<property name="taskDao" ref="taskDao"/>
+</bean>
+
+<bean id="taskAdvisor" class="org.mzd.shap.spring.task.aop.TaskAdvisor" scope="prototype">
+	<property name="executableFactory" ref="simpleExecutable"/>
+	<property name="transactionTemplate" ref="sharedTransactionTemplate"/>
+	<property name="beforeAdvice">
+	<map key-type="java.lang.Class">
+		<entry key="org.mzd.shap.spring.task.DetectionTask" value-ref="detectionBeforeAdvice"/>
+		<entry key="org.mzd.shap.spring.task.AnnotationTask" value-ref="annotationBeforeAdvice"/>
+	</map>
+	</property>
+	<property name="afterAdvice">
+	<map key-type="java.lang.Class">
+		<entry key="org.mzd.shap.spring.task.DetectionTask" value-ref="detectionAfterAdvice"/>
+		<entry key="org.mzd.shap.spring.task.AnnotationTask" value-ref="annotationAfterAdvice"/>
+	</map>
+	</property>
+	<property name="errorAdvice" ref="errorAdvice"/>		
+</bean>
+
+<!--     -->
+<!-- JMX -->
+<!--     -->
+
+<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+	<property name="assembler" ref="assembler"/>
+	<property name="namingStrategy" ref="namingStrategy"/>
+	<property name="autodetect" value="true"/>
+	<!--<property name="beans">
+		<map>
+           <entry key="org.hibernate:name=statistics">
+               <bean class="org.hibernate.jmx.StatisticsService">
+                   <property name="statisticsEnabled" value="true" />
+                   <property name="sessionFactory">
+                       <util:property-path
+                           path="entityManagerFactory.sessionFactory" />
+                   </property>
+               </bean>
+           </entry>
+       </map>
+	</property>-->
+</bean>
+
+<bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+<!-- will create management interface using annotation metadata -->
+<bean id="assembler" class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+	<property name="attributeSource" ref="jmxAttributeSource"/>
+</bean>
+
+<!-- will pick up the ObjectName from the annotation -->
+<bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+	<property name="attributeSource" ref="jmxAttributeSource"/>
+</bean>
+
+<!--        -->
+<!-- QUARTZ -->
+<!--        -->
+
+<!-- Periodic Task Status Watcher -->
+<bean id="taskWatcher" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	<property name="concurrent" value="false"/>
+	<property name="targetObject" ref="jobDaemon"/>
+	<property name="targetMethod" value="analyzeMore"/>
+</bean> 
+<bean id="taskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+    <property name="jobDetail" ref="taskWatcher"/>
+    <property name="startDelay" value="10000"/>
+    <property name="repeatInterval" value="10000"/>
+</bean>
+
+<!-- Periodic Scheduler  -->
+<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+        <list>
+          <ref bean="taskTrigger"/>
+        </list>
+    </property>
+</bean>
+
+<!-- Job Processing Service -->
+<bean id="jobDaemon" class="org.mzd.shap.spring.JobDaemonImpl">
+	<property name="taskExecutor" ref="taskExecutor"/>
+	<property name="batchAdminService" ref="batchAdminService"/>
+	<property name="maxQueued" value="50"/>
+	<property name="observer" ref="consoleWriterObserver"/>
+</bean>
+
+</beans>

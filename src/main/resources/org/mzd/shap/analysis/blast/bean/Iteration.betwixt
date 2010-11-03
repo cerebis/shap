@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="Iteration">
+	<element name="Iteration_iter-num" property="number"/>
+	<element name="Iteration_query-ID" property="queryId"/>
+	<element name="Iteration_query-def" property="queryDefinition"/>
+	<element name="Iteration_query-len" property="queryLength"/>
+	<element name="Iteration_hits">
+		<element name="Hit" property="hits"/>
+	</element>
+	<element name="Iteration_stat"> 
+		<element name="Statistics" property="statistics"/>
+	</element>
+	<element name="Iteration_message" property="message"/>
+	<addDefaults/>
+</element>
+</info>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="result">
+	<element name="query" property="query"/>
+	<element name="global-hits">
+		<element name="hit" property="globalHits"/>
+	</element>
+	<element name="domain-hits">
+		<element name="hit" property="domainHits"/>
+	</element>
+	<addDefaults/>
+</element>
+</info>

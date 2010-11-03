@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="job-request">
+	<element name="execution-context" property="executionContext"/>
+	<element name="step" property="steps"/>
+	<addDefaults/>
+</element>
+</info>

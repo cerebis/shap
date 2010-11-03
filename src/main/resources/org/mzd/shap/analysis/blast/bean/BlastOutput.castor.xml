@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+<mapping>
+	<class name="org.mzd.shap.analysis.blast.bean.BlastOutput">
+		<map-to xml="BlastOutput"/>
+		<field name="program"><bind-xml name="BlastOutput_program"/></field>
+		<field name="version"><bind-xml name="BlastOutput_version"/></field>
+		<field name="reference"><bind-xml name="BlastOutput_reference"/></field>
+		<field name="database"><bind-xml name="BlastOutput_db"/></field>
+		<field name="queryId"><bind-xml name="BlastOutput_query-ID"/></field>
+		<field name="queryDefinition"><bind-xml name="BlastOutput_query-def"/></field>
+		<field name="queryLength"><bind-xml name="BlastOutput_query-len"/></field>
+		<field name="querySequence"><bind-xml name="BlastOutput_query-seq"/></field>
+		<field name="parameters" type="org.mzd.shap.analysis.blast.bean.Parameters">
+			<bind-xml name="Parameters" node="element" location="BlastOutput_param"/>
+		</field>
+		<field name="iterations" collection="arraylist" type="org.mzd.shap.analysis.blast.bean.Iteration">
+			<bind-xml name="Iteration" node="element" location="BlastOutput_iterations"/>
+		</field>
+		<field name="megablastStatistics"><bind-xml name="BlastOutput_mbstat"/></field>
+	</class>
+	
+	<class name="org.mzd.shap.analysis.blast.bean.Parameters">
+		<field name="matrix"><bind-xml name="Parameters_matrix"/></field> 
+		<field name="expectation"><bind-xml name="Parameters_expect"/></field> 
+		<field name="include"><bind-xml name="Parameters_include"/></field> 
+		<field name="matchScore"><bind-xml name="Parameters_sc-match"/></field> 
+		<field name="mismatchScore"><bind-xml name="Parameters_sc-mismatch"/></field> 
+		<field name="gapOpenCost"><bind-xml name="Parameters_gap-open"/></field> 
+		<field name="gapExtensionCost"><bind-xml name="Parameters_gap-extend"/></field> 
+		<field name="filterOptions"><bind-xml name="Parameters_filter"/></field> 
+		<field name="phiBlastPattern"><bind-xml name="Parameters_pattern"/></field> 
+		<field name="requestLimit"><bind-xml name="Parameters_entrez-query"/></field>
+	</class> 
+
+	<class name="org.mzd.shap.analysis.blast.bean.Iteration">
+		<field name="number"><bind-xml name="Iteration_iter-num"/></field> 
+		<field name="queryId"><bind-xml name="Iteration_query-ID"/></field> 
+		<field name="queryDefinition"><bind-xml name="Iteration_query-def"/></field> 
+		<field name="queryLength"><bind-xml name="Iteration_query-len"/></field> 
+		<field name="hits" collection="arraylist" type="org.mzd.shap.analysis.blast.bean.Hit">
+			<bind-xml name="Hit" node="element" location="Iteration_hits"/>
+		</field>
+		<field name="statistics" type="org.mzd.shap.analysis.blast.bean.Statistics">
+			<bind-xml name="Statistics" node="element" location="Iteration_stat"/>
+		</field> 
+		<field name="message"><bind-xml name="Iteration_message"/></field> 
+	</class>
+	
+	<class name="org.mzd.shap.analysis.blast.bean.Hit">
+		<field name="number"><bind-xml name="Hit_num"/></field> 
+		<field name="id"><bind-xml name="Hit_id"/></field> 
+		<field name="definition"><bind-xml name="Hit_def"/></field> 
+		<field name="accession"><bind-xml name="Hit_accession"/></field> 
+		<field name="length"><bind-xml name="Hit_len"/></field> 
+		<field name="hsps" collection="arraylist" type="org.mzd.shap.analysis.blast.bean.Hsp">
+			<bind-xml name="Hsp" node="element" location="Hit_hsps"/>
+		</field>
+	</class>
+
+	<class name="org.mzd.shap.analysis.blast.bean.Statistics">
+		<field name="numberSequences"><bind-xml name="Statistics_db-num"/></field> 
+		<field name="databaseLength"><bind-xml name="Statistics_db-len"/></field> 
+		<field name="hspLength"><bind-xml name="Statistics_hsp-len"/></field> 
+		<field name="effectiveSearchSpace"><bind-xml name="Statistics_eff-space"/></field> 
+		<field name="kappa"><bind-xml name="Statistics_kappa"/></field> 
+		<field name="lambda"><bind-xml name="Statistics_lambda"/></field> 
+		<field name="entropy"><bind-xml name="Statistics_entropy"/></field> 
+	</class>
+
+	<class name="org.mzd.shap.analysis.blast.bean.Hsp">
+		<field name="number"><bind-xml name="Hsp_num"/></field> 
+		<field name="bitScore"><bind-xml name="Hsp_bit-score"/></field> 
+		<field name="score"><bind-xml name="Hsp_score"/></field> 
+		<field name="evalue"><bind-xml name="Hsp_evalue"/></field> 
+		<field name="queryFrom"><bind-xml name="Hsp_query-from"/></field> 
+		<field name="queryTo"><bind-xml name="Hsp_query-to"/></field> 
+		<field name="hitFrom"><bind-xml name="Hsp_hit-from"/></field> 
+		<field name="hitTo"><bind-xml name="Hsp_hit-to"/></field> 
+		<field name="patternFrom"><bind-xml name="Hsp_pattern-from"/></field> 
+		<field name="patternTo"><bind-xml name="Hsp_pattern-to"/></field> 
+		<field name="queryFrame"><bind-xml name="Hsp_query-frame"/></field> 
+		<field name="hitFrame"><bind-xml name="Hsp_hit-frame"/></field> 
+		<field name="identities"><bind-xml name="Hsp_identity"/></field> 
+		<field name="positives"><bind-xml name="Hsp_positive"/></field> 
+		<field name="gaps"><bind-xml name="Hsp_gaps"/></field> 
+		<field name="alignLength"><bind-xml name="Hsp_align-len"/></field> 
+		<field name="scoreDensity"><bind-xml name="Hsp_density"/></field> 
+		<field name="querySequence"><bind-xml name="Hsp_qseq"/></field> 
+		<field name="hitSequence"><bind-xml name="Hsp_hseq"/></field> 
+		<field name="midline"><bind-xml name="Hsp_midline"/></field> 
+	</class>
+</mapping>
+	

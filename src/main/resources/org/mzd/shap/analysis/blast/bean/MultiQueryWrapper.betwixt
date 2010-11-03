@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="MultiQueryWrapper">
+	<element name="Results">
+		<element name="BlastOutput" property="results"/>
+	</element>
+	<addDefaults/>
+</element>
+</info>

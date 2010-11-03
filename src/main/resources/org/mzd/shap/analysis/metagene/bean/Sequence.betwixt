@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="sequence">
+	<element name="id" property="identifier"/>
+	<element name="desc" property="description"/>
+	<element name="gc" property="gcContent"/>
+	<element name="domain" property="domain"/>
+	<element name="orf" property="orfs"/>
+	<addDefaults/>
+</element>
+</info>

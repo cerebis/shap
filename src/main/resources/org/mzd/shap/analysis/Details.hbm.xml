@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.analysis">
+	
+	<class name="Details" table="Details">
+	
+		<id name="id" type="int" column="DETAILS_ID">
+			<generator class="native"/>
+		</id>
+		
+		<property name="type" type="org.mzd.shap.hibernate.AnnotationTypeUserType"/>
+		
+		<many-to-one name="rank" column="RANK_ID" not-null="true" cascade="all" unique="true" lazy="false"/>
+		
+		<joined-subclass name="ProductDetail" table="ProductDetails">
+			<key column="DETAILS_ID"/>
+		</joined-subclass>
+		
+		<joined-subclass name="FunctionDetail" table="FunctionDetails">
+			<key column="DETAILS_ID"/>
+		</joined-subclass>
+		
+	</class>
+	
+</hibernate-mapping>

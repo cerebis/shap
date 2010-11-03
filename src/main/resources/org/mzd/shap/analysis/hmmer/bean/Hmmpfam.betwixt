@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="hmmpfam">
+	<element name="database-file" property="databaseFile"/>
+	<element name="sequence-file" property="sequenceFile"/>
+	<element name="results">
+		<element name="result" property="results"/>
+	</element>
+	<addDefaults/>
+</element>
+</info>

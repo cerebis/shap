@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<output>
+	<predictionTitle>Prediction of ribosomal RNA</predictionTitle>
+	<predictor>RNAmmer-1.2</predictor>
+	<reference>Lagesen K, Hallin PF, Rodland EA, Staerfeldt HH, Rognes T, Ussery DW. RNAmmer: consistent and rapid annotation of ribosomal RNA genes.2007;35(9):3100-8. Epub 2007 Apr 22</reference>
+<predictionDate>2010-07-28</predictionDate>
+	<entries>
+		<entry>
+			<mol>5s_rRNA</mol>
+			<feature>rRNA</feature>
+			<start>265</start>
+			<stop>379</stop>
+			<direction>+</direction>
+			<score>99.8</score>
+			<evalue>8.9e-31</evalue>
+			<sequenceEntry>myseq</sequenceEntry>
+			<sequenceEntryLength>453</sequenceEntryLength>
+			<sequence>TGACGACCATAGCGGTCTGGAACCACCTGATCCCATACCGAACTCAGCAGTGAAACAGACCAGCGCCGATGGTAGTGTGGCTTCTGCCCATGTGAGAGTAGGTCATCGTCAGACT</sequence>
+			<model_string>tggtggccatagcg.g.tggaaaacaCgtccgatcCCaTccCGAaCtcgga.GttAAgc.cc.tagcGccgAtgAgTAct...............GggAgagtaGgtcggctgccggagct</model_string>
+			<match_string>tg +g+ccatagcg + tgga a+caC  c+gatcCCaT cCGAaCtc+g++Gt AA+c   ++agcGccgAtg gTA+t++++ ++ ++    +G gAgagtaGgtc+ ++g c+g +ct</match_string>
+			<query_string>TGACGACCATAGCGgTcTGGA-ACCAC--CTGATCCCATACCGAACTCAGCaGTGAAACaGAcCAGCGCCGATG-GTAGTgtggcttctgcccatGTGAGAGTAGGTCA-TCGTCAG-ACT</query_string>
+		</entry>
+	</entries>
+</output>

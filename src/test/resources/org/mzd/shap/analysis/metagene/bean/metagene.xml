@@ -1,0 +1,78 @@
+<metagene>
+	<sequence>
+		<id>FUVSC2B01DYX7Q</id>
+		<desc> iid=1 mate=0,0 lib=GS228_01,1 clr=ECR2,0,152 deleted=0</desc>
+		<gc>0.529801</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01ALP5Z</id>
+		<desc> iid=3 mate=0,0 lib=GS228_01,1 clr=ECR2,0,172 deleted=0</desc>
+		<gc>0.488372</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="1" stop="172" strand="+" frame="0" conf="3.10235" partial="true" model="BACTERIA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01AFTKH</id>
+		<desc> iid=4 mate=0,0 lib=GS228_01,1 clr=ECR2,0,195 deleted=0</desc>
+		<gc>0.505208</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="1" stop="195" strand="+" frame="1" conf="36.5017" partial="true" model="ARCHAEA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01BHT47</id>
+		<desc> iid=10 mate=0,0 lib=GS228_01,1 clr=ECR2,0,255 deleted=0</desc>
+		<gc>0.490196</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="1" stop="255" strand="-" frame="1" conf="7.33017" partial="true" model="BACTERIA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01ELB4L</id>
+		<desc> iid=11 mate=0,0 lib=GS228_01,1 clr=ECR2,0,184 deleted=0</desc>
+		<gc>0.461957</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01ANNTC</id>
+		<desc> iid=13 mate=0,0 lib=GS228_01,1 clr=ECR2,0,244 deleted=0</desc>
+		<gc>0.471311</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01AVZZG</id>
+		<desc> iid=14 mate=0,0 lib=GS228_01,1 clr=ECR2,0,155 deleted=0</desc>
+		<gc>0.503226</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="1" stop="155" strand="+" frame="1" conf="28.2898" partial="true" model="ARCHAEA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01C3F7F</id>
+		<desc> iid=15 mate=0,0 lib=GS228_01,1 clr=ECR2,0,197 deleted=0</desc>
+		<gc>0.492386</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="87" stop="197" strand="-" frame="0" conf="6.19913" partial="true" model="BACTERIA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01A3PV8</id>
+		<desc> iid=164 mate=0,0 lib=GS228_01,1 clr=ECR2,0,273 deleted=0</desc>
+		<gc>0.501832</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+		<orf start="1" stop="273" strand="+" frame="1" conf="49.4612" partial="true" model="ARCHAEA" rbs-start="" rbs-stop="" rbs-score=""/>
+	</sequence>
+	<sequence>
+		<id>FUVSC2B01DVL5Q</id>
+		<desc> iid=257 mate=0,0 lib=GS228_01,1 clr=ECR2,0,293 deleted=0</desc>
+		<gc>0.392491</gc>
+		<rbs>-1</rbs>
+		<domain>UNDEFINED</domain>
+	</sequence>
+</metagene>

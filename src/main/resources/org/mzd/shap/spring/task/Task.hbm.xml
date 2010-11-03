@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.spring.task">
+	<class name="Task" table="Tasks">
+	
+		<id name="id" type="int" column="TASK_ID">
+			<generator class="native"/>
+		</id>
+		
+ 		<version name="version"/>
+	
+		<property name="start" type="org.mzd.shap.hibernate.EpocTimeUserType"/>
+		<property name="finish" type="org.mzd.shap.hibernate.EpocTimeUserType"/>
+		<property name="status" length="20" type="org.mzd.shap.hibernate.StatusUserType" index="tasks_status"/>
+		<property name="comment" type="text"/>
+		
+		<many-to-one name="job" column="JOB_ID" not-null="true"/>
+
+		<joined-subclass name="DetectionTaskImpl" proxy="DetectionTask" table="DetectionTasks">
+			<key column="TASK_ID"/>
+			<many-to-one name="detector" column="DETECTOR_ID" not-null="false" lazy="false"/>
+			<list name="target" table="DetectionTarget" lazy="false">
+				<key column="TASK_ID"/>
+				<index column="idx"/>
+				<many-to-many class="org.mzd.shap.domain.Sequence" column="SEQ_ID"/>
+			</list>
+		</joined-subclass>
+
+		<joined-subclass name="AnnotationTaskImpl" proxy="AnnotationTask" table="AnnotationTasks">
+			<key column="TASK_ID"/>
+			<many-to-one name="annotator" column="ANNOTATOR_ID" not-null="false" lazy="false"/>
+			<list name="target" table="AnnotationTarget" lazy="false">
+				<key column="TASK_ID"/>
+				<index column="idx"/>
+				<many-to-many class="org.mzd.shap.domain.Feature" column="FEATURE_ID"/>
+			</list>
+		</joined-subclass>
+
+	</class>
+</hibernate-mapping>

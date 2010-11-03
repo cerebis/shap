@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain">
+
+	<class name="Annotation" table="Annotations">
+	
+		<id name="id" type="int" column="ANNOTATION_ID">
+  			<generator class="native"/>
+  		</id>
+  		
+  		<property name="accession"/>
+  		<property name="description" type="text"/>
+  		<property name="confidence"/>
+  		 
+  		<property name="refersTo" type="org.mzd.shap.hibernate.AnnotationTypeUserType"/>
+  		
+  		<many-to-one name="feature" column="FEATURE_ID" not-null="true"/>
+  		
+		<many-to-one name="alignment" class="Alignment" column="ALIGNMENT_ID" unique="true" cascade="all"/>
+		<many-to-one name="annotator" column="ANNOTATOR_ID"/>
+	</class>
+	
+</hibernate-mapping>

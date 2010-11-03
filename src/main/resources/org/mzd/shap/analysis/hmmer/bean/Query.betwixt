@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="query">
+	<element name="name" property="name"/>
+	<element name="accession" property="accession"/>
+	<element name="description" property="description"/>
+	<addDefaults/>
+</element>
+</info>

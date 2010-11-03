@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.analysis">
+
+	<class name="Annotator" table="Annotators">
+
+		<id name="id" type="int" column="ANNOTATOR_ID">
+			<generator class="native"/>
+		</id>
+		
+		<discriminator column="ANNOTATOR_TYPE" type="string"/>
+		
+		<property name="name" not-null="true" unique="true"/>
+		<property name="batchSize"/>
+		
+		<subclass name="org.mzd.shap.analysis.ImplicitAnnotator" discriminator-value="IMPLICIT"/>
+		
+		<subclass name="org.mzd.shap.analysis.SimpleAnnotator" discriminator-value="SIMPLE">
+			<property name="argumentString" length="4096"/>
+			<property name="scratchPath" type="org.mzd.shap.hibernate.FileUserType" length="4096"/>
+			<property name="parserClass" length="4096"/>
+			<property name="supportedFeatureType" type="org.mzd.shap.hibernate.FeatureTypeUserType"/>
+			<property name="supportedMoleculeType" type="org.mzd.shap.hibernate.MoleculeTypeUserType"/>
+		</subclass>
+		
+	</class>
+
+</hibernate-mapping>

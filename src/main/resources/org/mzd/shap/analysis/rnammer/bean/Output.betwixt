@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="output">
+	<element name="entries">
+		<element name="entry" property="entries"/>
+	</element>
+	<addDefaults/>
+</element>
+</info>

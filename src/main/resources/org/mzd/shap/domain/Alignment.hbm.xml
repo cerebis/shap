@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain">
+	<class name="Alignment" table="Alignments">
+	
+		<id name="id" type="int" column="ALIGNMENT_ID">
+  			<generator class="native"/>
+  		</id>
+  		
+		<property name="queryStart"/>
+		<property name="queryEnd"/>
+		<property name="subjectStart"/>
+		<property name="subjectEnd"/>
+		<property name="querySeq" type="text"/>
+		<property name="subjectSeq" type="text"/>
+		<property name="consensusSeq" type="text"/>
+		
+	</class>
+</hibernate-mapping>

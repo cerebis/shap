@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="item">
+	<attribute name="project-name" property="projectName"/>
+	<attribute name="sample-name" property="sampleName"/>
+	<attribute name="sequence-id" property="sequenceId"/>
+	<attribute name="feature-id" property="featureId"/>
+	<addDefaults/>
+</element>
+</info>

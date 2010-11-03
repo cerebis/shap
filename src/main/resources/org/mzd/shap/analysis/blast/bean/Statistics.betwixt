@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="Statistics">
+	<element name="Statistics_db-num" property="numberSequences"/>
+	<element name="Statistics_db-len" property="databaseLength"/>
+	<element name="Statistics_hsp-len" property="hspLength"/>
+	<element name="Statistics_eff-space" property="effectiveSearchSpace"/>
+	<element name="Statistics_kappa" property="kappa"/>
+	<element name="Statistics_lambda" property="lambda"/>
+	<element name="Statistics_entropy" property="entropy"/>
+	<addDefaults/>
+</element>
+</info>

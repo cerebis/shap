@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="sequence">
+	<element name="id" property="identifier"/>
+	<element name="desc" property="description"/>
+	<element name="gene" property="genes"/>
+	<addDefaults/>
+</element>
+</info>

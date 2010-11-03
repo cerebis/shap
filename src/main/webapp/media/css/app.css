@@ -1,0 +1,146 @@
+html {
+	font-family: Verdana,Arial,sans-serif; font-size: 1.0em;
+}
+
+.dataTables_info {
+	padding-top: 0;
+}
+.dataTables_paginate {
+	padding-top: 0;
+}
+.css_right {
+	float: right;
+}
+
+.spacer {
+	clear: both;
+	height: 1em;
+	width: 100%;
+}
+
+#app_nav {
+	width: 100%;
+	height: 30px;
+}
+
+#app_nav ul {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+}
+
+#app_nav ul li {
+	display: inline;
+	height: 30px;
+	float: left;
+	list-style: none;
+	margin-right: 15px;
+}
+
+#app_nav ul li a {
+	text-decoration: none;
+}
+
+#app_nav  ul li a:hover {}
+
+#app_browse_nav {
+	clear: both;
+}
+
+#app_session {
+	clear: both;
+	float: right;
+}
+
+#app_dynamic {
+	clear: both;
+}	
+
+#app_info {
+	float: left;
+}
+
+#app_export {
+	float: right;
+}
+
+#app_auth {
+	width: 15em;
+	padding: 1.5em;
+	margin-top: 2em;
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid black;
+}
+#app_auth label {
+	display: -moz-inline-box;
+	display: inline-block;
+	width: 5em;
+}
+#app_auth div {
+	padding: .2em .1em;
+}
+
+#app_title {
+	float: left;
+}
+#app_logout {
+	float: right;
+	font-size: 0.6em;
+	margin-top: 20px;
+	margin-right: 10px; 
+}
+
+#app_logout a {
+	text-decoration: none;
+}
+
+#app_container {
+	margin: 0 auto;
+	width: 95%;
+	height: auto !important;
+	height: 100%;
+	min-height: 100%;
+}
+#app_header {
+	height: 50px;
+	font-size: 2em;
+	color: #066;
+}
+
+.app_bar {
+	height: 25px;
+}
+
+.app_selected {
+	background-color: #ECFFB3;
+}
+
+#app_form {
+	margin-bottom: 1em;
+}
+#app_content {
+	padding: 1em 2em;
+}
+#app_content p {
+	text-align: justify;
+	padding: 0 1em;
+}
+div.inline-div {
+	display: -moz-inline-box;
+	display: inline-block;
+}
+
+span.detail {
+	font-size: 0.8em;
+}
+
+span.detail_prop {
+	color: #477;
+}
+span.detail_dlm {
+	color: #477;
+}
+span.detail_val {
+	color: #000;
+}

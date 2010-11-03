@@ -1,0 +1,53 @@
+<hmmpfam>
+	<database-file>Pfam_ls</database-file>
+	<sequence-file>2.faa</sequence-file>
+	<results>
+	<result>
+		<query>
+			<name>lcl|sequenceName|1106105117599|locusTag|ORF0002</name>
+			<accession>[none]</accession>
+			<description>/coords="211..974" /strand="Reverse" /orf_conf="90.8786" /partial="true" /anno1="Short-chain specific acyl-CoA dehydrogenase, m</description>
+		</query>
+		<global-hits>
+		</global-hits>
+		<domain-hits>
+		</domain-hits>
+	</result>
+	<result>
+		<query>
+			<name>lcl|sequenceName|1106105075120|locusTag|ORF0001</name>
+			<accession>[none]</accession>
+			<description>/coords="0..893" /strand="Forward" /orf_conf="26.7887" /partial="true" /anno1="yhch00355; hypothetical protein,6.99877E-104"</description>
+		</query>
+		<global-hits>
+			<hit>
+				<model>UPF0061</model>
+				<description>Uncharacterized ACR, YdiU/UPF0061 family</description>
+				<score>58.4</score>
+				<evalue>1.2e-15</evalue>
+				<ndom>1</ndom>
+			</hit>
+		</global-hits>
+		<domain-hits>
+			<hit>
+				<model>UPF0061</model>
+				<index>1</index>
+				<ndom>1</ndom>
+				<seq-from>29</seq-from>
+				<seq-to>390</seq-to>
+				<seq-start>false</seq-start>
+				<seq-end>true</seq-end>
+				<hmm-from>1</hmm-from>
+				<hmm-to>631</hmm-to>
+				<hmm-start>true</hmm-start>
+				<hmm-end>true</hmm-end>
+				<score>58.4</score>
+				<evalue>1.2e-15</evalue>
+				<query-seq>-------RXXEXXXANNXXXUPFPRXTEINRHEXCHXRHIZXBIU--METLIXSTRAINCFNXATCCXXX--EXXFGG-----------------------WVPQLGDGRALLLGEAKTEEGERFDIQ---LKGSGRTAFSRGGDGKAPLGPVLREYVVSEAMAAMGVPTTRALVAVATG-EPVYREEQLP--GAVITRVAASHLRIGTFQFATARGGADGARFLADYAIERHDS----------------------------DLVEEP--------D------RYLIFLERVLERQANLIAQWMSLGFVHGVMNTDNMTISGETIDYGPCAFIDNFRPDAVFSSIDRGGRYAWDHQPDIGMWNLSRLAETLLPMIDEEESKSIVLAKGVLE-------K----------------YPERFRSVFYSRMKAKLGL-------GG-------EE------EFAEKLVDNTLELLAAESVDFTS-----S-----------------------------FDR--------------------------------------------------------------------------------------X------------------------</query-seq>
+				<subject-seq>tsLssvteerdlvsegyealdPvslklFpearLvfrndrLaftLstKKPHlkPsslkdnaldEanLVqdqDLekLLsGEKvYYsDvisplAlvYsGyQFGeyaaqLGDGRgvllGevrlvdgelfdwqtFqlKGAGlTPYSRfGDGravLrssiREvLasEALHrLGipttRALsLvetddskvrreeaePtRaAvliRfApShiRfGtFerfrYrhetekvaQLaDyvIeeyyaGGtqFEGKPDFniFKRDFFPDtEvkiDEsvsdDetEvstmtGDnistLskYraFFrdvVervAklVAqWqAvGFAhGVLNTDNmSilGltlDYGPFGFldkYepsFianhsDyagRYsFdNQPAVilWNLqrLaksLSslvaseARDLELLLKGELnsvDeALedtmiERvqKLvELsAnEYkkVyltyYaelmaqrLGvdldLedrmdstnLKDiEqAAEKAkEldekLveelLdlLarekvdYtdfFaqLrlyKGPFfskdksdaAdLilefdeEYLGmFldsKqLqqmAdfeewfAiyEKvFDarGELRLLnEkLQEiRnWtQdvLkevppeelAArasllkkaNPllvLrrWlieevveDLmaaekDgLqDPssELdtseLkkLyeklrnPy</subject-seq>
+				<consensus-seq>       +  +     +   +P +  +  +     +  +     +     l+ s    n +  a        e  + G                       + +qLGDGR  llGe +  +ge fd q   lKG+G T +SR+GDG+a L    RE + sEA+  +G+pttRAL  v t+  +v+ree+ P  +Av+ R+A Sh+R GtF     r    + + LaDy+Ie   +                             + +          D       Y  F   v er A+l+AqW+  GF hGV+NTDNm i G+t+DYGP +F+d + p  +    D +gRY  d QP +  WNL rLa +L +++  e     +L KG L        +                Y   +   +  +m  +LG                 E       E+ ekLv+ +L+lLa+e vd+t      +                             +d+                                                                                                               </consensus-seq>
+			</hit>
+		</domain-hits>
+	</result>
+	</results>
+</hmmpfam>

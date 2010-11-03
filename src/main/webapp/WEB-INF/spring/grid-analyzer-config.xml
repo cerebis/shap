@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:setup.properties</value>
+        </property>
+</bean>
+
+<bean id="configuration" class="org.mzd.shap.spring.cli.ConfigSetup">
+	<property name="annotators">
+		<list>
+			<ref local="swissprot"/>
+			<ref local="ncbi-nr"/>
+			<ref local="kegg-pep"/>
+			<ref local="tigrfam"/>
+			<ref local="marker-gene"/>
+			<ref local="cog"/>
+		</list>
+	</property>
+	<property name="detectors">
+		<list>
+			<ref local="metagene"/>
+			<ref local="glimmer"/>
+			<ref local="rnammer-bac"/>
+			<ref local="rfamscan"/>
+			<ref local="aragorn"/>
+			<ref local="trnascan"/>
+		</list>
+	</property>
+</bean>
+
+<!-- 
+	LOCAL ANALYZERS
+ -->
+ 
+<!-- Blast annotators -->
+
+<bean id="baseBlastp" abstract="true" class="org.mzd.shap.analysis.SimpleAnnotator">
+	<property name="scratchPath" value="/array/tmp"/>
+	<property name="parserClass" value="org.mzd.shap.analysis.blast.NcbiBlastParserXml"/>
+	<property name="supportedFeatureType" value="OpenReadingFrame"/>
+	<property name="supportedMoleculeType" value="Protein"/> 
+</bean> 
+
+<bean id="swissprot" parent="baseBlastp">
+	<property name="name" value="swissprot"/>
+	<property name="argumentString">
+		<value>/array/informatics/blast-2.2.18/bin/blastall -p blastp -d sp -a 1 -m 7 -e 1e-5 -i %s -o %s</value>
+	</property>
+</bean>
+
+<bean id="ncbi-nr" parent="baseBlastp">
+	<property name="name" value="ncbi-nr"/>
+	<property name="argumentString">
+		<value>/array/informatics/blast-2.2.18/bin/blastall -p blastp -d nr -a 1 -m 7 -e 1e-5 -i %s -o %s</value>
+	</property>
+</bean>
+
+<bean id="kegg-pep" parent="baseBlastp">
+	<property name="name" value="kegg-pep"/>
+	<property name="argumentString">
+		<value>/array/informatics/blast-2.2.18/bin/blastall -p blastp -d kegg-pep -a 1 -m 7 -e 1e-5 -i %s -o %s</value>
+	</property>
+</bean>
+
+<!-- Hmmpfam annotators -->
+
+<bean id="baseHmmpfam" class="org.mzd.shap.analysis.SimpleAnnotator" abstract="true">
+	<property name="scratchPath" value="/array/tmp"/>
+	<property name="parserClass" value="org.mzd.shap.analysis.hmmer.HmmpfamParserXml"/>
+	<property name="supportedFeatureType" value="OpenReadingFrame"/>
+	<property name="supportedMoleculeType" value="Protein"/> 
+</bean>
+
+<bean id="tigrfam" parent="baseHmmpfam">
+	<property name="name" value="tigrfam"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/hmmpfam.icc -E 1e-5 --cpu=1 --xml %2$s TIGRFAMs_6.0_HMM.LIB %1$s</value>
+	</property>
+</bean>
+
+<bean id="marker-gene" parent="baseHmmpfam">
+	<property name="name" value="marker-gene"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/hmmpfam.icc -E 1e-5 --cpu=1 --xml %2$s MLTREE_MARKERS.LIB %1$s</value>
+	</property>
+</bean>
+
+<bean id="cog" parent="baseHmmpfam">
+	<property name="name" value="cog"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/hmmpfam.icc -E 1e-5 --cpu=1 --xml %2$s COG.OLD.LOCAL.LIB %1$s</value>
+	</property>
+</bean>
+
+<!-- Detectors -->
+
+<bean id="baseDetector" abstract="true">
+	<property name="scratchPath" value="/array/tmp"/>
+</bean>
+
+<bean id="metagene" parent="baseDetector" class="org.mzd.shap.analysis.SimpleDetector">
+	<property name="name" value="metagene"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/metageneXML.sh %s %s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.metagene.MetageneParserXml"/>
+</bean>
+
+<bean id="glimmer" parent="baseDetector" class="org.mzd.shap.analysis.SimpleDetector">
+	<property name="name" value="glimmer"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/glimmer3b.sh %s %s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.glimmer.GlimmerParser"/>
+</bean>
+
+<bean id="rnammer-bac" parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
+	<property name="name" value="rnammer-bac"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/rnammer -T /array/tmp -S bac -gff %2$s %1$s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.rnammer.RnammerParserXml"/>
+	<property name="implicitAnnotator">
+		<bean class="org.mzd.shap.analysis.ImplicitAnnotator">
+			<property name="name" value="rnammer-bac"/>
+		</bean>
+	</property>
+</bean>
+
+<bean id="rfamscan" parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
+	<property name="name" value="rfamscan"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/rfam_scan.pl -f csv --nobig --infver new -o %2$s %1$s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.rfamscan.RfamscanParser"/>
+	<property name="implicitAnnotator">
+		<bean class="org.mzd.shap.analysis.ImplicitAnnotator">
+			<property name="name" value="rfamscan"/>
+		</bean>
+	</property>
+</bean>
+
+<bean id="aragorn" parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
+	<property name="name" value="aragorn"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/aragornXML.sh %s %s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.aragorn.AragornParserXml"/>
+	<property name="implicitAnnotator">
+		<bean class="org.mzd.shap.analysis.ImplicitAnnotator">
+			<property name="name" value="aragorn"/>
+		</bean>
+	</property>
+</bean>
+
+<bean id="trnascan" parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
+	<property name="name" value="trnascan"/>
+	<property name="argumentString">
+		<value>/array/informatics/bin/tRNAscan-SE -G -Q -o %2$s %1$s</value>
+	</property>
+	<property name="parserClass" value="org.mzd.shap.analysis.trnascan.TRnaScanParser"/>
+	<property name="implicitAnnotator">
+		<bean class="org.mzd.shap.analysis.ImplicitAnnotator">
+			<property name="name" value="trnascan"/>
+		</bean>
+	</property>
+</bean>
+
+</beans>

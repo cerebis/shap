@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.analysis">
+	
+	<class name="Rank" table="Ranks">
+	
+		<id name="id" type="int" column="RANK_ID">
+			<generator class="native"/>
+		</id>
+		
+		<joined-subclass name="AbsoluteRank" table="AbsoluteRanks">
+			<key column="RANK_ID"/>
+			<property name="rank"/>
+		</joined-subclass>
+	
+	</class>
+	
+</hibernate-mapping>

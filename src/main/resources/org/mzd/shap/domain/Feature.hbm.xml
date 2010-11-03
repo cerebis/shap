@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain">
+
+	<class name="Feature" table="Features">
+	
+		<id name="id" type="int" column="FEATURE_ID">
+  			<generator class="native"/>
+  		</id>
+  		
+  		<version name="version"/>
+  		
+		<component name="location" class="Location">
+			<property name="start"/>
+			<!-- PostgreSQL reserves the word "end" so the column must be renamed -->
+			<property name="end" column="end_"/>
+			<property name="strand" length="20" type="org.mzd.shap.hibernate.StrandUserType"/>
+	  		<property name="frame"/>
+		</component>
+		
+		<property name="confidence"/>
+  		<property name="partial"/>
+  		<property name="type" type="org.mzd.shap.hibernate.FeatureTypeUserType" index="features_type"/>
+		
+		<many-to-one name="data" column="LRGSTR_ID" cascade="all" unique="true"/>	
+  		<many-to-one name="sequence" not-null="true" column="SEQ_ID"/>
+		<many-to-one name="detector" column="DETECTOR_ID"/>
+		
+		<set name="annotations" inverse="true" cascade="all-delete-orphan">
+			<key column="FEATURE_ID"/>
+			<one-to-many class="Annotation"/>
+		</set>
+		
+	</class>
+	
+</hibernate-mapping>

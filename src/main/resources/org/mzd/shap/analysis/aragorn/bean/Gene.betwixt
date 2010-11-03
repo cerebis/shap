@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="gene">
+	<attribute name="start" property="start"/>
+	<attribute name="stop" property="stop"/>
+	<attribute name="strand" property="strand"/>
+	<attribute name="species" property="species"/>
+	<attribute name="anticodon" property="anticodon"/>
+	<attribute name="anticodon-position" property="anticodonPosition"/>
+	<attribute name="intron-position" property="intronPosition"/>
+	<attribute name="intron-length" property="intronLength"/>
+	<addDefaults/>
+</element>
+</info>

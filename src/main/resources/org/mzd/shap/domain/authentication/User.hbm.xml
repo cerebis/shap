@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain.authentication">
+	<class name="User" table="Users">
+	
+		<id name="id" type="int" column="USER_ID">
+  			<generator class="native"/>
+  		</id>
+ 
+ 		<property name="name" not-null="true"/>
+ 		<property name="username" unique="true" not-null="true" length="20"/>
+ 		<property name="password" not-null="true" length="20"/>
+ 		<property name="credentialsNonExpired" not-null="true"/>
+		<property name="accountNonExpired" not-null="true"/>
+		<property name="accountNonLocked" not-null="true"/>
+		<property name="enabled" not-null="true"/>
+		
+		<set name="roles" table="UserRoles" lazy="false">
+			<key column="USER_ID"/>
+			<many-to-many class="Role" column="ROLE_ID"/>
+		</set>
+ 		
+ 		<set name="projects" inverse="true" table="ProjectUsers" cascade="all">
+			<key column="USER_ID"/>
+			<many-to-many column="PROJECT_ID" class="org.mzd.shap.domain.Project"/>
+		</set>
+ 		
+	</class>
+</hibernate-mapping>

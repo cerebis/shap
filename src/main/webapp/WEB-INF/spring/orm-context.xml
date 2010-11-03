@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<!-- 
+	Hibernate Configuration
+ -->
+
+<bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+	<property name="properties">
+		<props>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<prop key="hibernate.show_sql">false</prop>
+			<prop key="hibernate.jdbc.batch_size">20</prop>
+			<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+			<prop key="hibernate.id.new_generator_mappings">true</prop>
+			<prop key="hibernate.generate_statistics">true</prop> 
+			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
+			<prop key="hibernate.search.default.indexBase">lucene</prop>
+			<!-- to disable automatic indexing set below to false -->
+			<prop key="hibernate.search.autoregister_listeners">true</prop>
+		</props>
+	</property>
+</bean>
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="hibernateProperties"><ref local="hibernateProperties" /></property>
+	<property name="annotatedClasses">
+		<list>
+			<value>org.mzd.shap.domain.authentication.User</value>
+			<value>org.mzd.shap.domain.authentication.Role</value>
+			<value>org.mzd.shap.domain.Project</value>
+			<value>org.mzd.shap.domain.Sample</value>
+			<value>org.mzd.shap.domain.Sequence</value>
+			<value>org.mzd.shap.domain.Feature</value>
+			<value>org.mzd.shap.domain.Annotation</value>
+			<value>org.mzd.shap.domain.Alignment</value>
+			<value>org.mzd.shap.domain.LargeString</value>
+			<value>org.mzd.shap.analysis.SimpleAnnotator</value>
+			<value>org.mzd.shap.analysis.SimpleDetector</value>
+			<value>org.mzd.shap.analysis.SelfAnnotatingDetector</value>
+			<value>org.mzd.shap.analysis.ImplicitAnnotator</value>
+			<value>org.mzd.shap.spring.task.BaseTask</value>
+			<value>org.mzd.shap.spring.task.AnnotationTask</value>
+			<value>org.mzd.shap.spring.task.DetectionTask</value>
+			<value>org.mzd.shap.spring.task.Job</value>
+		</list>
+	</property>
+</bean>
+
+<!-- 
+	Data Access Objects
+ -->
+
+<bean id="fullTextSearch" class="org.mzd.shap.hibernate.search.FullTextSearchImpl">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="userDao" class="org.mzd.shap.domain.authentication.UserDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="roleDao" class="org.mzd.shap.domain.authentication.RoleDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="projectDao" class="org.mzd.shap.domain.dao.ProjectDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="sampleDao" class="org.mzd.shap.domain.dao.SampleDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="sequenceDao" class="org.mzd.shap.domain.dao.SequenceDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="featureDao" class="org.mzd.shap.domain.dao.FeatureDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="annotationDao" class="org.mzd.shap.domain.dao.AnnotationDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="annotatorDao" class="org.mzd.shap.analysis.AnnotatorDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="detectorDao" class="org.mzd.shap.analysis.DetectorDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="jobDao" class="org.mzd.shap.spring.task.JobDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<bean id="taskDao" class="org.mzd.shap.spring.task.TaskDaoSpringHibernate">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+<!-- 
+	Lazy Initialisation Interceptor
+ -->
+
+<bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+</bean>
+
+<!--
+ 	Transaction Manager
+ -->
+<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	<property name="nestedTransactionAllowed" value="true"/>
+</bean>
+
+
+<tx:advice id="txDefaultAdvice" transaction-manager="txManager">
+	<tx:attributes>
+		<tx:method name="get*" read-only="true" propagation="REQUIRED" isolation="READ_COMMITTED"/>
+		<tx:method name="*" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>
+	</tx:attributes>
+</tx:advice>
+
+</beans>

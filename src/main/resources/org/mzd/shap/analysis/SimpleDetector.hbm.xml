@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.analysis">
+
+	<class name="Detector" table="Detectors">
+
+		<id name="id" type="int" column="DETECTOR_ID">
+			<generator class="native"/>
+		</id>
+		
+		<discriminator column="DETECTOR_TYPE" type="string"/>
+		
+		<property name="name" not-null="true" unique="true"/>
+		<property name="batchSize"/>
+		
+		<!-- The base concrete type of detector -->
+		<subclass name="org.mzd.shap.analysis.SimpleDetector" discriminator-value="SIMPLE">
+			<property name="argumentString" length="4096"/>
+			<property name="scratchPath" type="org.mzd.shap.hibernate.FileUserType" length="4096"/>
+			<property name="parserClass" length="4096"/>
+			<property name="precedence"/>
+
+			<!-- Detectors which themselves produce some sort of annotation -->
+			<!-- Namely this would be tools such as tRNA scanners           -->
+			<subclass name="org.mzd.shap.analysis.SelfAnnotatingDetector" discriminator-value="SELFANNO">
+				<many-to-one name="implicitAnnotator" column="ANNOTATOR_ID" unique="true" cascade="all"/>
+			</subclass>
+
+		</subclass>
+		
+	</class>
+
+</hibernate-mapping>

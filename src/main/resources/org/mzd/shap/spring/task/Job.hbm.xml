@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.spring.task">
+	<class name="Job" table="Jobs">
+	
+		<id name="id" type="int" column="JOB_ID">
+			<generator class="native"/>
+		</id>
+		
+		<property name="comment"/>
+		<property name="start"/>
+		<property name="finish"/>
+		<property name="status" length="20" type="org.mzd.shap.hibernate.StatusUserType" index="jobs_status"/>
+		
+		<many-to-one name="user" column="USER_ID"/>
+		
+		<set name="tasks" cascade="none" inverse="true">
+			<key column="JOB_ID"/>
+			<one-to-many class="Task"/>
+		</set>
+		
+	</class>
+</hibernate-mapping>

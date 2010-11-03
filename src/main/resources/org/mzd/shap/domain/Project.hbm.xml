@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain">
+
+	<class name="Project" table="Projects">
+	
+		<id name="id" type="int" column="PROJECT_ID">
+  			<generator class="native"/>
+  		</id>
+  		
+  		<property name="name" unique="true"/>
+  		<property name="description" type="text"/>
+  		<property name="creation"/>	
+  		
+		<set name="samples" inverse="true" cascade="all-delete-orphan">
+			<key column="PROJECT_ID"/>
+			<one-to-many class="Sample"/>
+		</set>
+		
+		<set name="users" table="ProjectUsers" cascade="all">
+			<key column="PROJECT_ID"/>
+			<many-to-many column="USER_ID" class="org.mzd.shap.domain.authentication.User"/>
+		</set>
+		
+	</class>
+	
+</hibernate-mapping>

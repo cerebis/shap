@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.mzd.shap.domain">
+
+	<class name="Sequence" table="Sequences">
+		
+		<id name="id" type="int" column="SEQ_ID">
+  			<generator class="native"/>
+  		</id>
+  		
+		<version name="version"/>
+		
+		<property name="name" length="4096" not-null="true" index="sequences_name"/>
+		<property name="description" type="text"/>
+		<property name="taxonomy" type="org.mzd.shap.hibernate.TaxonomyUserType"/>
+		<property name="coverage"/>
+		
+		<set name="features" cascade="save-update" inverse="true">
+			<key column="SEQ_ID"/>
+			<one-to-many class="Feature"/>
+		</set>
+
+		<many-to-one name="sample" column="SAMPLE_ID" not-null="true"/>
+		<many-to-one name="data" column="LRGSTR_ID" not-null="true" cascade="all" unique="true"/>
+
+	</class>
+	
+</hibernate-mapping>

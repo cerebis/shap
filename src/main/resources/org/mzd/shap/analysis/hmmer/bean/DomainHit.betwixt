@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="domain-hit">
+	<element name="model" property="model"/>
+	<element name="index" property="index"/>
+	<element name="ndom" property="ndom"/>
+	<element name="seq-from" property="seqFrom"/>
+	<element name="seq-to" property="seqTo"/>
+	<element name="seq-start" property="seqStart"/>
+	<element name="seq-end" property="seqEnd"/>
+	<element name="hmm-from" property="hmmFrom"/>
+	<element name="hmm-to" property="hmmTo"/>
+	<element name="hmm-start" property="hmmStart"/>
+	<element name="hmm-end" property="hmmEnd"/>
+	<element name="score" property="score"/>
+	<element name="evalue" property="evalue"/>
+	<element name="query-seq" property="querySeq"/>
+	<element name="subject-seq" property="subjectSeq"/>
+	<element name="consensus-seq" property="consensusSeq"/>
+	<addDefaults/>
+</element>
+</info>

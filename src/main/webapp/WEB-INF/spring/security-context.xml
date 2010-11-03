@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <global-method-security secured-annotations="enabled" />
+    
+    <http auto-config="true" entry-point-ref="ajaxAwareEntryPoint">
+        <!-- Restrict URLs based on role -->
+        <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/logoutSuccess.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/media/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/**" access="ROLE_USER,ROLE_ADMIN" />
+
+		<http-basic />
+        
+        <form-login login-page="/login.jsp" 
+        	default-target-url="/app/" 
+        	authentication-failure-url="/login.jsp?login_error=1"/> 
+        	
+        <logout logout-url="/logout" logout-success-url="/logoutSuccess.jsp" />
+    </http>
+
+	<beans:bean id="ajaxAwareEntryPoint" class="org.mzd.shap.spring.web.filter.AjaxAwareAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/login.jsp"/>
+		<beans:property name="ajaxRequestPattern" value="ajax$"/>
+		<beans:property name="statusCode" value="601"/>
+	</beans:bean>
+
+    <authentication-manager>
+    	<authentication-provider ref="daoAuthenticationProvider">
+    		<password-encoder hash="plaintext"/>
+    	</authentication-provider>
+    	<authentication-provider ref="anonymousAuthenticationProvider"/>
+    </authentication-manager>
+    
+    <beans:bean id="anonymousProcessingFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		<beans:property name="key" value="foobar"/>
+		<beans:property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS"/>
+	</beans:bean>
+	
+	<beans:bean id="anonymousAuthenticationProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+		<beans:property name="key" value="foobar"/>
+	</beans:bean>
+	
+    <beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+	  <beans:property name="userDetailsService" ref="localUserDetailsService"/>
+		<!--
+		<property name="saltSource" ref="saltSource"/>
+		<property name="passwordEncoder" ref="passwordEncoder"/>
+		-->
+	</beans:bean>
+
+    <beans:bean id="localUserDetailsService" class="org.mzd.shap.domain.authentication.UserDetailsServiceImpl">
+		<beans:property name="userDao" ref="userDao"/>
+	</beans:bean>  
+
+    <beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
+
+</beans:beans>

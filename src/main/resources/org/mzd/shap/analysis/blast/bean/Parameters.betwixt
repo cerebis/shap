@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="Parameters">
+	<element name="Parameters_matrix" property="matrix"/>
+	<element name="Parameters_expect" property="expectation"/>
+	<element name="Parameters_include" property="include"/>
+	<element name="Parameters_sc-match" property="matchScore"/>
+	<element name="Parameters_sc-mismatch" property="mismatchScore"/>
+	<element name="Parameters_gap-open" property="gapOpenCost"/>
+	<element name="Parameters_gap-extend" property="gapExtensionCost"/>
+	<element name="Parameters_filter" property="filterOptions"/>
+	<element name="Parameters_pattern" property="phiBlastPattern"/>
+	<element name="Parameters_entrez-query" property="requestLimit"/>
+	<addDefaults/>
+</element>
+</info>

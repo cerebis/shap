@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="entry">
+	<element name="mol" property="molecule"/>
+	<element name="feature" property="feature"/>
+	<element name="start" property="start"/>
+	<element name="stop" property="stop"/>
+	<element name="direction" property="direction"/>
+	<element name="score" property="score"/>
+	<element name="evalue" property="evalue"/>
+	<element name="sequenceEntry" property="sequenceEntry"/>
+	<element name="sequenceEntryLength" property="sequenceEntryLength"/>
+	<element name="sequence" property="sequence"/>
+	<element name="model_string" property="modelString"/>
+	<element name="match_string" property="matchString"/>
+	<element name="query_string" property="queryString"/>
+	<addDefaults/>
+</element>
+</info>

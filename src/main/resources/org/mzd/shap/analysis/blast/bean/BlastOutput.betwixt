@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="BlastOutput">
+   	<element name="BlastOutput_program" property="program"/>
+	<element name="BlastOutput_version" property="version"/>
+	<element name="BlastOutput_reference" property="reference"/>
+	<element name="BlastOutput_db" property="database"/>
+	<element name="BlastOutput_query-ID" property="queryId"/>
+	<element name="BlastOutput_query-def" property="queryDefinition"/>
+	<element name="BlastOutput_query-len" property="queryLength"/>
+	<element name="BlastOutput_query-seq" property="querySequence"/>
+	<element name="BlastOutput_param">
+		<element name="Parameters" property="parameters"/>
+	</element> 
+	<element name="BlastOutput_iterations">
+		<element name="Iteration" property="iterations"/>
+	</element>
+	<element name="BlastOutput_mbstat">
+		<element name="Statistics" property="megablastStatistics"/>
+	</element>
+	<addDefaults/>
+</element>
+</info>

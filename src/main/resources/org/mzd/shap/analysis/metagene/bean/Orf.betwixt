@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+<element name="orf">
+	<attribute name="start" property="start"/>
+	<attribute name="stop" property="stop"/>
+	<attribute name="strand" property="strand"/>
+	<attribute name="frame" property="frame"/>
+	<attribute name="conf" property="confidence"/>
+	<attribute name="partial" property="partial"/>
+	<addDefaults/>
+</element>
+</info>

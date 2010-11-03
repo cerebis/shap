@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+<mapping>
+	<class name="org.mzd.shap.analysis.hmmer.bean.Hmmpfam">
+		<map-to xml="hmmpfam"/>
+		<field name="databaseFile"><bind-xml name="database-file"/></field> 
+		<field name="sequenceFile"><bind-xml name="sequence-file"/></field> 
+		<field name="results" collection="arraylist" type="org.mzd.shap.analysis.hmmer.bean.Result">
+			<bind-xml name="result" node="element" location="results"/>
+		</field>
+	</class>
+	
+	<class name="org.mzd.shap.analysis.hmmer.bean.Result">
+		<map-to xml="result"/>
+		<field name="query"><bind-xml name="query"/></field> 
+		<field name="globalHits" collection="arraylist" type="org.mzd.shap.analysis.hmmer.bean.GlobalHit">
+			<bind-xml name="hit" node="element" location="global-hits"/>
+		</field>
+		<field name="domainHits" collection="arraylist" type="org.mzd.shap.analysis.hmmer.bean.DomainHit">
+			<bind-xml name="hit" node="element" location="domain-hits"/>
+		</field>
+	</class>
+	
+	<class name="org.mzd.shap.analysis.hmmer.bean.Query">
+		<map-to xml="query"/>
+		<field name="name"><bind-xml name="name"/></field> 
+		<field name="accession"><bind-xml name="accession"/></field> 
+		<field name="description"><bind-xml name="description"/></field> 
+	</class>
+	
+	<class name="org.mzd.shap.analysis.hmmer.bean.DomainHit">
+		<map-to xml="domain-hit"/>
+		<field name="model"><bind-xml name="model"/></field> 
+		<field name="index"><bind-xml name="index"/></field> 
+		<field name="ndom"><bind-xml name="ndom"/></field> 
+		<field name="seqFrom"><bind-xml name="seq-from"/></field> 
+		<field name="seqTo"><bind-xml name="seq-to"/></field> 
+		<field name="seqStart"><bind-xml name="seq-start"/></field> 
+		<field name="seqEnd"><bind-xml name="seq-end"/></field> 
+		<field name="hmmFrom"><bind-xml name="hmm-from"/></field> 
+		<field name="hmmTo"><bind-xml name="hmm-to"/></field> 
+		<field name="hmmStart"><bind-xml name="hmm-start"/></field> 
+		<field name="hmmEnd"><bind-xml name="hmm-end"/></field> 
+		<field name="score"><bind-xml name="score"/></field> 
+		<field name="evalue"><bind-xml name="evalue"/></field> 
+		<field name="querySeq"><bind-xml name="query-seq"/></field> 
+		<field name="subjectSeq"><bind-xml name="subject-seq"/></field> 
+		<field name="consensusSeq"><bind-xml name="consensus-seq"/></field> 
+	</class>
+
+	<class name="org.mzd.shap.analysis.hmmer.bean.GlobalHit">
+		<map-to xml="global-hit"/>
+		<field name="model"><bind-xml name="model"/></field> 
+		<field name="description"><bind-xml name="description"/></field> 
+		<field name="score"><bind-xml name="score"/></field> 
+		<field name="evalue"><bind-xml name="evalue"/></field> 
+		<field name="ndom"><bind-xml name="ndom"/></field> 
+	</class>
+	
+</mapping>
