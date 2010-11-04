@@ -44,7 +44,7 @@ public class SequenceIOXstreamTest {
 
 	@Test
 	public void testRead() throws BeanIOException {
-		marshaller.read(new File("sequence-read.xml"));
+		marshaller.read(new File("target/test-classes/org/mzd/shap/domain/io/sequence-read.xml"));
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class SequenceIOXstreamTest {
 		s.setName("myseq");
 		s.addFeature(f);
 		s.setData(new LargeString("acgt"));
-		marshaller.write(s, new File("sequence-write.xml"));
+		marshaller.write(s, new File("target/test-classes/org/mzd/shap/domain/io/sequence-write.xml"));
 	}
 
 }
