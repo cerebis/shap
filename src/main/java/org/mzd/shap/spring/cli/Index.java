@@ -48,7 +48,7 @@ public class Index {
 					.threadsForSubsequentFetching(1)
 					.optimizeOnFinish(true)
 					.startAndWait();
-			
+			System.exit(0);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();

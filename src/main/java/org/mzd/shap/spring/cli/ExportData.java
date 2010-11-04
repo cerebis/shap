@@ -575,6 +575,7 @@ public class ExportData extends BaseCommand {
 	
 	public static void main(String[] args) {
 		new ExportData().execute(args);
+		System.exit(0);
 	}
 
 }

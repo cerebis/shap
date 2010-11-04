@@ -380,6 +380,7 @@ public class ImportData extends BaseCommand {
 	
 	public static void main(String[] args) throws ApplicationException {
 		new ImportData().execute(args);
+		System.exit(0);
 	}
 
 }
