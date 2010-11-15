@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -55,14 +54,11 @@ public abstract class SimpleAnalyzer<TARGET,RESULT> extends AbstractAnalyzer<TAR
 	private final static String OUTPUT_SUFFIX = ".out";
 	private static TemporaryFileFactory fileFactory = new TemporaryFileFactory();
 	@Type(type="text")
-	@NotNull
 	private String argumentString;
 	@Type(type="file")
 	@Column(length=4096)
-	@NotNull
 	private File scratchPath;
 	@Column(length=4096)
-	@NotNull
 	private Class<?> parserClass;
 
 	/**

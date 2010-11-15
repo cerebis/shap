@@ -88,9 +88,6 @@ public class LargeString {
 
 		public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 			LargeString l = (LargeString)source;
-			if (l.getId() != null) {
-				writer.addAttribute("id", l.getId().toString());
-			}
 			if (l.getValue() != null) {
 				writer.setValue(l.getValue());
 			}
@@ -98,10 +95,6 @@ public class LargeString {
 		
 		public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 			LargeString l = new LargeString();
-			String idStr = reader.getAttribute("id");
-			if (idStr != null) { 
-				l.setId(Integer.parseInt(idStr));
-			}
 			l.setValue(reader.getValue());
 			return l;
 		}

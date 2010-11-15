@@ -105,40 +105,6 @@ public class SimpleAnnotatorTest extends AbstractValidationTest<SimpleAnnotator>
 	}
 	
 	@Test
-	public void argumentStringNotNull() {
-		SimpleAnnotator sa = makeValidTarget();
-		sa.setArgumentString(null);
-		
-		Set<ConstraintViolation<SimpleAnnotator>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-	
-	
-	@Test
-	public void scratchPathNotNull() {
-		SimpleAnnotator sa = makeValidTarget();
-		sa.setScratchPath(null);
-		
-		Set<ConstraintViolation<SimpleAnnotator>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-	
-	@Test
-	public void parseClassNotNull() {
-		SimpleAnnotator sa = makeValidTarget();
-		sa.setParserClass(null);
-		
-		Set<ConstraintViolation<SimpleAnnotator>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-
-	@Test
 	public void supportedFeatureTypeNotNull() {
 		SimpleAnnotator sa = makeValidTarget();
 		sa.setSupportedFeatureType(null);

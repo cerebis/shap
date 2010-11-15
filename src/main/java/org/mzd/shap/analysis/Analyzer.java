@@ -53,6 +53,9 @@ public interface Analyzer<TARGET,RESULT> {
 	String getName();
 	void setName(String name);
 
+	String getDescription();
+	void setDescription(String description);
+	
 	/**
 	 * Batching Support - Analyzer can operate on multiple objects in a single call.
 	 * @return

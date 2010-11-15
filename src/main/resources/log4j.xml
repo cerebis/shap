@@ -20,7 +20,7 @@
 	</appender> 
 	
 	<logger name="com.thoughtworks.xstream">
-		<level value="warn"/>
+		<level value="debug"/>
 	</logger>
 	
 	<logger name="org.mzd">

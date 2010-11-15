@@ -81,7 +81,7 @@ public class Sequence {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="SEQUENCE_ID")
-	@XStreamAsAttribute
+	@XStreamOmitField
 	private Integer id;
 	@Version
 	@XStreamOmitField

@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,6 +47,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -68,6 +71,7 @@ import org.mzd.shap.io.Fasta;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @Entity
@@ -79,11 +83,18 @@ public class Feature {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="FEATURE_ID")
-	@XStreamAsAttribute
+	@XStreamOmitField
 	private Integer id;
 	@Version
 	@XStreamOmitField
 	private Integer version;
+	@ElementCollection
+	@CollectionTable(name="FeatureAliases",joinColumns=@JoinColumn(name="FEATURE_ID"),
+			uniqueConstraints=@UniqueConstraint(columnNames={"FEATURE_ID","alias"}))
+	@Column(name="alias")
+	@IndexedEmbedded
+	@XStreamImplicit(itemFieldName="alias")
+	private Set<String> aliases = new HashSet<String>();
 	@Embedded
 	@IndexedEmbedded
 	@NotNull
@@ -282,6 +293,7 @@ public class Feature {
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("id",getId())
+			.append("aliases",getAliases())
 			.append("location",getLocation())
 			.append("data",getData())
 			.append("confidence",getConfidence())
@@ -342,6 +354,13 @@ public class Feature {
 	}
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public Set<String> getAliases() {
+		return aliases;
+	}
+	public void setAliases(Set<String> aliases) {
+		this.aliases = aliases;
 	}
 
 	public Location getLocation() {

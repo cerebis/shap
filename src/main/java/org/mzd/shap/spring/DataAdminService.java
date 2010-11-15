@@ -77,19 +77,40 @@ public interface DataAdminService extends DataViewService {
 	 * @throws NotFoundException
 	 * @throws IOException
 	 */
-	void addSequences(String projectName, String sampleName, File fastaFile) throws NotFoundException, IOException;
+	void addSequencesFromFasta(String projectName, String sampleName, File fastaFile) throws NotFoundException, IOException;
 
 	/**
-	 * Add features defined by XML serialized Sequence object.
+	 * For a given project and sample, add sequences defined in XML.
+	 * <p>
+	 * This method allows for including child features.
 	 * 
 	 * @param projectName
 	 * @param sampleName
-	 * @param xmlFile
+	 * @param sequenceXml
+	 * @param detectorName
+	 * @throws NotFoundException
+	 * @throws IOException
+	 * @throws BeanIOException
+	 * @throws ClassNotFoundException 
+	 */
+	void addSequencesFromXml(String projectName, String sampleName, String detectorName, File sequenceXml) 
+		throws NotFoundException, IOException, BeanIOException, ClassNotFoundException;
+		
+	/**
+	 * Add features defined in XML.
+	 * 
+	 * @param projectName
+	 * @param sampleName
+	 * @param sequenceName
+	 * @param featureXml
+	 * @param detectorName
 	 * @throws NotFoundException
 	 * @throws IOException
 	 * @throws BeanIOException 
+	 * @throws ClassNotFoundException 
 	 */
-	void addFeatures(String projectName, String sampleName, File xmlFile) throws NotFoundException, IOException, BeanIOException;
+	void addFeaturesFromXml(String projectName, String sampleName, String sequenceName, String detectorName, File featureXml) 
+		throws NotFoundException, IOException, BeanIOException, ClassNotFoundException;
 	
 	/**
 	 * Remove a list of features referenced by featureId.

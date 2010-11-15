@@ -99,38 +99,4 @@ public class SimpleDetectorTest extends AbstractValidationTest<SimpleDetector> {
 		Assert.assertEquals("must be greater than or equal to 1",constraintViolations.iterator().next().getMessage());
 	}
 	
-	@Test
-	public void argumentStringNotNull() {
-		SimpleDetector sa = makeValidTarget();
-		sa.setArgumentString(null);
-		
-		Set<ConstraintViolation<SimpleDetector>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-	
-	
-	@Test
-	public void scratchPathNotNull() {
-		SimpleDetector sa = makeValidTarget();
-		sa.setScratchPath(null);
-		
-		Set<ConstraintViolation<SimpleDetector>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-	
-	@Test
-	public void parseClassNotNull() {
-		SimpleDetector sa = makeValidTarget();
-		sa.setParserClass(null);
-		
-		Set<ConstraintViolation<SimpleDetector>> constraintViolations = getViolations(sa);
-		
-		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("may not be null",constraintViolations.iterator().next().getMessage());
-	}
-
 }

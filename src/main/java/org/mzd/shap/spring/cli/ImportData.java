@@ -20,7 +20,6 @@
  */
 package org.mzd.shap.spring.cli;
 
-
 import java.io.BufferedReader;
 
 import java.io.File;
@@ -83,6 +82,28 @@ public class ImportData extends BaseCommand {
 				.create())
 			.create();
 	
+	private final static Option ANNOTATOR = CommandLineApplication.buildOption()
+		.withLongName("annotator")
+		.withDescription("Annotator name")
+		.withRequired(true)
+		.withArgument(CommandLineApplication.buildArgument()
+				.withName("name")
+				.withMinimum(1)
+				.withMaximum(1)
+				.create())
+			.create();
+
+	private final static Option DETECTOR = CommandLineApplication.buildOption()
+		.withLongName("detector")
+		.withDescription("Detector name")
+		.withRequired(true)
+		.withArgument(CommandLineApplication.buildArgument()
+				.withName("name")
+				.withMinimum(1)
+				.withMaximum(1)
+				.create())
+			.create();
+
 	private final static Option ADD_PROJECT = CommandLineApplication.buildOption()
 		.withLongName("add-project")
 		.withDescription("Add a new project to system")
@@ -133,12 +154,12 @@ public class ImportData extends BaseCommand {
 				.create())
 		.create(); 
 	
-	private final static Option IMPORT_FEATURE = CommandLineApplication.buildOption()
-		.withLongName("import-feature")
-		.withDescription("Import features from XML sequence definition")
+	private final static Option IMPORT_SEQUENCE_XML = CommandLineApplication.buildOption()
+		.withLongName("import-sequence-xml")
+		.withDescription("Import sequences from XML into an existing sample")
 		.withArgument(CommandLineApplication.buildArgument()
 				.withName("filename")
-				.withDescription("Sequence XML file")
+				.withDescription("Sequence XML")
 				.withMinimum(1)
 				.withMaximum(1)
 				.withValidator(CommandLineApplication.getExitisngFileValidator(true, false))
@@ -147,6 +168,26 @@ public class ImportData extends BaseCommand {
 				.withRequired(true)
 				.withOption(PROJECT)
 				.withOption(SAMPLE)
+				.withOption(DETECTOR)
+				.create())
+		.create(); 
+
+	private final static Option IMPORT_FEATURE_XML = CommandLineApplication.buildOption()
+		.withLongName("import-feature-xml")
+		.withDescription("Import features from XML into an existing sequence")
+		.withArgument(CommandLineApplication.buildArgument()
+				.withName("filename")
+				.withDescription("Feature XML")
+				.withMinimum(1)
+				.withMaximum(1)
+				.withValidator(CommandLineApplication.getExitisngFileValidator(true, false))
+				.create())
+		.withChildren(CommandLineApplication.buildGroup()
+				.withRequired(true)
+				.withOption(PROJECT)
+				.withOption(SAMPLE)
+				.withOption(SEQUENCE)
+				.withOption(ANNOTATOR)
 				.create())
 		.create();
 	
@@ -203,7 +244,8 @@ public class ImportData extends BaseCommand {
 			.withOption(ADD_SAMPLE)
 			.withOption(ADD_SEQUENCE)
 			.withOption(IMPORT_SEQUENCE)
-			.withOption(IMPORT_FEATURE)
+			.withOption(IMPORT_SEQUENCE_XML)
+			.withOption(IMPORT_FEATURE_XML)
 			.withOption(SET_COVERAGE)
 			.withOption(REMOVE_SEQUENCE)
 			.withOption(REMOVE_FEATURE)
@@ -327,7 +369,7 @@ public class ImportData extends BaseCommand {
 				String projectName = (String)cl.getValue(PROJECT);
 				String sampleName = (String)cl.getValue(SAMPLE);
 				File inputFile = (File)cl.getValue(IMPORT_SEQUENCE);
-				getDataAdminService().addSequences(projectName, sampleName, inputFile);
+				getDataAdminService().addSequencesFromFasta(projectName, sampleName, inputFile);
 			}
 			else if (cl.hasOption(ADD_PROJECT)) {
 				String projectName = (String)cl.getValue(PROJECT);
@@ -352,12 +394,23 @@ public class ImportData extends BaseCommand {
 						"] to [" + projectName + "," + sampleName + "]");
 				getDataAdminService().addSequence(projectName, sampleName, sequenceName, description);
 			}
-			else if (cl.hasOption(IMPORT_FEATURE)) {
+			else if (cl.hasOption(IMPORT_SEQUENCE_XML)) {
 				String sampleName = (String)cl.getValue(SAMPLE);
 				String projectName = (String)cl.getValue(PROJECT);
-				File inputFile = (File)cl.getValue(IMPORT_FEATURE);
-				System.out.println("Importing features from XML to [" + projectName + "," + sampleName + "]");
-				getDataAdminService().addFeatures(projectName, sampleName, inputFile);
+				String detectorName = (String)cl.getValue(DETECTOR);
+				File inputFile = (File)cl.getValue(IMPORT_SEQUENCE_XML);
+				System.out.println("Importing sequences from XML to [" + projectName + "," + sampleName + "] registered to detector [" + detectorName + "]");
+				getDataAdminService().addSequencesFromXml(projectName, sampleName, detectorName, inputFile);
+			}
+			else if (cl.hasOption(IMPORT_FEATURE_XML)) {
+				String sampleName = (String)cl.getValue(SAMPLE);
+				String projectName = (String)cl.getValue(PROJECT);
+				String sequenceName = (String)cl.getValue(SEQUENCE);
+				String detectorName = (String)cl.getValue(DETECTOR);
+				File inputFile = (File)cl.getValue(IMPORT_FEATURE_XML);
+				System.out.println("Importing features from XML to [" + projectName + "," + sampleName + "," + sequenceName + "] " +
+						"registered to detector [" + detectorName + "]");
+				getDataAdminService().addFeaturesFromXml(projectName, sampleName, sequenceName, detectorName, inputFile);
 			}
 			else if (cl.hasOption(REMOVE_SEQUENCE)) {
 				File inputFile = (File)cl.getValue(REMOVE_SEQUENCE);

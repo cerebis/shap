@@ -1,5 +1,6 @@
 /**
  *
+				Feature feat = new FeatureIOXstream().read(xmlReader);
  * Copyright 2010 Matthew Z DeMaere.
  * 
  * This file is part of SHAP.
@@ -20,8 +21,12 @@
  */
 package org.mzd.shap.spring;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +34,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.ObjectNotFoundException;
+import org.mzd.shap.analysis.Annotator;
+import org.mzd.shap.analysis.AnnotatorDao;
+import org.mzd.shap.analysis.Detector;
+import org.mzd.shap.analysis.DetectorDao;
 import org.mzd.shap.domain.DuplicateException;
 import org.mzd.shap.domain.Feature;
 import org.mzd.shap.domain.Project;
@@ -41,6 +50,7 @@ import org.mzd.shap.domain.dao.ProjectDao;
 import org.mzd.shap.domain.dao.SampleDao;
 import org.mzd.shap.domain.dao.SequenceDao;
 import org.mzd.shap.domain.dao.FeatureDaoSpringHibernate.FeatureBreakdownDTO;
+import org.mzd.shap.domain.io.FeatureIOXstream;
 import org.mzd.shap.domain.io.SequenceIOXstream;
 import org.mzd.shap.hibernate.search.FullTextSearch;
 import org.mzd.shap.hibernate.search.FullTextSearchImpl.SearchResult;
@@ -53,11 +63,14 @@ import org.mzd.shap.util.Notification;
 import org.mzd.shap.util.Observable;
 
 public class DataAdminServiceImpl extends BaseObservable implements DataAdminService, Observable {
+	private final static String NOTIFICATION_TYPE = "shap.dataadminservice";
 	private ProjectDao projectDao;
 	private SampleDao sampleDao;
 	private SequenceDao sequenceDao;
 	private FeatureDao featureDao;
 	private AnnotationDao annotationDao;
+	private DetectorDao detectorDao;
+	private AnnotatorDao annotatorDao;
 	private FullTextSearch fullTextSearch;
 	private int batchSize = 40;
 	
@@ -107,6 +120,22 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		return proj;
 	}
 
+	public Detector getDetector(String detectorName) throws NotFoundException {
+		Detector det = getDetectorDao().findByField("name", detectorName);
+		if (det == null) {
+			throw new NotFoundException("No detector with name [" + detectorName + "]");
+		}
+		return det;
+	}
+	
+	public Annotator getAnnotator(String annotatorName) throws NotFoundException {
+		Annotator anno = getAnnotatorDao().findByField("name", annotatorName);
+		if (anno == null) {
+			throw new NotFoundException("No annotator with name [" + annotatorName + "]");
+		}
+		return anno;
+	}
+
 	public List<Object[]> getProjectTable(Integer userId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException {
 		return getProjectDao().findPageRowsByUser(userId,firstResult,maxResults,sortFieldIndex,sortDirection);
 	}
@@ -122,7 +151,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	public Sample getSample(Project project, String sampleName) throws NotFoundException  {
 		Sample smp = getSampleDao().findByProjectAndName(project, sampleName);
 		if (smp == null) {
-			throw new NotFoundException("Project [" + project + "] does not contain sample named [" + sampleName + "]");	
+			throw new NotFoundException("Project [" + project.getName() + "] does not contain sample named [" + sampleName + "]");	
 		}
 		return smp;
 	}
@@ -148,7 +177,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	public Sequence getSequence(Sample sample, String sequenceName) throws NotFoundException  {
 		Sequence seq = getSequenceDao().findBySampleAndName(sample, sequenceName, true);
 		if (seq == null) {
-			throw new NotFoundException("Sample [" + sample + "] does not contain sequence named [" + sequenceName + "]");	
+			throw new NotFoundException("Sample [" + sample.getName() + "] does not contain sequence named [" + sequenceName + "]");	
 		}
 		return seq;
 	}
@@ -229,7 +258,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		Project project = getProject(projectName);
 		if (getSampleDao().findByProjectAndName(project, sampleName) != null) {
 			throw new DuplicateException("A sample with the name [" + sampleName + 
-					"] already exists for project [" + project + "]");
+					"] already exists for project [" + project.getName() + "]");
 		}
 		Sample sample = new Sample(sampleName,description,new Date());
 		project.addSample(sample);
@@ -241,7 +270,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		Sample sample = getSample(project,sampleName);
 		if (getSequenceDao().findBySampleAndName(sample, sequenceName, true) != null) {
 			throw new DuplicateException("A sequence with the name [" + sequenceName + 
-					"] already exists for sample [" + sample + "]");
+					"] already exists for sample [" + sample.getName() + "]");
 		}
 		Sequence sequence = new Sequence();
 		sequence.setName(sequenceName);
@@ -250,7 +279,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		return getSequenceDao().makePersistent(sequence);
 	}
 	
-	public void addSequences(String projectName, String sampleName, File fastaFile) throws NotFoundException, IOException {
+	public void addSequencesFromFasta(String projectName, String sampleName, File fastaFile) throws NotFoundException, IOException {
 		// Read sequences from file and send to persistent store
 		FastaReader reader = null;
 		try {
@@ -272,6 +301,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 						break;
 					}
 					Sequence seq = Sequence.fromFasta(f);
+					
 					sample.addSequence(seq);
 					seqBatch.add(seq);
 				}
@@ -281,7 +311,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 					getSequenceDao().batchSave(seqBatch);
 					seqBatch.clear();
 					
-					notifyObservers(new Notification("shap.dataddminservice", this, 
+					notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
 							String.format("processed %5d sequences",totalSeq)));
 				}
 			}
@@ -303,21 +333,97 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 			getSequenceDao().evict(seq);
 			
 			if (++count % getBatchSize() == 0) {
-				notifyObservers(new Notification("shap.dataadminservice", this, 
+				notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
 						String.format("processed %5d sequences",count)));
 			}
 		}
 	}
+	
+	public void addSequencesFromXml(String projectName, String sampleName, String detectorName, File sequenceXml) throws NotFoundException, IOException, BeanIOException, ClassNotFoundException {
+		int nSeq = 0;
+		int nFeat = 0;
+		BufferedReader xmlReader = null;
+		ObjectInputStream istream = null;
+		try {
+			Sample sample = getSample(projectName, sampleName);
+			Detector detector = getDetector(detectorName);
+			xmlReader = new BufferedReader(new FileReader(sequenceXml));
+			istream = new SequenceIOXstream().getObjectInputStream(xmlReader);
+			while (true) {
+				Sequence seq = (Sequence)istream.readObject();
+				try {
+					getSequence(sample,seq.getName());
+					throw new IOException("Sample [" + sample.getName() + "] already contains a sequence with the name [" + 
+							seq.getName() + "]");
+				}
+				catch (NotFoundException ex) {/*...*/}
+				
+				++nSeq;
+				for (Feature f : seq.getFeatures()) {
+					f.setSequence(seq);
+					f.setDetector(detector);
+					++nFeat;
+				}
+				sample.addSequence(seq);
+				getSequenceDao().makePersistent(seq);
+				notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+						String.format("Sequence %s had %d features",seq.getName(),seq.getFeatures().size())));
+			}
+		}
+		catch (EOFException ex) {
+			notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+					String.format("Read %d sequences and %d features",nSeq,nFeat)));
+		}
+		catch (org.springframework.dao.DataIntegrityViolationException ex) {
+			notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+					"Data integrity violation. Check that the XML defines all neccessary properties and obeys " +
+					"constraints such as uniqueness."));
+		}
+		finally {
+			if (istream != null) {
+				istream.close();
+			}
+			if (xmlReader != null) {
+				xmlReader.close();
+			}
+		}
+	}
 
-	public void addFeatures(String projectName, String sampleName, File xmlFile) throws NotFoundException, IOException, BeanIOException {
-		// Deserialize the XML.
-		Sequence seqFromXml = new SequenceIOXstream().read(xmlFile);
-		// Get persistent containing entity
-		Sequence sequence = getSequence(projectName, sampleName, seqFromXml.getName());
-		// Persist new features.
-		for (Feature f : seqFromXml.getFeatures()) {
-			sequence.addFeature(f);
-			getFeatureDao().makePersistent(f);
+	public void addFeaturesFromXml(String projectName, String sampleName, String sequenceName, String detectorName, File featureXml) throws NotFoundException, IOException, BeanIOException, ClassNotFoundException {
+		BufferedReader xmlReader = null; 
+		ObjectInputStream istream = null;
+		int nFeat = 0;
+		try {
+			Sequence sequence = getSequence(projectName, sampleName, sequenceName);
+			Detector detector = getDetector(detectorName);
+			xmlReader = new BufferedReader(new FileReader(featureXml));
+			istream = new FeatureIOXstream().getObjectInputStream(xmlReader);
+			while (true) {
+				Feature feat = (Feature)istream.readObject();
+				nFeat++;
+				feat.setDetector(detector);
+				sequence.addFeature(feat);
+				getFeatureDao().makePersistent(feat);
+				notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+						String.format("Read %d features",nFeat)));
+			}
+		}
+		catch (EOFException ex) {
+			notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+					String.format("Read %d features",nFeat)));
+		}
+		catch (org.springframework.dao.DataIntegrityViolationException ex) {
+			notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
+					"Data integrity violation. Check that the XML defines all neccessary properties and obeys " +
+					"constraints such as uniqueness."));
+		}
+		finally {
+			if (istream != null) {
+				istream.close();
+			}
+			if (xmlReader != null) {
+				xmlReader.close();
+			}
 		}
 	}
 	
@@ -368,6 +474,20 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	}
 	public void setAnnotationDao(AnnotationDao annotationDao) {
 		this.annotationDao = annotationDao;
+	}
+
+	public DetectorDao getDetectorDao() {
+		return detectorDao;
+	}
+	public void setDetectorDao(DetectorDao detectorDao) {
+		this.detectorDao = detectorDao;
+	}
+
+	public AnnotatorDao getAnnotatorDao() {
+		return annotatorDao;
+	}
+	public void setAnnotatorDao(AnnotatorDao annotatorDao) {
+		this.annotatorDao = annotatorDao;
 	}
 
 	public int getBatchSize() {

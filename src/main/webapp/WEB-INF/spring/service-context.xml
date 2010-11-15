@@ -15,6 +15,8 @@
 	<property name="sequenceDao" ref="sequenceDao"/>
 	<property name="featureDao" ref="featureDao"/>
 	<property name="annotationDao" ref="annotationDao"/>
+	<property name="detectorDao" ref="detectorDao"/>
+	<property name="annotatorDao" ref="annotatorDao"/>
 	<property name="fullTextSearch" ref="fullTextSearch"/>
 	<property name="observer" ref="consoleWriterObserver"/>
 </bean>

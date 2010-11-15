@@ -25,6 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -57,6 +59,14 @@ public class BeanIOXstream<BEAN> implements BeanIO<BEAN> {
 	@SuppressWarnings("unchecked")
 	public BEAN read(Reader reader) throws BeanIOException {
 		return (BEAN)(getDelegate().fromXML(reader));
+	}
+	
+	public ObjectInputStream getObjectInputStream(Reader reader) throws IOException {
+		return getDelegate().createObjectInputStream(reader);
+	}
+	
+	public ObjectOutputStream getObjectOutputStream(Writer writer, String rootNodeName) throws IOException {
+		return getDelegate().createObjectOutputStream(writer, rootNodeName);
 	}
 	
 	public void write(BEAN bean, File file) throws BeanIOException {

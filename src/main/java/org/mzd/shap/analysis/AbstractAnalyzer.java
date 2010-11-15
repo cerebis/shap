@@ -38,6 +38,9 @@ import javax.validation.constraints.Size;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
 /**
  * Minimal implementation of Analyzer, supporting the getting and setting of
  * the basic properties.
@@ -61,7 +64,11 @@ public abstract class AbstractAnalyzer<TARGET,RESULT> implements Analyzer<TARGET
 	@Column(unique=true)
 	@NotNull
 	@Size(min=1,max=256)
+	@XStreamAsAttribute
 	private String name;
+	@XStreamAsAttribute
+	@XStreamAlias("desc")
+	private String description;
 	@Min(1)
 	@NotNull
 	private Integer batchSize = 1;
@@ -81,6 +88,13 @@ public abstract class AbstractAnalyzer<TARGET,RESULT> implements Analyzer<TARGET
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	public Log getLogger() {

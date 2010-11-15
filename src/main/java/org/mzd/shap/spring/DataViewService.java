@@ -23,6 +23,8 @@ package org.mzd.shap.spring;
 import java.util.List;
 import java.util.Map;
 
+import org.mzd.shap.analysis.Annotator;
+import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.domain.Feature;
 import org.mzd.shap.domain.Project;
 import org.mzd.shap.domain.Sample;
@@ -56,6 +58,9 @@ public interface DataViewService {
 	Project getProject(Integer projectId) throws NotFoundException;
 
 	Project getProject(String projectName) throws NotFoundException;
+	
+	Detector getDetector(String detectorName) throws NotFoundException;
+	Annotator getAnnotator(String annotatorName) throws NotFoundException;
 	
 	List<Object[]> getProjectTable(Integer userId, int firstResult, int maxResults, int sortFieldIndex,  String sortDirection) throws NotFoundException;
 	
