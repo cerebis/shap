@@ -28,9 +28,10 @@ public class AnnotationBeforeAdvice extends BeforeAdvice {
 	private FeatureDao featureDao;
 	
 	public Task invoke(Task task) {
+		task = super.invoke(task);
 		AnnotationTask t = (AnnotationTask)task;
 		t.setTarget(getFeatureDao().loadWithData(t.getTarget()));
-		return super.invoke(t);
+		return task;
 	}
 
 	public FeatureDao getFeatureDao() {

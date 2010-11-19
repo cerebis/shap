@@ -251,7 +251,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 			throw new DuplicateException("A project with the name [" + projectName + "] already exists");
 		}
 		Project project = new Project(projectName,description,new Date());
-		return getProjectDao().makePersistent(project);
+		return getProjectDao().saveOrUpdate(project);
 	}
 	
 	public Sample addSample(String projectName, String sampleName, String description) throws DuplicateException, NotFoundException {
@@ -262,7 +262,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		}
 		Sample sample = new Sample(sampleName,description,new Date());
 		project.addSample(sample);
-		return getSampleDao().makePersistent(sample);
+		return getSampleDao().saveOrUpdate(sample);
 	}
 	
 	public Sequence addSequence(String projectName, String sampleName, String sequenceName, String description) throws NotFoundException, DuplicateException {
@@ -276,7 +276,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		sequence.setName(sequenceName);
 		sequence.setDescription(description);
 		sample.addSequence(sequence);
-		return getSequenceDao().makePersistent(sequence);
+		return getSequenceDao().saveOrUpdate(sequence);
 	}
 	
 	public void addSequencesFromFasta(String projectName, String sampleName, File fastaFile) throws NotFoundException, IOException {
@@ -329,7 +329,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		for (String seqName : coverageMap.keySet()) {
 			Sequence seq = getSequence(sample, seqName);
 			seq.setCoverage(coverageMap.get(seqName));
-			getSequenceDao().makePersistent(seq);
+			getSequenceDao().saveOrUpdate(seq);
 			getSequenceDao().evict(seq);
 			
 			if (++count % getBatchSize() == 0) {
@@ -365,7 +365,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 					++nFeat;
 				}
 				sample.addSequence(seq);
-				getSequenceDao().makePersistent(seq);
+				getSequenceDao().saveOrUpdate(seq);
 				notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
 						String.format("Sequence %s had %d features",seq.getName(),seq.getFeatures().size())));
 			}
@@ -403,7 +403,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 				nFeat++;
 				feat.setDetector(detector);
 				sequence.addFeature(feat);
-				getFeatureDao().makePersistent(feat);
+				getFeatureDao().saveOrUpdate(feat);
 				notifyObservers(new Notification(NOTIFICATION_TYPE, this, 
 						String.format("Read %d features",nFeat)));
 			}
@@ -430,14 +430,14 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	public void removeFeatures(List<Integer> featureIds) throws NotFoundException {
 		for (Integer id : featureIds) {
 			Feature f = getFeatureDao().findByID(id);
-			getFeatureDao().makeTransient(f);
+			getFeatureDao().delete(f);
 		}
 	}
 	
 	public void removeSequences(List<Integer> sequenceIds) throws NotFoundException {
 		for (Integer id : sequenceIds) {
 			Sequence s = getSequenceDao().findByID(id);
-			getSequenceDao().makeTransient(s);
+			getSequenceDao().delete(s);
 		}
 	}
 

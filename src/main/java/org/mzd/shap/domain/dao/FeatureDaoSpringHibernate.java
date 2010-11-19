@@ -58,6 +58,7 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 		super(Feature.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Feature> findByFullText(String queryText, User user) {
 		FullTextQuery query = findByFullText(queryText, new String[]{"id","confidence","partial","type",
 				"location.start","location.end","location.strand","location.frame",
@@ -416,7 +417,7 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 				
 				if (count == 0) {
 					feature.setSequence(sequence);
-					makePersistent(feature);
+					saveOrUpdate(feature);
 				}
 				
 				return null;
@@ -441,7 +442,8 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 			public List<Feature> doInHibernate(Session session) throws HibernateException, SQLException {
 				List<Integer> ids = new ArrayList<Integer>();
 				for (Feature f : features) {
-					ids.add(f.getId());
+					Integer id = f.getId();
+					ids.add(id);
 				}
 				return session.createCriteria(getPersistentClass())
 					.setFetchMode("data", FetchMode.JOIN)

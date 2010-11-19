@@ -61,13 +61,12 @@ public abstract class AdvisableTask extends BaseTask implements Observable {
 	@Override
 	public void run() {
 		try {
-			notifyObservers(TaskAdvisor.createBeforeNotification(this));
+			notifyObservers(TaskAdvisorImpl.createBeforeNotification(this));
 			runInternal();
-			notifyObservers(TaskAdvisor.createAfterNotification(this));
+			notifyObservers(TaskAdvisorImpl.createAfterNotification(this));
 		}
 		catch (TaskException ex) {
-			notifyObservers(TaskAdvisor
-					.createErrorNotification(this,ex.getMessage()));
+			notifyObservers(TaskAdvisorImpl.createErrorNotification(this,ex.getMessage()));
 		}
 	}
 

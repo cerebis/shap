@@ -20,7 +20,7 @@
 	<property name="fullTextSearch" ref="fullTextSearch"/>
 	<property name="observer" ref="consoleWriterObserver"/>
 </bean>
-<tx:advice id="dataAdminServiceAdvice" transaction-manager="txManager">
+<tx:advice id="dataAdminServiceAdvice" transaction-manager="transactionManager">
 	<tx:attributes>
 		<tx:method name="get*" read-only="true" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>
 		<tx:method name="*" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>
@@ -41,7 +41,7 @@
 	<property name="taskDao" ref="taskDao"/>
 	<property name="observer" ref="consoleWriterObserver"/>
 </bean>
-<tx:advice id="batchAdminServiceAdvice" transaction-manager="txManager">
+<tx:advice id="batchAdminServiceAdvice" transaction-manager="transactionManager">
 	<tx:attributes>
 		<tx:method name="count*" read-only="true" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>
 		<tx:method name="*" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>

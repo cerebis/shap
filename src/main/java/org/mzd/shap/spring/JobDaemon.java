@@ -20,8 +20,6 @@
  */
 package org.mzd.shap.spring;
 
-import org.mzd.shap.spring.task.Job;
-
 /**
  * JobDaemon provides applications with a means of submitting jobs for analysis.
  * <p>
@@ -50,7 +48,6 @@ public interface JobDaemon {
 	 * 
 	 * @return true - there is pending work, false - all work as been completed.
 	 */
-	boolean pendingWork(Job job);
 	boolean pendingWork();
 
 }

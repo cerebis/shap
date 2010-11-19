@@ -9,7 +9,7 @@
 
 <!-- Transaction Template for programmatic transaction support -->
 <bean id="sharedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
-	<property name="transactionManager" ref="txManager"/>
+	<property name="transactionManager" ref="transactionManager"/>
     <property name="isolationLevelName" value="ISOLATION_READ_COMMITTED"/>
     <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED"/>
     <property name="name" value="programatic transaction"/>
@@ -44,7 +44,7 @@
 	<property name="taskDao" ref="taskDao"/>
 </bean>
 
-<bean id="taskAdvisor" class="org.mzd.shap.spring.task.aop.TaskAdvisor" scope="prototype">
+<bean id="taskAdvisor" class="org.mzd.shap.spring.task.aop.TaskAdvisorImpl"><!--  scope="prototype">-->
 	<property name="executableFactory" ref="simpleExecutable"/>
 	<property name="transactionTemplate" ref="sharedTransactionTemplate"/>
 	<property name="beforeAdvice">
@@ -61,6 +61,24 @@
 	</property>
 	<property name="errorAdvice" ref="errorAdvice"/>		
 </bean>
+
+<!--<bean id="taskAdvisor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+	<property name="target"><ref local="taskAdvisorTarget"/></property>
+	<property name="transactionManager" ref="transactionManager"/>
+	<property name="transactionAttributes">
+		<props>
+			<prop key="update*">PROPAGATION_REQUIRED</prop>
+		</props>
+	</property>
+	<property name="proxyInterfaces">
+		<value>org.mzd.shap.spring.task.aop.TaskAdvisor</value>
+	</property>
+	<property name="postInterceptors">
+		<list>
+			<ref bean="hibernateInterceptor"/>
+		</list>
+	</property>
+</bean>-->
 
 <!--     -->
 <!-- JMX -->
@@ -126,7 +144,7 @@
 <bean id="jobDaemon" class="org.mzd.shap.spring.JobDaemonImpl">
 	<property name="taskExecutor" ref="taskExecutor"/>
 	<property name="batchAdminService" ref="batchAdminService"/>
-	<property name="maxQueued" value="50"/>
+	<property name="maxQueued" value="15"/>
 	<property name="observer" ref="consoleWriterObserver"/>
 </bean>
 

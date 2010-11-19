@@ -81,12 +81,7 @@ public class JobControl extends BaseCommand {
 		waitOnWork();
 	}
 
-	public void restartAndWait(List<Integer> jobIds) throws NotFoundException {
-		List<Job> restartJobs = new ArrayList<Job>();
-		for (Integer id : jobIds) {
-			Job job = batchAdminService.loadUnfinishedJob(id);
-			restartJobs.add(job);
-		}
+	public void restartAndWait() throws NotFoundException {
 		waitOnWork();
 	}
 
@@ -116,14 +111,7 @@ public class JobControl extends BaseCommand {
 
 	private final static Option RESTART = CommandLineApplication.buildOption()
 		.withLongName("restart")
-		.withDescription("Restart a job")
-		.withArgument(CommandLineApplication.buildArgument()
-				.withName("job-id")
-				.withMinimum(1)
-				.withInitialSeparator('=')
-				.withSubsequentSeparator(',')
-				.withValidator(CommandLineApplication.getIntegerValidator())
-				.create())
+		.withDescription("Restart job processing")
 		.create();
 
 	public JobControl() {
@@ -164,9 +152,7 @@ public class JobControl extends BaseCommand {
 				submitAndWait(plan);
 			}
 			else if (cl.hasOption(RESTART)) {
-				@SuppressWarnings("unchecked")
-				List<Integer> jobIds = (List<Integer>)cl.getValues(RESTART);
-				restartAndWait(jobIds);
+				restartAndWait();
 			}
 		}
 		catch (Exception ex) {

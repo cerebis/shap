@@ -23,8 +23,6 @@ package org.mzd.shap.spring.task;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -50,8 +48,7 @@ import org.mzd.shap.exec.SimpleExecutable;
 
 @Entity
 @Table(name="Tasks")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="TASK_TYPE",discriminatorType=DiscriminatorType.STRING)
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class BaseTask implements Task {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

@@ -202,8 +202,9 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<!-- Postgresql versions > 8.2-508 throw exceptions with Hibernate/Spring due to
-		         unimplemented method. Do not change unless this is resolved. -->
+			<!-- Postgresql versions > 8.2-508 throw an exception with Hibernate due to
+		         an unimplemented method setQueryTimeout(). 
+		         Do not change unless this is resolved. -->
 			<version>8.2-507.jdbc4</version>
 			<scope>runtime</scope>
 		</dependency>

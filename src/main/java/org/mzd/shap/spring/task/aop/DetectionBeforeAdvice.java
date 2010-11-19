@@ -28,9 +28,10 @@ public class DetectionBeforeAdvice extends BeforeAdvice {
 	private SequenceDao sequenceDao;
 
 	public Task invoke(Task task) {
+		task = super.invoke(task);
 		DetectionTask t = (DetectionTask)task;
 		t.setTarget(getSequenceDao().loadWithData(t.getTarget()));
-		return super.invoke(t);
+		return task;
 	}
 
 	public SequenceDao getSequenceDao() {

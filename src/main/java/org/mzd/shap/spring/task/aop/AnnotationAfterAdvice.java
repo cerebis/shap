@@ -30,9 +30,10 @@ public class AnnotationAfterAdvice extends AfterAdvice {
 	private AnnotationDao annotationDao;
 	
 	public Task invoke(Task task) {
+		task = super.invoke(task);
 		AnnotationTask t = (AnnotationTask)task;
 		getAnnotationDao().saveOrUpdateAll(Arrays.asList(t.getResult()));
-		return super.invoke(t);
+		return task;
 	}
 
 	public AnnotationDao getAnnotationDao() {

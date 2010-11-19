@@ -22,21 +22,40 @@ package org.mzd.shap.exec;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 
 import org.mzd.shap.exec.ExecutableException;
 import org.mzd.shap.exec.NonZeroReturnException;
 import org.mzd.shap.exec.command.Command;
 
-
 public class LocalDelegate extends BaseDelegate {
-	private final static long WAIT_TIME = 200;
-	private final static int IO_BUFFER_SIZE = 1024;
-	private StringWriter stdErrWriter = new StringWriter();
-	private StringWriter stdOutWriter = new StringWriter();
+
+	/**
+	 * Handles the reading of stdout and stderr streams associated with the running process.
+	 * <p>
+	 * Each handler runs as a separate thread, blocking on IO.
+	 */
+	protected class InputStreamHandler extends Thread {
+		private InputStream stream;
+		private StringBuffer captureBuffer;
+
+		InputStreamHandler(StringBuffer captureBuffer, InputStream stream) {
+			this.stream = stream;
+			this.captureBuffer = captureBuffer;
+			start();
+		}
+		
+		public void run() {
+			try {
+				int nextChar;
+				while ((nextChar = stream.read()) != -1) {
+					this.captureBuffer.append((char) nextChar);
+				}
+			}
+			catch (IOException ex) {
+				getLogger().error("Error while reading stream",ex);
+			}
+		}
+	}
 
 	/**
 	 * Runs the Command instance as a local process.
@@ -44,8 +63,25 @@ public class LocalDelegate extends BaseDelegate {
 	public void run(Command command) throws ExecutableException {
 		Process process = null;
 		try {
+			StringBuffer inBuffer = new StringBuffer();
+			StringBuffer errBuffer = new StringBuffer();
+
 			process = Runtime.getRuntime().exec(command.createCommand());
-			waitCycle(process);
+			if (process == null) {
+				throw new ExecutableException("Process object was null");
+			}
+			
+			new InputStreamHandler(inBuffer, process.getInputStream());
+			new InputStreamHandler(errBuffer, process.getErrorStream());
+			
+			waitFor(process);
+			
+			if (getExitStatus() != ExitStatus.OK) {
+				throw new NonZeroReturnException(
+						"Process [" + process + "] returned non-zero [" + getExitStatus() + "] " +
+						"Stdout [" + inBuffer.toString() + "] " +
+						"Stderr [" + errBuffer.toString() + "]" );
+			}
 		}
 		catch (IOException ex) {
 			if (process != null) {
@@ -54,148 +90,24 @@ public class LocalDelegate extends BaseDelegate {
 			}
 			throw new ExecutableException("Exception while getting Process from Runtime", ex);
 		}
-		finally {
-			if (process != null) {
-				cleanUp(process.getInputStream());
-				cleanUp(process.getErrorStream());
-				cleanUp(process.getOutputStream());
-			}
-		}
 	}
 	
-	private void waitCycle(Process process) throws ExecutableException {
-		
-		if (process == null) {
-			throw new ExecutableException("Process object was null");
-		}
-		
+	private void waitFor(Process process) throws ExecutableException {
 		synchronized (process) {
-			while (true) {
-				try {
-					process.wait(WAIT_TIME);
-					
-					readStream(process.getErrorStream(), stdErrWriter);
-					readStream(process.getInputStream(), stdOutWriter);
-					
-					if (isProcessEnded(process)) {
-						break;
-					}
-				}
-				catch (InterruptedException ex) {
-					getLogger().warn("Process was interrupted", ex);
-					break;
-				}
-			}
-		}
-		
-		if (getExitStatus() != ExitStatus.OK) {
-			throw new NonZeroReturnException(
-					"Process [" + process + "] returned non-zero [" + getExitStatus() + "] " +
-					"Stdout [" + getStdOut() + "] " +
-					"Stderr [" + getStdErr() + "]" );
-		}
-
-	}
-	
-	private boolean isProcessEnded(Process process) {
-		try {
-			int ret = process.exitValue();
-			if (ret == 0) {
-				setExitStatus(ExitStatus.OK);
-			}
-			else {
-				setExitStatus(ExitStatus.PROBLEM);
-				getExitStatus().setValue(process.exitValue());
-			}
-			getLogger().debug("STDOUT: [" + getStdOut() + "]");
-			getLogger().debug("STDERR: [" + getStdErr() + "]");
-			return true;
-		}
-		catch (IllegalThreadStateException ex) {
-			return false;
-		}
-	}
-	
-	private void cleanUp(InputStream stream) {
-		try {
-			stream.close();
-		}
-		catch (IOException ex) {
-			getLogger().warn("Exception while cleaning up stream",ex);
-		}
-	}
-	
-	private void cleanUp(OutputStream stream) {
-		try {
-			stream.close();
-		}
-		catch (IOException ex) {
-			getLogger().warn("Exception while cleaning up stream",ex);
-		}
-	}
-
-	/**
-	 * Reads all bytes of a supplied stream as was available
-	 * at the time and writes them to the supplied writer.
-	 * <p>
-	 * This method is used to help insure that the Process does
-	 * not block due to excessive output on stdout or stderr.
-	 * 
-	 * @param is - the input stream to read
-	 * @param wr - the output writer
-	 * @throws ExecutableException
-	 */
-	private void readStream(InputStream is, Writer wr) throws ExecutableException {
-		InputStreamReader ir = null;
-		try {
-			/*
-			 * Isolate the check for available bytes in its own 
-			 * try/catch for cases when the stream has already been closed.
-			 * 
-			 * Logic below should not attempt to read from this stream.
-			 */
-			int nBytes = 0;
 			try {
-				nBytes = is.available();
-			}
-			catch (IOException ex) {
-				getLogger().debug("Exception while checking available bytes",ex);
-			}
-			
-			if (nBytes > 0) {
-				ir = new InputStreamReader(is);
-				char[] buffer = new char[IO_BUFFER_SIZE];
-				while (nBytes > 0) {
-					int nch = ir.read(buffer);
-					if (nch == -1) {
-						break;
-					}
-					wr.write(buffer, 0, nch);
-					nBytes -= nch;
+				if (process.waitFor() == 0) {
+					setExitStatus(ExitStatus.OK);
+				}
+				else {
+					setExitStatus(ExitStatus.PROBLEM);
+					getExitStatus().setValue(process.exitValue());
 				}
 			}
-		} 
-		catch (IOException ex) {
-			throw new ExecutableException("Exception while reading from stream", ex);
-		}	
-		finally {
-			if (ir != null) {
-				try {
-					ir.close();
-				}
-				catch (IOException ex) {
-					throw new ExecutableException("Exception while closing stream", ex);
-				}
+			catch (InterruptedException ex) {
+				getLogger().warn("Process was interrupted", ex);
+				setExitStatus(ExitStatus.ABORTED);
+				getExitStatus().setMessage("process was interrupted [" + ex.getMessage() + "]");
 			}
 		}
 	}
-
-	public String getStdErr() {
-		return stdErrWriter.toString();
-	}
-
-	public String getStdOut() {
-		return stdOutWriter.toString();
-	}
-
 }

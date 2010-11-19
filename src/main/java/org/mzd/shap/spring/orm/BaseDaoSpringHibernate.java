@@ -126,7 +126,7 @@ public class BaseDaoSpringHibernate<ENTITY, ID extends Serializable>
 		return findByCriteria(order,Restrictions.eq(field,value));
 	}
 	
-	public ENTITY makePersistent(ENTITY entity) {
+	public ENTITY saveOrUpdate(ENTITY entity) {
 		getHibernateTemplate().saveOrUpdate(entity);
 		return entity;
 	}
@@ -135,11 +135,11 @@ public class BaseDaoSpringHibernate<ENTITY, ID extends Serializable>
 		getHibernateTemplate().saveOrUpdateAll(entities);
 	}
 	
-	public void makeTransient(ENTITY entity) {
+	public void delete(ENTITY entity) {
 		getHibernateTemplate().delete(entity);
 	}
 	
-	public ENTITY reattach(ENTITY entity) {
+	public ENTITY merge(ENTITY entity) {
 		return (ENTITY)getHibernateTemplate().merge(entity);
 	}
 	
@@ -151,8 +151,8 @@ public class BaseDaoSpringHibernate<ENTITY, ID extends Serializable>
 		getHibernateTemplate().evict(entity);
 	}
 	
-	public void refresh(ENTITY entity) {
-		getHibernateTemplate().refresh(entity, LockMode.UPGRADE);
+	public void refreshToWrite(ENTITY entity) {
+		getHibernateTemplate().refresh(entity, LockMode.PESSIMISTIC_WRITE);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -80,7 +80,7 @@ public interface BaseDao<ENTITY, ID extends Serializable> {
 	 * 
 	 * @param entity
 	 */
-	ENTITY makePersistent(ENTITY entity);
+	ENTITY saveOrUpdate(ENTITY entity);
 	
 	void saveOrUpdateAll(Collection<?> entities);
 	
@@ -91,7 +91,7 @@ public interface BaseDao<ENTITY, ID extends Serializable> {
 	 * 
 	 * @param entity the object to delete.
 	 */
-	void makeTransient(ENTITY entity);
+	void delete(ENTITY entity);
 	
 	/**
 	 * Reattach an instance to the persistence layer
@@ -100,7 +100,7 @@ public interface BaseDao<ENTITY, ID extends Serializable> {
 	 * @param entity - the object to reattach
 	 * @return a reattached reference
 	 */
-	ENTITY reattach(ENTITY entity);
+	ENTITY merge(ENTITY entity);
 	
 	/**
 	 * Flush the session cache.
@@ -117,5 +117,5 @@ public interface BaseDao<ENTITY, ID extends Serializable> {
 	 * 
 	 * @param entity - the object to refresh
 	 */
-	void refresh(ENTITY entity);
+	void refreshToWrite(ENTITY entity);
 }

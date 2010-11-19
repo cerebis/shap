@@ -30,9 +30,10 @@ public class DetectionAfterAdvice extends AfterAdvice {
 	private FeatureDao featureDao;
 
 	public Task invoke(Task task) {
+		task = super.invoke(task);
 		DetectionTask t = (DetectionTask)task;
 		getFeatureDao().saveOrUpdateAll(Arrays.asList(t.getResult()));
-		return super.invoke(t);
+		return task;
 	}
 
 	public FeatureDao getFeatureDao() {

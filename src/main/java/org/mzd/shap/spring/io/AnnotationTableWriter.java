@@ -138,7 +138,7 @@ public class AnnotationTableWriter implements TableWriter {
 		
 		// Body
 		for (Feature f : features) {
-			f = getFeatureDao().reattach(f);
+			f = getFeatureDao().merge(f);
 			output.append(f.getId() + "\t" + f.getSequence().getName());
 			writeAnnotations(f,definedAnnotators,output);
 			output.append('\n');

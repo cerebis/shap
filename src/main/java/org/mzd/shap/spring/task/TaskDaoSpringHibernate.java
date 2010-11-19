@@ -54,7 +54,7 @@ public class TaskDaoSpringHibernate
 	}
 
 	/**
-	 * Advice class to pull specific concrete implementations of Task from the store.
+	 * Fetch specific concrete implementations of Task from the store.
 	 * 
 	 * @param derivedClass
 	 * @param jobStatus
@@ -76,13 +76,14 @@ public class TaskDaoSpringHibernate
 			}
 		});
 	}
-	
+
+	/**
+	 * Fetch New tasks from jobs with specific status. This method will only return a single type of Task and will 
+	 * always return DetectionTasks before AnnotationTasks.
+	 */
 	public List<Task> findNew(Status jobStatus, final int maxResults) {
-		List<Task> tasks = findNew(DetectionTask.class, jobStatus, maxResults);
-		if (tasks.size() < maxResults) {
-			tasks.addAll(findNew(AnnotationTask.class, jobStatus, maxResults - tasks.size()));
-		}
-		return tasks;
+		List<Task> dTasks = findNew(DetectionTask.class, jobStatus, maxResults);
+		return dTasks.size() > 0 ? dTasks : findNew(AnnotationTask.class, jobStatus, maxResults); 
 	}
 	
 	public List<Task> findNewInStartedJobs(int maxResults) {

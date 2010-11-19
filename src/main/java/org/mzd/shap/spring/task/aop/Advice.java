@@ -24,5 +24,12 @@ import org.mzd.shap.spring.task.Task;
 
 public interface Advice {
 
+	/**
+	 * Invoke advice on a task object. If the task requires access to persistence store,
+	 * make sure it is attached and avoid lazy initialization exceptions.
+	 * 
+	 * @param task the task to handle
+	 * @return the handled task, which will be attached to the session.
+	 */
 	Task invoke(Task task);
 }

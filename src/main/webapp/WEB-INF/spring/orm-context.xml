@@ -23,7 +23,7 @@
 			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
 			<prop key="hibernate.search.default.indexBase">lucene</prop>
 			<!-- to disable automatic indexing set below to false -->
-			<prop key="hibernate.search.autoregister_listeners">true</prop>
+			<prop key="hibernate.search.autoregister_listeners">false</prop>
 		</props>
 	</property>
 </bean>
@@ -105,6 +105,7 @@
 <bean id="taskDao" class="org.mzd.shap.spring.task.TaskDaoSpringHibernate">
 	<property name="sessionFactory"><ref local="sessionFactory"/></property>
 </bean>
+
 <!-- 
 	Lazy Initialisation Interceptor
  -->
@@ -116,13 +117,11 @@
 <!--
  	Transaction Manager
  -->
-<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 	<property name="sessionFactory"><ref local="sessionFactory"/></property>
-	<property name="nestedTransactionAllowed" value="true"/>
 </bean>
 
-
-<tx:advice id="txDefaultAdvice" transaction-manager="txManager">
+<tx:advice id="txDefaultAdvice" transaction-manager="transactionManager">
 	<tx:attributes>
 		<tx:method name="get*" read-only="true" propagation="REQUIRED" isolation="READ_COMMITTED"/>
 		<tx:method name="*" propagation="REQUIRED" isolation="READ_COMMITTED" rollback-for="ApplicationException"/>

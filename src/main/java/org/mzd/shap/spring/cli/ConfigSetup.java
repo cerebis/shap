@@ -86,17 +86,17 @@ public class ConfigSetup {
 
 		for (Annotator an : config.getAnnotators()) {
 			System.out.println("Adding annotator: " + an.getName());
-			annotatorDao.makePersistent(an);
+			annotatorDao.saveOrUpdate(an);
 		}
 
 		for (Detector dt : config.getDetectors()) {
 			System.out.println("Adding detector: " + dt.getName());
-			detectorDao.makePersistent(dt);
+			detectorDao.saveOrUpdate(dt);
 		}
 
 		RoleDao roleDao = (RoleDao) ctx.getBean("roleDao");
-		roleDao.makePersistent(new Role("admin", "ROLE_ADMIN"));
-		roleDao.makePersistent(new Role("user", "ROLE_USER"));
+		roleDao.saveOrUpdate(new Role("admin", "ROLE_ADMIN"));
+		roleDao.saveOrUpdate(new Role("user", "ROLE_USER"));
 
 		System.exit(0);
 	}

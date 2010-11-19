@@ -28,8 +28,7 @@ public class ErrorAdvice implements Advice {
 
 	public Task invoke(Task task) {
 		task.markError();
-		getTaskDao().makePersistent(task);
-		return task;
+		return getTaskDao().saveOrUpdate(task);
 	}
 
 	public TaskDao getTaskDao() {

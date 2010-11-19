@@ -22,7 +22,6 @@ package org.mzd.shap.spring.task;
 
 import java.util.List;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -30,6 +29,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -40,9 +41,10 @@ import org.mzd.shap.domain.Feature;
 import org.mzd.shap.spring.task.aop.AdvisableTask;
 
 @Entity
-@DiscriminatorValue(value="ANNOTATION_TASK")
+@Table(name="AnnotationTasks")
+@PrimaryKeyJoinColumn(name="TASK_ID")
 public class AnnotationTask extends AdvisableTask {
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name="AnnotationTargets",
 			joinColumns=@JoinColumn(name="TASK_ID"),
 			inverseJoinColumns=@JoinColumn(name="FEATURE_ID"))

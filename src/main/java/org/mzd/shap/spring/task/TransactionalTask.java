@@ -104,7 +104,7 @@ public abstract class TransactionalTask extends BaseTask {
 		protected void doInternal() throws TaskException {
 			targetRead();
 			markStart();
-			getTaskDao().makePersistent(TransactionalTask.this);
+			getTaskDao().saveOrUpdate(TransactionalTask.this);
 		}
 	}
 	
@@ -112,7 +112,7 @@ public abstract class TransactionalTask extends BaseTask {
 		protected void doInternal() throws TaskException {
 			resultWrite();
 			markFinish();
-			getTaskDao().makePersistent(TransactionalTask.this);
+			getTaskDao().saveOrUpdate(TransactionalTask.this);
 		}
 	}
 	
@@ -124,7 +124,7 @@ public abstract class TransactionalTask extends BaseTask {
 		protected void doInternal() throws TaskException {
 			markError();
 			setComment(ex.getClass().getName() + " " + ex.getMessage());
-			getTaskDao().makePersistent(TransactionalTask.this);
+			getTaskDao().saveOrUpdate(TransactionalTask.this);
 		}
 	}
 	

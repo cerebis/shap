@@ -68,10 +68,13 @@ public class JobDaemonImpl extends BaseObservable implements JobDaemon, Observab
 			
 			// Is the queue full
 			int availSlots = getAvailableSlots();
+			LOGGER.debug("Available slots: " + availSlots);
 			if (availSlots > 0) {
 				
 				List<Task> queuedTasks = getBatchAdminService()
 					.prepareNewTasks(availSlots);
+				
+				LOGGER.debug("New tasks to queue: " + queuedTasks.size());
 				
 				// Schedule prepared tasks if we found some
 				if (queuedTasks.size() > 0) {
@@ -102,16 +105,6 @@ public class JobDaemonImpl extends BaseObservable implements JobDaemon, Observab
 		return numTasks > 0 || numJobs > 0;
 	}
 	
-	public boolean pendingWork(Job job) {
-		long incomplete = getBatchAdminService().countIncompleteTasks(job);
-		if (incomplete > 0) {
-			String msg = String.format("for job %d there are %6d pending tasks", job.getId(), incomplete);
-			notifyObservers(new Notification("shap.jobdaemon", this, msg));
-			LOGGER.debug(msg);
-		}
-		return incomplete > 0;
-	}
-
 	protected int getAvailableSlots() {
 		return getMaxQueued() - getTaskExecutor().getCurrentScheduledTasks();
 	}

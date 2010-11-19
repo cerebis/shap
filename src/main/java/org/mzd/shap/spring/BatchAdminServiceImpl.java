@@ -289,7 +289,7 @@ public class BatchAdminServiceImpl extends BaseObservable implements BatchAdminS
 		List<Task> tasks = getTaskDao().findNewInStartedJobs(maxResults);
 		for (Task task : tasks) {
 			task.markQueued();
-			getTaskDao().makePersistent(task);
+			getTaskDao().saveOrUpdate(task);
 		}
 		return tasks;
 	}
@@ -300,13 +300,13 @@ public class BatchAdminServiceImpl extends BaseObservable implements BatchAdminS
 			return null;
 		}
 		job.markStart();
-		getJobDao().makePersistent(job);
+		getJobDao().saveOrUpdate(job);
 		return job;
 	}
 	
 	
 	public Job saveNewJob(Job job) {
-		job = getJobDao().makePersistent(job);
+		job = getJobDao().saveOrUpdate(job);
 		getTaskDao().saveOrUpdateAll(job.getTasks());
 		return job;
 	}
@@ -317,7 +317,7 @@ public class BatchAdminServiceImpl extends BaseObservable implements BatchAdminS
 	
 	public Job finishJob(Job job) {
 		job.markFinish();
-		return getJobDao().makePersistent(job);
+		return getJobDao().saveOrUpdate(job);
 	}
 
 	public long countNewTasks() {

@@ -25,11 +25,18 @@ import org.mzd.shap.spring.task.TaskDao;
 
 public abstract class AfterAdvice implements Advice {
 	private TaskDao taskDao;
-
+	
+	/**
+	 * Call this method prior to any subclass override.
+	 * <p>
+	 * Marks a task as finished.
+	 * 
+	 * @param task the task to handle
+	 * @return the handled task, which will be attached to the session.
+	 */
 	public Task invoke(Task task) {
 		task.markFinish();
-		getTaskDao().makePersistent(task);
-		return task;
+		return getTaskDao().saveOrUpdate(task);
 	}
 
 	public TaskDao getTaskDao() {

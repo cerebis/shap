@@ -12,8 +12,8 @@
 
 <!-- Task Executor -->
 <bean id="taskExecutor" class="org.mzd.shap.spring.task.PooledTaskExecutor" init-method="init" destroy-method="destroy">
-	<property name="corePoolSize" value="8"/>
-	<property name="maximumPoolSize" value="8"/>
+	<property name="corePoolSize" value="4"/>
+	<property name="maximumPoolSize" value="4"/>
 	<property name="taskAdvisor" ref="taskAdvisor"/>
 </bean>
 
