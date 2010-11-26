@@ -35,7 +35,7 @@ public class Index {
 	public static void main(String[] args) {
 		try {
 			ApplicationContext ctx = new FileSystemXmlApplicationContext(
-					"war/WEB-INF/spring/local-datasource-context.xml",
+					"war/WEB-INF/spring/datasource-context.xml",
 					"war/WEB-INF/spring/service-context.xml",
 					"war/WEB-INF/spring/orm-context.xml");
 			SessionFactory sessionFactory = (SessionFactory)ctx.getBean("sessionFactory");

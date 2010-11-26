@@ -487,7 +487,7 @@ public class ExportData extends BaseCommand {
 			CommandLine cl = getApp().parseArguments(args);
 		
 			String[] xmlPath = {
-					"war/WEB-INF/grid-datasource-context.xml",
+					"war/WEB-INF/datasource-context.xml",
 					"war/WEB-INF/service-context.xml",
 					"war/WEB-INF/orm-context.xml"
 			};

@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -60,6 +61,8 @@ public abstract class SimpleAnalyzer<TARGET,RESULT> extends AbstractAnalyzer<TAR
 	private File scratchPath;
 	@Column(length=4096)
 	private Class<?> parserClass;
+	@NotNull
+	private Boolean debug = false;
 
 	/**
 	 * Parse the output file and return the result.
@@ -178,7 +181,7 @@ public abstract class SimpleAnalyzer<TARGET,RESULT> extends AbstractAnalyzer<TAR
 			throw new AnalyzerException(ex);
 		}
 		finally {
-			if (command != null) {
+			if (command != null && !isDebug()) {
 				try {
 					command.deleteFiles();
 				}
@@ -218,5 +221,11 @@ public abstract class SimpleAnalyzer<TARGET,RESULT> extends AbstractAnalyzer<TAR
 	public void setParserClass(Class<?> parserClass) {
 		this.parserClass = parserClass;
 	}
-	
+
+	public Boolean isDebug() {
+		return debug;
+	}
+	public void setDebug(Boolean debug) {
+		this.debug = debug;
+	}
 }

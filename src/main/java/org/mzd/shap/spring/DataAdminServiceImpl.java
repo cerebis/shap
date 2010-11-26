@@ -1,6 +1,5 @@
 /**
  *
-				Feature feat = new FeatureIOXstream().read(xmlReader);
  * Copyright 2010 Matthew Z DeMaere.
  * 
  * This file is part of SHAP.
