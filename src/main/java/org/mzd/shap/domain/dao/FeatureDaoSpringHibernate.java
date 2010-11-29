@@ -498,7 +498,7 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 	/**
 	 * Build a list of Features for each FeatureType where only independent features
 	 * are reported. Here, independent features of a given type are those from different 
-	 * detectors which do not possess any overlap in genomeic coordinates. Conflicts
+	 * detectors which do not possess any overlap in genomic coordinates. Conflicts
 	 * are resolved by consideration of the assigned rank of each detector for
 	 * a given FeatureType.
 	 */
@@ -509,28 +509,39 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 				
 				List<Feature> features = new ArrayList<Feature>();
 				
-				List<FeatureType> types = (List<FeatureType>)session
-					.createCriteria(getPersistentClass())
+				/* Get the list of FeatureTypes contained in this sequence,
+				 * subsequent processing will be done per type.
+				 */
+				Criteria crit = session.createCriteria(getPersistentClass())
 					.add(Restrictions.eq("sequence",sequence))
 					.setProjection(Projections.projectionList()
-						.add(Projections.groupProperty("type")))
-					.list();
+						.add(Projections.groupProperty("type")));
 				
-				for (FeatureType t : types) {
-					// skip other types if we've got a non-null restriction
-					if (restrictedToType != null && t != restrictedToType) {
-						continue;
-					}
-					
+				if (restrictedToType != null) {
+					crit.add(Restrictions.eq("type", restrictedToType));
+				}
+				
+				List<FeatureType> featTypes = (List<FeatureType>)crit.list();
+				
+				for (FeatureType ft : featTypes) {
+
+					/* For the given FeatureType, get the list of detectors
+					 * that have been used on this sequence and order them
+					 * by assigned rank. Higher rank == higher precedence.
+					 * In cases where ranks are equal, it is resolved by
+					 * alphabetic reference to their unique names.
+					 */
 					List<Object[]> detectors = (List<Object[]>)session
 						.createCriteria(getPersistentClass())
 						.createAlias("detector", "det")
 						.setFetchMode("detector", FetchMode.JOIN)
 						.add(Restrictions.eq("sequence",sequence))
-						.add(Restrictions.eq("type", t))
+						.add(Restrictions.eq("type", ft))
 						.addOrder(Order.desc("det.rank"))
+						.addOrder(Order.asc("det.name"))
 						.setProjection(Projections.projectionList()
 							.add(Projections.groupProperty("detector"))
+							.add(Projections.groupProperty("det.name"))
 							.add(Projections.groupProperty("det.rank")))
 						.list();
 					
@@ -538,11 +549,19 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 					
 					for (Object[] row : detectors) {
 						
+						/* Get the features determined by the given detector. We
+						 * add the FeatureType here since there might be a case
+						 * where a detector can generate multiple FeatureTypes.
+						 * 
+						 * This possibility becomes more likely when there are
+						 * many finely grained types.
+						 */
 						Detector detector = (Detector)row[0];
 						List<Feature> featuresOfDetector = (List<Feature>)session
 							.createCriteria(getPersistentClass())
 							.add(Restrictions.eq("sequence", sequence))
 							.add(Restrictions.eq("detector", detector))
+							.add(Restrictions.eq("type", ft))
 							.list();
 						
 						for (Feature df : featuresOfDetector) {

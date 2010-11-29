@@ -126,17 +126,17 @@ public class ExportData extends BaseCommand {
 			.create();
 	
 	private final static Option SAMPLE = CommandLineApplication.buildOption()
-			.withLongName("sample")
+			.withLongName("sample-id")
 			.withDescription("Sample objects")
 			.create();
 	
 	private final static Option SEQUENCE = CommandLineApplication.buildOption()
-			.withLongName("sequence")
+			.withLongName("sequence-id")
 			.withDescription("Sequence objects")
 			.create();
 	
 	private final static Option FEATURE = CommandLineApplication.buildOption()
-			.withLongName("feature")
+			.withLongName("feature-id")
 			.withDescription("Feature objects")
 			.create();
 	
@@ -165,7 +165,6 @@ public class ExportData extends BaseCommand {
 					.withName("id")
 					.withDescription("List of ids")
 					.withMinimum(1)
-					/*.withValidator(CommandLineApplication.getIntegerValidator())*/
 					.create())
 			.create();
 	
@@ -228,7 +227,7 @@ public class ExportData extends BaseCommand {
 			.create();
 		
 		Group destinationGroup = CommandLineApplication.buildGroup()
-			.withName("Destination")
+			.withName("Output")
 			.withDescription("Output destination")
 			.withRequired(true)
 			.withMinimum(1)
@@ -487,9 +486,9 @@ public class ExportData extends BaseCommand {
 			CommandLine cl = getApp().parseArguments(args);
 		
 			String[] xmlPath = {
-					"war/WEB-INF/datasource-context.xml",
-					"war/WEB-INF/service-context.xml",
-					"war/WEB-INF/orm-context.xml"
+					"war/WEB-INF/spring/datasource-context.xml",
+					"war/WEB-INF/spring/service-context.xml",
+					"war/WEB-INF/spring/orm-context.xml"
 			};
 			
 			getApp().startApplication(xmlPath, true);

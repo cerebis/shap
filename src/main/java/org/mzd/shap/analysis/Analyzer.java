@@ -64,4 +64,6 @@ public interface Analyzer<TARGET,RESULT> {
 	Integer getBatchSize();
 	void setBatchSize(Integer batchSize);
 
+	Integer getRank();
+	void setRank(Integer rank);
 }

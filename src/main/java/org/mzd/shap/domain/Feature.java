@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -64,6 +66,7 @@ import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.hibernate.search.AnalyzerNameBridge;
 import org.mzd.shap.hibernate.search.FeatureFilterFactory;
@@ -196,21 +199,28 @@ public class Feature {
 		
 		header.append(getQueryId());
 		
-		// A verbose description
+		// Select the top annotation by rank and then alphabetically.
+		if (getAnnotations().size() > 0) {
+			SortedSet<Annotation> sortedAnno = new TreeSet<Annotation>(new Comparator<Annotation>() {
+				public int compare(Annotation a1, Annotation a2) {
+					Annotator ar1 = a1.getAnnotator();
+					Annotator ar2 = a2.getAnnotator();
+					return ar2.getRank().compareTo(ar1.getRank());
+				}
+			});
+			sortedAnno.addAll(getAnnotations());
+			Annotation topAnno = sortedAnno.first();
+			header.append(" " + Fasta.formatAttribute("acc", topAnno.getAccession()));
+			header.append(" " + Fasta.formatAttribute("desc", topAnno.getDescription()));
+			header.append(" " + Fasta.formatAttribute("anno", topAnno.getAnnotator().getName() + 
+					"," + topAnno.getConfidence().toString()));
+		}
+		
 		header.append(" " + Fasta.formatAttribute("coords", getLocation().getStart() + ".." + getLocation().getEnd()));
 		header.append(" " + Fasta.formatAttribute("strand", getLocation().getStrand().toString()));
 		header.append(" " + Fasta.formatAttribute("orf_conf", getConfidence().toString()));
 		header.append(" " + Fasta.formatAttribute("partial", isPartial().toString()));
 
-		int n = 0;
-		for (Annotation anno : getAnnotations()) {
-			if (anno.getDescription() != null) {
-				String prefix = String.format("anno%d",++n);
-				header.append(" " + Fasta.formatAttribute(prefix, anno.getDescription() + "," 
-						+ anno.getConfidence().toString()));
-			}
-		}
-		
 		return header.toString();
 	}
 	
@@ -280,7 +290,7 @@ public class Feature {
 			break;
 		case Protein:
 			if (!getType().isTranslated()) {
-				throw new FeatureException("Attempted to translate non-coding feature");
+				throw new FeatureException("Attempted to translate non-coding feature [" + this + "]");
 			}
 			data = getData().getValue();
 			break;
