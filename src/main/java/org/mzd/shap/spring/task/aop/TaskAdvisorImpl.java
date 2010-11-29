@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mzd.shap.exec.ExecutableException;
 import org.mzd.shap.exec.SimpleExecutableFactoryBean;
 import org.mzd.shap.spring.task.Task;
 import org.mzd.shap.util.Notification;
@@ -88,21 +87,16 @@ public class TaskAdvisorImpl implements TaskAdvisor {
 			Advice a = null;
 			t.setExecutable(executableFactory.getObject());
 			
-			// Before advise
-			if (notification.getType().equals(BEFORE)) {
-				LOGGER.debug("Doing " + BEFORE + " advise");
+			String advType = notification.getType();
+			LOGGER.debug("Doing " + advType  + " advise");
+			
+			if (advType.equals(BEFORE)) {
 				a = getBeforeAdvice().get(t.getClass());
 			}
-			
-			// After advise 
-			else if (notification.getType().equals(AFTER)) {
-				LOGGER.debug("Doing " + AFTER + " advise");
+			else if (advType.equals(AFTER)) {
 				a = getAfterAdvice().get(t.getClass());
 			}
-			
-			// Error advise
-			else if (notification.getType().equals(ERROR)) {
-				LOGGER.debug("Doing " + ERROR + " advise");
+			else if (advType.equals(ERROR)) {
 				t.setComment(notification.getMessage());
 				a = getErrorAdvice();
 			}
@@ -114,13 +108,11 @@ public class TaskAdvisorImpl implements TaskAdvisor {
 			
 			getTransactionTemplate().execute(new InvokeAdviceCallback(a, t));
 		}
-		catch (ExecutableException ex) {
-			LOGGER.error("Uncaught exception in TaskAdvisor",ex);
+		catch (Exception ex) {
+			LOGGER.error("An exception occured while invoking advice for task [" + t + 
+					"]. Now trying to invoke error advice on task",ex);
 			t.setComment(ex.getMessage());
 			getTransactionTemplate().execute(new InvokeAdviceCallback(getErrorAdvice(), t));
-		}
-		catch (Throwable tt) {
-			LOGGER.error("Uncaught throwable",tt);
 		}
 	}
 
