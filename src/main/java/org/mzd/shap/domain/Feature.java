@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -214,6 +215,17 @@ public class Feature {
 			header.append(" " + Fasta.formatAttribute("desc", topAnno.getDescription()));
 			header.append(" " + Fasta.formatAttribute("anno", topAnno.getAnnotator().getName() + 
 					"," + topAnno.getConfidence().toString()));
+		}
+		
+		if (getAliases().size() > 0) {
+			StringBuffer aliases = new StringBuffer();
+			for (Iterator<String> it = getAliases().iterator(); it.hasNext();) {
+				aliases.append(it.next());
+				if (it.hasNext()) {
+					aliases.append(",");
+				}
+			}
+			header.append(" " + Fasta.formatAttribute("aliases", aliases.toString()));
 		}
 		
 		header.append(" " + Fasta.formatAttribute("coords", getLocation().getStart() + ".." + getLocation().getEnd()));
