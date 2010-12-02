@@ -103,13 +103,13 @@ public class TaskAdvisorImpl implements TaskAdvisor {
 			
 			if (a == null) {
 				throw new RuntimeException("No advise registered of type [" + 
-						notification.getType() + "] for task [" + t + "]");
+						notification.getType() + "] for task [" + t.getId() + "]");
 			}
 			
 			getTransactionTemplate().execute(new InvokeAdviceCallback(a, t));
 		}
 		catch (Exception ex) {
-			LOGGER.error("An exception occured while invoking advice for task [" + t + 
+			LOGGER.error("An exception occured while invoking advice for task [" + t.getId() + 
 					"]. Now trying to invoke error advice on task",ex);
 			t.setComment(ex.getMessage());
 			getTransactionTemplate().execute(new InvokeAdviceCallback(getErrorAdvice(), t));

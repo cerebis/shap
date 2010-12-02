@@ -22,7 +22,8 @@
 			<prop key="hibernate.generate_statistics">true</prop> 
 			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
 			<prop key="hibernate.search.default.indexBase">lucene</prop>
-			<!-- to disable automatic indexing set below to false -->
+			<!-- Automatic indexing is currently disabled -->
+			<!-- There is an unresolved issue with lazy associations and non-JPA access -->
 			<prop key="hibernate.search.autoregister_listeners">false</prop>
 		</props>
 	</property>
