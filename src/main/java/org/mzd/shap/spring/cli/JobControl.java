@@ -118,7 +118,7 @@ public class JobControl extends BaseCommand {
 		Group actionGroup = CommandLineApplication.buildGroup()
 			.withName("Action")
 			.withDescription("Action to preform")
-			.withRequired(true)
+//			.withRequired(true)
 			.withMinimum(1)
 			.withMaximum(1)
 			.withOption(SUBMIT)
