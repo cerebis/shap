@@ -20,6 +20,7 @@
  */
 package org.mzd.shap.util;
 
+import org.biojava3.core.exceptions.TranslationException;
 import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.transcription.TranscriptionEngine;
 import org.mzd.shap.ApplicationException;
@@ -67,13 +68,18 @@ public class DnaTools {
 	 */
 	public static String translate(int tableNumber, String dnaSequence) throws DnaToolsException {
 		try {
+			if (dnaSequence.equals("")) {
+				return ""; 
+			}
+			
 			return new TranscriptionEngine.Builder()
 				.table(tableNumber)
+				.trimStop(false)
 				.build()
 					.translate(new DNASequence(dnaSequence))
 						.getSequenceAsString();
-		} catch (Throwable t) {
-			throw new DnaToolsException(t);
+		} catch (TranslationException ex) {
+			throw new DnaToolsException(ex);
 		}
 	}
 	
@@ -84,12 +90,7 @@ public class DnaTools {
 	 * @return revcomp dna sequence
 	 * @throws DnaToolsException
 	 */
-	public static String reverseComplement(String dnaSequence) throws DnaToolsException {
-		try {
-			return new DNASequence(dnaSequence).getReverseComplement().getSequenceAsString();
-		}
-		catch (Throwable t) {
-			throw new DnaToolsException(t);
-		}
+	public static String reverseComplement(String dnaSequence) {
+		return new DNASequence(dnaSequence).getReverseComplement().getSequenceAsString();
 	}
 }

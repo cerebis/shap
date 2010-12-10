@@ -251,14 +251,9 @@ public class Sequence {
 	 * @return the subsequence.
 	 * @throws SequenceException
 	 */
-	public String subSequence(Location location) throws SequenceException {
-		try {
-			String subseq = location.getExtent(getData().getValue());
-			return location.isReverseStrand() ? DnaTools.reverseComplement(subseq) : subseq;
-		}
-		catch (DnaToolsException ex) {
-			throw new SequenceException("Exception getting subsequence", ex);
-		}
+	public String subSequence(Location location) {
+		String subseq = location.getExtent(getData().getValue());
+		return location.isReverseStrand() ? DnaTools.reverseComplement(subseq) : subseq;
 	}
 	
 	public LargeString getData() {
