@@ -20,11 +20,8 @@
  */
 package org.mzd.shap.util;
 
-import org.biojava.bio.BioException;
-import org.biojava.bio.seq.DNATools;
-import org.biojava.bio.seq.RNATools;
-import org.biojava.bio.symbol.SymbolList;
-import org.biojava.bio.symbol.SymbolListViews;
+import org.biojava3.core.sequence.DNASequence;
+import org.biojava3.core.sequence.transcription.TranscriptionEngine;
 import org.mzd.shap.ApplicationException;
 
 /**
@@ -70,16 +67,13 @@ public class DnaTools {
 	 */
 	public static String translate(int tableNumber, String dnaSequence) throws DnaToolsException {
 		try {
-			SymbolList seq;
-			// Begin with DNA
-			seq = DNATools.createDNA(dnaSequence);
-			// Transcribe to RNA
-			seq = DNATools.toRNA(seq);
-			// Translate using requested table.
-			seq = SymbolListViews.windowedSymbolList(seq, 3);
-			return SymbolListViews.translate(seq, RNATools.getGeneticCode(tableNumber)).seqString();
-		} catch (BioException ex) {
-			throw new DnaToolsException(ex);
+			return new TranscriptionEngine.Builder()
+				.table(tableNumber)
+				.build()
+					.translate(new DNASequence(dnaSequence))
+						.getSequenceAsString();
+		} catch (Throwable t) {
+			throw new DnaToolsException(t);
 		}
 	}
 	
@@ -92,11 +86,10 @@ public class DnaTools {
 	 */
 	public static String reverseComplement(String dnaSequence) throws DnaToolsException {
 		try {
-			SymbolList dna = DNATools.createDNA(dnaSequence);
-			return DNATools.reverseComplement(dna).seqString();
+			return new DNASequence(dnaSequence).getReverseComplement().getSequenceAsString();
 		}
-		catch (BioException ex) {
-			throw new DnaToolsException(ex);
+		catch (Throwable t) {
+			throw new DnaToolsException(t);
 		}
 	}
 }
