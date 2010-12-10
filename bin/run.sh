@@ -5,7 +5,7 @@ if [ $? -eq 0 ]
 then
 	FIND=gfind
 else
-	FIND=find fi Find
+	FIND=find
 fi
 
 CLASSPATH=war/WEB-INF/classes`$FIND local-lib war/WEB-INF/lib -name '*.jar' -printf ":%p"`
