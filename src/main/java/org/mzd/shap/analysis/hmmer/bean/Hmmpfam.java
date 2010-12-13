@@ -20,11 +20,9 @@
  */
 package org.mzd.shap.analysis.hmmer.bean;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.betwixt.io.BeanReader;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -107,12 +105,4 @@ public class Hmmpfam {
 		this.sequenceFile = sequenceFile;
 	}
 	
-	public static void main(String[] arg) throws Exception {
-		
-		BeanReader reader = new BeanReader();
-		reader.registerBeanClass(Hmmpfam.class);
-		Hmmpfam hmm = (Hmmpfam)reader.parse(new File(arg[0]));
-		reader.getBindingConfiguration().setMapIDs(false);
-		System.out.println(hmm);
-	}
 }
