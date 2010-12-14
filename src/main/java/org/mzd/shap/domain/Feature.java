@@ -62,14 +62,12 @@ import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Index;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.Detector;
-import org.mzd.shap.hibernate.search.AnalyzerNameBridge;
 import org.mzd.shap.hibernate.search.FeatureFilterFactory;
 import org.mzd.shap.io.Fasta;
 
@@ -117,20 +115,15 @@ public class Feature {
 	private Boolean partial = false;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SEQUENCE_ID")
-	@IndexedEmbedded
 	@XStreamOmitField
 	@NotNull
 	private Sequence sequence;
 	@OneToMany(mappedBy="feature",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
-	@IndexedEmbedded
 	@XStreamOmitField
 	@Valid
 	private Set<Annotation> annotations = new HashSet<Annotation>();
 	@ManyToOne(targetEntity=org.mzd.shap.analysis.SimpleDetector.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="DETECTOR_ID")
-	@Field(store=Store.YES)
-	@FieldBridge(impl=AnalyzerNameBridge.class)
-	@Analyzer(impl=KeywordAnalyzer.class)
 	@XStreamOmitField
 	@NotNull
 	private Detector detector;

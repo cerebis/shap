@@ -43,14 +43,11 @@ import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.analysis.Annotator;
-import org.mzd.shap.hibernate.search.AnalyzerNameBridge;
 
 @Entity
 @Table(name="Annotations")
@@ -62,22 +59,22 @@ public class Annotation {
 	private Integer id;
 	@Field(store=Store.YES)
 	@Analyzer(impl=KeywordAnalyzer.class)
+	@Size(min=1,max=255)
 	@NotNull
-	@Size(min=1,max=256)
 	private String accession;
-	@Type(type="text")
 	@Fields({
 		@Field,
 		@Field(name="description_full",
 				index=org.hibernate.search.annotations.Index.UN_TOKENIZED,store=Store.YES)
 	})
+	@Type(type="text")
+	@Size(min=1,max=4095)
 	@NotNull
 	private String description;
 	@Field(store=Store.YES)
 	private Double confidence;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="FEATURE_ID")
-	@ContainedIn
 	@NotNull
 	private Feature feature;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
@@ -86,9 +83,6 @@ public class Annotation {
 	private Alignment alignment;
 	@ManyToOne(targetEntity=org.mzd.shap.analysis.SimpleAnnotator.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="ANNOTATOR_ID")
-	@Field(store=Store.YES)
-	@Analyzer(impl=KeywordAnalyzer.class)
-	@FieldBridge(impl=AnalyzerNameBridge.class)
 	@NotNull
 	private Annotator annotator;
 	@Enumerated(EnumType.STRING)

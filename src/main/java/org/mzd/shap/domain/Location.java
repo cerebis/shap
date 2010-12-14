@@ -73,7 +73,6 @@ public class Location {
 	@Field
 	@XStreamAsAttribute
 	@Range(min=0,max=2)
-	@NotNull
 	private Integer frame;
 	
 	public String getExtent(String sequence) {

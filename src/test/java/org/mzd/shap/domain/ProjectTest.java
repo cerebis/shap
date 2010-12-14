@@ -51,14 +51,14 @@ public class ProjectTest extends AbstractValidationTest<Project> {
 		constraintViolations = getViolations(p);
 		
 		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("size must be between 3 and 20",constraintViolations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 3 and 255",constraintViolations.iterator().next().getMessage());
 		
-		p.setName(generateRandomString(21));
+		p.setName(generateRandomString(256));
 		
 		constraintViolations = getViolations(p);
 		
 		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("size must be between 3 and 20",constraintViolations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 3 and 255",constraintViolations.iterator().next().getMessage());
 	}
 	
 	@Test
@@ -81,14 +81,14 @@ public class ProjectTest extends AbstractValidationTest<Project> {
 		Set<ConstraintViolation<Project>> violations = getViolations(p);
 		
 		Assert.assertEquals(1, violations.size());
-		Assert.assertEquals("size must be between 1 and 1024", violations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 4095", violations.iterator().next().getMessage());
 		
-		p.setDescription(generateRandomString(1025));
+		p.setDescription(generateRandomString(4096));
 		
 		violations = getViolations(p);
 		
 		Assert.assertEquals(1, violations.size());
-		Assert.assertEquals("size must be between 1 and 1024", violations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 4095", violations.iterator().next().getMessage());
 	}
 
 	@Test

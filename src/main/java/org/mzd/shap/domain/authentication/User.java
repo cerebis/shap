@@ -38,7 +38,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.search.annotations.ContainedIn;
 import org.mzd.shap.domain.Project;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,13 +53,14 @@ public class User implements UserDetails {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="USER_ID")
 	private Integer id;
+	@Size(min=0,max=255)
 	private String name;
 	@Column(unique=true)
 	@NotNull
-	@Size(min=3)
+	@Size(min=3,max=255)
 	private String username;
 	@NotNull
-	@Size(min=6,max=9)
+	@Size(min=6,max=15)
 	private String password;
 	private boolean credentialsNonExpired = true;
 	private boolean accountNonExpired = true;
@@ -76,7 +76,6 @@ public class User implements UserDetails {
 	@JoinTable(name="UserProjects",
 	        joinColumns=@JoinColumn(name="USER_ID"),
 	        inverseJoinColumns=@JoinColumn(name="PROJECT_ID"))
-	@ContainedIn
 	@Valid
 	private Set<Project> projects = new HashSet<Project>();
 	

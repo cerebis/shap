@@ -53,13 +53,11 @@ import javax.validation.constraints.Size;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.hibernate.search.SequenceFilterFactory;
 import org.mzd.shap.io.Fasta;
@@ -90,7 +88,7 @@ public class Sequence {
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@XStreamAsAttribute
 	@NotNull
-	@Size(min=1,max=256)
+	@Size(min=1,max=255)
 	private String name;
 	@Fields({
 		@Field,
@@ -99,20 +97,18 @@ public class Sequence {
 	@Type(type="text")
 	@XStreamAsAttribute
 	@XStreamAlias("desc")
-	@Size(min=1,max=1024)
+	@Size(min=1,max=4095)
 	private String description;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="LRGSTR_ID")
 	@Valid
 	private LargeString data;
 	@OneToMany(mappedBy="sequence",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
-	@ContainedIn
 	@XStreamImplicit
 	@Valid
 	private Set<Feature> features = new HashSet<Feature>();
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SAMPLE_ID")
-	@IndexedEmbedded
 	@XStreamOmitField
 	@NotNull
 	private Sample sample;

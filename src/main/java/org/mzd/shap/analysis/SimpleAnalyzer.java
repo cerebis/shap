@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+
 import org.mzd.shap.exec.Executable;
 import org.mzd.shap.exec.ExecutableException;
 import org.mzd.shap.exec.SimpleExecutable;
@@ -57,9 +58,9 @@ public abstract class SimpleAnalyzer<TARGET,RESULT> extends AbstractAnalyzer<TAR
 	@Type(type="text")
 	private String argumentString;
 	@Type(type="file")
-	@Column(length=4096)
+	@Column(length=4095)
 	private File scratchPath;
-	@Column(length=4096)
+	@Column(length=4095)
 	private Class<?> parserClass;
 	@NotNull
 	private Boolean debug = false;

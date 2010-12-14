@@ -26,7 +26,6 @@ import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.domain.Annotation;
 import org.mzd.shap.domain.AnnotationType;
 import org.mzd.shap.domain.Feature;
-import org.mzd.shap.domain.Sample;
 import org.mzd.shap.hibernate.BaseDao;
 
 public interface AnnotationDao extends BaseDao<Annotation, Integer> {

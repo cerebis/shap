@@ -61,10 +61,10 @@ public abstract class AbstractAnalyzer<TARGET,RESULT> implements Analyzer<TARGET
 	@Column(name="ANALYZER_ID")
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
+	@XStreamAsAttribute
 	@Column(unique=true)
 	@NotNull
-	@Size(min=1,max=256)
-	@XStreamAsAttribute
+	@Size(min=1,max=255)
 	private String name;
 	@XStreamAsAttribute
 	@XStreamAlias("desc")

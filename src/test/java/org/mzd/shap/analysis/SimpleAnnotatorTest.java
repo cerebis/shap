@@ -34,7 +34,6 @@ import org.mzd.shap.domain.FeatureType;
 import org.mzd.shap.domain.MoleculeType;
 import org.mzd.validation.AbstractValidationTest;
 
-
 public class SimpleAnnotatorTest extends AbstractValidationTest<SimpleAnnotator> {
 
 	public static SimpleAnnotator makeValidTarget() {
@@ -70,14 +69,14 @@ public class SimpleAnnotatorTest extends AbstractValidationTest<SimpleAnnotator>
 		constraintViolations = getViolations(sa);
 		
 		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("size must be between 1 and 256",constraintViolations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 255",constraintViolations.iterator().next().getMessage());
 		
-		sa.setName(generateRandomString(257));
+		sa.setName(generateRandomString(256));
 		
 		constraintViolations = getViolations(sa);
 		
 		Assert.assertEquals(1, constraintViolations.size());
-		Assert.assertEquals("size must be between 1 and 256",constraintViolations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 255",constraintViolations.iterator().next().getMessage());
 	}
 
 	@Test

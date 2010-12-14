@@ -29,7 +29,7 @@
 		<repository>
 			<id>JBOSS</id>
 			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/maven2/</url>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
 		</repository>
 		<repository>
 			<id>Atomikos</id>
@@ -128,7 +128,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.1-Final</version>
+			<version>3.5.4-Final</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.hibernate</groupId>
@@ -137,8 +137,8 @@
 		</dependency>
 		<dependency>
 		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-search-testing</artifactId>
-		    <version>3.2.0.CR1</version>
+		    <artifactId>hibernate-search</artifactId>
+		    <version>3.2.1.Final</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.lucene</groupId>

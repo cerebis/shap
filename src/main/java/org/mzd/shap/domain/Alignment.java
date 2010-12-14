@@ -58,7 +58,6 @@ public class Alignment {
 	@NotNull
 	private String subjectSeq;
 	@Type(type="text")
-	@NotNull
 	private String consensusSeq;
 
 	@Override

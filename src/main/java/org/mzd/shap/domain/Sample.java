@@ -45,13 +45,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.hibernate.search.SampleFilterFactory;
 
@@ -69,14 +67,14 @@ public class Sample {
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@Column(nullable=false)
 	@NotNull
-	@Size(min=3,max=20)
+	@Size(min=3,max=255)
 	private String name;
 	@Fields({
 		@Field,
 		@Field(name="description_full",index=Index.UN_TOKENIZED,store=Store.NO)
 	})
 	@Type(type="text")
-	@Size(min=1,max=1024)
+	@Size(min=1,max=4095)
 	private String description;
 	@Field(store=Store.YES)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -84,11 +82,9 @@ public class Sample {
 	private Date creation;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID")
-	@IndexedEmbedded
 	@NotNull
 	private Project project;
 	@OneToMany(mappedBy="sample",fetch=FetchType.LAZY)
-	@ContainedIn
 	@Valid
 	private Set<Sequence> sequences = new HashSet<Sequence>();
 	

@@ -65,14 +65,14 @@ public class AnnotationTest extends AbstractValidationTest<Annotation> {
 		Set<ConstraintViolation<Annotation>> violations = getViolations(a);
 		
 		Assert.assertEquals(1, violations.size());
-		Assert.assertEquals("size must be between 1 and 256", violations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 255", violations.iterator().next().getMessage());
 
-		a.setAccession(RandomStringUtils.random(257));
+		a.setAccession(RandomStringUtils.random(256));
 		
 		violations = getViolations(a);
 		
 		Assert.assertEquals(1, violations.size());
-		Assert.assertEquals("size must be between 1 and 256", violations.iterator().next().getMessage());
+		Assert.assertEquals("size must be between 1 and 255", violations.iterator().next().getMessage());
 	}
 	
 	@Test

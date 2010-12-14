@@ -22,6 +22,7 @@ package org.mzd.shap.spring.cli;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
@@ -37,8 +38,14 @@ public class Index {
 	private static final String BEGIN_MSG = "Indexing the database, this can take some time.";
 	private static final String FINISH_MSG = "Completed indexing and optimization.";
 	private static final String ERROR_MSG = "An exception occured while indexing.";
-	
+	private static final String USAGE_MSG = "Mass indexing command takes no arguments.";
+
 	public static void main(String[] args) {
+		if (args.length != 0) {
+			System.out.println(USAGE_MSG);
+			System.exit(1);
+		}
+
 		try {
 			ApplicationContext ctx = new FileSystemXmlApplicationContext(
 					"war/WEB-INF/spring/datasource-context.xml",
@@ -53,8 +60,10 @@ public class Index {
 			// Index single-threaded. Appear to have problems with collections.
 			Search.getFullTextSession(session)
 				.createIndexer()
-	   				.threadsToLoadObjects(1)
-					.threadsForSubsequentFetching(1)
+					.batchSizeToLoadObjects(30)
+					.threadsForSubsequentFetching(8)
+	   				.threadsToLoadObjects(4)
+					.cacheMode(CacheMode.NORMAL)
 					.optimizeOnFinish(true)
 					.startAndWait();
 
@@ -63,7 +72,7 @@ public class Index {
 					
 			System.exit(0);
 		} 
-		catch (InterruptedException ex) {
+		catch (Exception ex) {
 			System.err.println(ERROR_MSG + " [" + ex.getMessage() + "]");
 			LOGGER.debug(ERROR_MSG, ex);
 		}

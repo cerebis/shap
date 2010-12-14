@@ -45,13 +45,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.domain.authentication.User;
 import org.mzd.shap.hibernate.search.ProjectFilterFactory;
@@ -69,24 +67,22 @@ public class Project {
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@Column(unique=true)
 	@NotNull
-	@Size(min=3,max=20)
+	@Size(min=3,max=255)
 	private String name;
 	@Fields({
 		@Field,
 		@Field(name="description_full",index=Index.UN_TOKENIZED,store=Store.YES)
 	})
 	@Type(type="text")
-	@Size(min=1,max=1024)
+	@Size(min=1,max=4095)
 	private String description;
 	@Field(store=Store.YES)
 	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull
 	private Date creation;
 	@ManyToMany(mappedBy="projects",targetEntity=org.mzd.shap.domain.authentication.User.class,fetch=FetchType.LAZY)
-	@IndexedEmbedded
 	private Set<User> users = new HashSet<User>();
 	@OneToMany(mappedBy="project",fetch=FetchType.LAZY)
-	@ContainedIn
 	@Valid
 	private Set<Sample> samples = new HashSet<Sample>();
 	
