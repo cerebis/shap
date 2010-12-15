@@ -51,12 +51,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.mzd.shap.hibernate.search.SequenceFilterFactory;
@@ -92,12 +92,13 @@ public class Sequence {
 	private String name;
 	@Fields({
 		@Field,
-		@Field(name="description_full",index=Index.UN_TOKENIZED,store=Store.YES)
+		@Field(name="description_full",index=org.hibernate.search.annotations.Index.UN_TOKENIZED,store=Store.YES)
 	})
 	@Type(type="text")
 	@XStreamAsAttribute
 	@XStreamAlias("desc")
 	@Size(min=1,max=4095)
+	@Index(name="sequence_description")
 	private String description;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="LRGSTR_ID")
@@ -117,9 +118,11 @@ public class Sequence {
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@XStreamAsAttribute
 	@NotNull
+	@Index(name="sequence_taxonomy")
 	private Taxonomy taxonomy = Taxonomy.UNCLASSIFIED;
 	@Field(store=Store.YES)
 	@XStreamAsAttribute
+	@Index(name="sequence_coverage")
 	private Double coverage;
 	
 	/**

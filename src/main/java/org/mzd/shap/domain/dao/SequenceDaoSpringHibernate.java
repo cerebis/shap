@@ -48,6 +48,7 @@ public class SequenceDaoSpringHibernate extends BaseDaoSpringHibernate<Sequence,
 		super(Sequence.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Sequence> findByFullText(String queryText, User user) {
 		FullTextQuery query = findByFullText(queryText, new String[]{"id","name","description","taxonomy","coverage"});
 		query.enableFullTextFilter("sequenceUser")

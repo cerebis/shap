@@ -24,7 +24,7 @@
 			<prop key="hibernate.search.default.indexBase">lucene</prop>
 			<!-- Automatic indexing is currently disabled -->
 			<!-- There is an unresolved issue with lazy associations and non-JPA access -->
-			<prop key="hibernate.search.autoregister_listeners">false</prop>
+			<prop key="hibernate.search.autoregister_listeners">true</prop>
 		</props>
 	</property>
 </bean>

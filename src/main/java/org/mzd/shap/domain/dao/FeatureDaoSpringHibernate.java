@@ -61,7 +61,7 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 	@SuppressWarnings("unchecked")
 	public List<Feature> findByFullText(String queryText, User user) {
 		FullTextQuery query = findByFullText(queryText, new String[]{"id","confidence","partial","type",
-				"location.start","location.end","location.strand","location.frame",
+				"location.start","location.end","location.length","location.strand","location.frame",
 				"annotations.accession","annotations.description","annotations.annotator"});
 		query.enableFullTextFilter("featureUser")
 			.setParameter("value", user.getId());
@@ -595,7 +595,7 @@ public class FeatureDaoSpringHibernate extends BaseDaoSpringHibernate<Feature, I
 			public List<Object[]> doInHibernate(Session session) throws HibernateException, SQLException {
 				return session.createQuery(
 						" SELECT f.id, f.location.start, f.location.end, f.location.strand, f.location.frame, f.partial, f.confidence, f.type, " +
-						"  f.location.end - f.location.start + 1, (SELECT count(*) from f.annotations) " +
+						"  f.location.length, (SELECT count(*) from f.annotations) " +
 						" FROM Feature f " +
 						" WHERE " +
 						"   f.sequence.id = :sequenceId" + 

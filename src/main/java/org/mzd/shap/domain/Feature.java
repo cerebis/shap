@@ -109,12 +109,15 @@ public class Feature {
 	@Field(store=Store.YES)
 	@XStreamAsAttribute
 	@XStreamAlias("conf")
+	@Index(name="feature_confidence")
 	private Double confidence;
 	@Field(store=Store.YES)
 	@XStreamAsAttribute
+	@Index(name="feature_partial")
 	private Boolean partial = false;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SEQUENCE_ID")
+	@Index(name="feature_sequence")
 	@XStreamOmitField
 	@NotNull
 	private Sequence sequence;
@@ -129,7 +132,7 @@ public class Feature {
 	private Detector detector;
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
-	@Index(name="feature_type_index")
+	@Index(name="feature_type")
 	@Field(store=Store.YES)
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@XStreamAsAttribute

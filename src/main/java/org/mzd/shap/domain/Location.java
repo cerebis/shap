@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Index;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.Range;
 
@@ -57,22 +58,31 @@ public class Location {
 	@XStreamAsAttribute
 	@Min(0)
 	@NotNull
+	@Index(name="location_start")
 	private Integer start;
 	@Field
 	@Column(name="end_")
 	@XStreamAsAttribute
 	@Min(0)
 	@NotNull
+	@Index(name="location_end")
 	private Integer end;
+	@Field
+	@Min(0)
+	@NotNull
+	@Index(name="location_length")
+	private Integer length;
 	@Field
 	@Enumerated(EnumType.STRING)
 	@XStreamAsAttribute
 	@NotNull
 	@Valid
+	@Index(name="location_strand")
 	private Strand strand;
 	@Field
 	@XStreamAsAttribute
 	@Range(min=0,max=2)
+	@Index(name="location_frame")
 	private Integer frame;
 	
 	public String getExtent(String sequence) {
@@ -91,13 +101,6 @@ public class Location {
 	
 	public boolean isReverseStrand() {
 		return getStrand() == Strand.Reverse;
-	}
-	
-	/**
-	 * @return The length of this location
-	 */
-	public int length() {
-		return getEnd() - getStart() + 1;
 	}
 	
 	/**
@@ -130,7 +133,7 @@ public class Location {
 	 * @return the number of "extra" bases.
 	 */
 	public int getExtraBases() {
-		return length() % 3;
+		return getLength() % 3;
 	}
 	
 	/**
@@ -194,7 +197,6 @@ public class Location {
 			.append(getStrand(), other.getStrand())
 			.append(getFrame(), other.getFrame())
 			.isEquals();
-			
 	}
 	
 	public Location() {/*...*/}
@@ -211,6 +213,7 @@ public class Location {
 	public Location(Integer start, Integer end, Strand strand, Integer frame) throws LocationException {
 		this.start = start;
 		this.end = end;
+		this.length = end - start + 1;
 		this.strand = strand;
 		this.frame = frame;
 		validate();
@@ -283,6 +286,9 @@ public class Location {
 	}
 	public void setStart(Integer start) {
 		this.start = start;
+	}
+	public int getLength() {
+		return length;
 	}
 	public Strand getStrand() {
 		return strand;

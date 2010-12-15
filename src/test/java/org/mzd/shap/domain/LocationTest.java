@@ -37,12 +37,12 @@ import org.mzd.validation.AbstractValidationTest;
 public class LocationTest extends AbstractValidationTest<Location> {
 	
 	public static Location makeValidTarget() {
-		Location l = new Location();
-		l.setStart(0);
-		l.setEnd(10);
-		l.setStrand(Strand.Forward);
-		l.setFrame(0);
-		return l;
+		try {
+			return new Location(0,10,Strand.Forward,0);
+		}
+		catch (LocationException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Test
@@ -164,5 +164,5 @@ public class LocationTest extends AbstractValidationTest<Location> {
 		
 		assertEquals(1, violations.size());
 		assertEquals("must be between 0 and 2", violations.iterator().next().getMessage());
-}
+	}
 }

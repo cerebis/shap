@@ -61,8 +61,8 @@ public class Index {
 			Search.getFullTextSession(session)
 				.createIndexer()
 					.batchSizeToLoadObjects(30)
-					.threadsForSubsequentFetching(8)
-	   				.threadsToLoadObjects(4)
+					.threadsForSubsequentFetching(4)
+	   				.threadsToLoadObjects(2)
 					.cacheMode(CacheMode.NORMAL)
 					.optimizeOnFinish(true)
 					.startAndWait();

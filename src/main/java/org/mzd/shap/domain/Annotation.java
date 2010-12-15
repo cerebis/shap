@@ -75,6 +75,7 @@ public class Annotation {
 	private Double confidence;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="FEATURE_ID")
+	@Index(name="annotation_feature")
 	@NotNull
 	private Feature feature;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
