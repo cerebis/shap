@@ -34,9 +34,11 @@ public class ValueCollectionBridge implements StringBridge {
 			return null;
 		}
 		if (field instanceof Collection<?>) {
+			Iterator<?> it = ((Collection<?>)field).iterator();
+			if (!it.hasNext()) {
+				return null;
+			}
 			StringBuffer buffer = new StringBuffer();
-			Collection<?> collection = (Collection<?>)field;
-			Iterator<?> it = collection.iterator();
 			while (true) {
 				Object value = it.next();
 				buffer.append(value.toString());
