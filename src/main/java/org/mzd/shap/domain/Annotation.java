@@ -43,40 +43,34 @@ import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
 import org.mzd.shap.analysis.Annotator;
 
 @Entity
 @Table(name="Annotations")
-@Indexed(index="Annotations")
 public class Annotation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="ANNOTATION_ID")
 	private Integer id;
-	@Field(store=Store.YES)
+	@Field
 	@Analyzer(impl=KeywordAnalyzer.class)
 	@Size(min=1,max=255)
 	@NotNull
 	private String accession;
-	@Fields({
-		@Field,
-		@Field(name="description_full",
-				index=org.hibernate.search.annotations.Index.UN_TOKENIZED,store=Store.YES)
-	})
+	@Field
 	@Type(type="text")
 	@Size(min=1,max=4095)
 	@NotNull
 	private String description;
-	@Field(store=Store.YES)
+	@Field
 	private Double confidence;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="FEATURE_ID")
 	@Index(name="annotation_feature")
 	@NotNull
+	@ContainedIn
 	private Feature feature;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="ALIGNMENT_ID")
@@ -88,7 +82,7 @@ public class Annotation {
 	private Annotator annotator;
 	@Enumerated(EnumType.STRING)
 	@Index(name="annotation_refersto_index")
-	@Field(store=Store.YES)
+	@Field
 	@NotNull
 	private AnnotationType refersTo;
 	

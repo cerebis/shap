@@ -37,6 +37,7 @@ import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.analysis.DetectorDao;
+import org.mzd.shap.domain.Annotation;
 import org.mzd.shap.domain.DuplicateException;
 import org.mzd.shap.domain.Feature;
 import org.mzd.shap.domain.Project;
@@ -74,7 +75,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	private int batchSize = 40;
 	
 	public SearchResult<Report> getReports(String queryText, int firstResult, int maxResults) {
-		Class<?>[] allowedClasses = {Project.class,Sample.class,Sequence.class,Feature.class};
+		Class<?>[] allowedClasses = {Project.class,Sample.class,Sequence.class,Feature.class,Annotation.class};
 		return getFullTextSearch().find(queryText, allowedClasses, firstResult, maxResults);
 	}
 

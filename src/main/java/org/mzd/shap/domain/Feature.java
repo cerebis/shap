@@ -58,17 +58,21 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.hibernate.annotations.Index;
-import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.Detector;
+import org.mzd.shap.hibernate.search.CommaTokenizerFactory;
 import org.mzd.shap.hibernate.search.FeatureFilterFactory;
+import org.mzd.shap.hibernate.search.ValueCollectionBridge;
 import org.mzd.shap.io.Fasta;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -94,7 +98,10 @@ public class Feature {
 	@CollectionTable(name="FeatureAliases",joinColumns=@JoinColumn(name="FEATURE_ID"),
 			uniqueConstraints=@UniqueConstraint(columnNames={"FEATURE_ID","alias"}))
 	@Column(name="alias")
-	@IndexedEmbedded
+	@Field(bridge=@FieldBridge(impl=ValueCollectionBridge.class))
+	@AnalyzerDef(name="alias_analyzer", 
+			tokenizer=@TokenizerDef(factory=CommaTokenizerFactory.class),
+			filters={@TokenFilterDef(factory=LowerCaseFilterFactory.class)})
 	@XStreamImplicit(itemFieldName="alias")
 	private Set<String> aliases = new HashSet<String>();
 	@Embedded
@@ -106,12 +113,12 @@ public class Feature {
 	@JoinColumn(name="LRGSTR_ID")
 	@Valid
 	private LargeString data;
-	@Field(store=Store.YES)
+	@Field
 	@XStreamAsAttribute
 	@XStreamAlias("conf")
 	@Index(name="feature_confidence")
 	private Double confidence;
-	@Field(store=Store.YES)
+	@Field
 	@XStreamAsAttribute
 	@Index(name="feature_partial")
 	private Boolean partial = false;
@@ -124,17 +131,17 @@ public class Feature {
 	@OneToMany(mappedBy="feature",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
 	@XStreamOmitField
 	@Valid
+	@IndexedEmbedded
 	private Set<Annotation> annotations = new HashSet<Annotation>();
 	@ManyToOne(targetEntity=org.mzd.shap.analysis.SimpleDetector.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="DETECTOR_ID")
 	@XStreamOmitField
 	@NotNull
 	private Detector detector;
+	@Field
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
 	@Index(name="feature_type")
-	@Field(store=Store.YES)
-	@Analyzer(impl=KeywordAnalyzer.class)
 	@XStreamAsAttribute
 	@NotNull
 	private FeatureType type = FeatureType.Undefined;

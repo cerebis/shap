@@ -48,9 +48,7 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
 import org.mzd.shap.hibernate.search.SampleFilterFactory;
 
 @Entity
@@ -63,20 +61,19 @@ public class Sample {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="SAMPLE_ID")
 	private Integer id;
-	@Field(store=Store.YES)
-	@Analyzer(impl=KeywordAnalyzer.class)
+	@Fields({
+		@Field,
+		@Field(name="name_full",analyzer=@Analyzer(impl=KeywordAnalyzer.class))
+	})
 	@Column(nullable=false)
 	@NotNull
 	@Size(min=3,max=255)
 	private String name;
-	@Fields({
-		@Field,
-		@Field(name="description_full",index=Index.UN_TOKENIZED,store=Store.NO)
-	})
+	@Field
 	@Type(type="text")
 	@Size(min=1,max=4095)
 	private String description;
-	@Field(store=Store.YES)
+	@Field
 	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull
 	private Date creation;
