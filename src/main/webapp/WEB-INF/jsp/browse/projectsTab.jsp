@@ -29,6 +29,7 @@
 			"bProcessing": true,
 			"bServerSide": true,
 			"bFilter": false,
+			"aaSorting": [[1,"asc"]],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/ajax'/>",
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
