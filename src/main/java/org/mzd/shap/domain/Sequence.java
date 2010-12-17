@@ -54,9 +54,11 @@ import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.mzd.shap.hibernate.search.SequenceFilterFactory;
 import org.mzd.shap.io.Fasta;
 import org.mzd.shap.util.DnaTools;
@@ -101,11 +103,13 @@ public class Sequence {
 	private LargeString data;
 	@OneToMany(mappedBy="sequence",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
 	@XStreamImplicit
+	@ContainedIn
 	@Valid
 	private Set<Feature> features = new HashSet<Feature>();
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SAMPLE_ID")
 	@XStreamOmitField
+	@IndexedEmbedded
 	@NotNull
 	private Sample sample;
 	@Enumerated(EnumType.STRING)

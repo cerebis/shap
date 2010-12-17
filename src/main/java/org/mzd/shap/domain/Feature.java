@@ -58,8 +58,10 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.hibernate.annotations.Index;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -70,6 +72,7 @@ import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.Detector;
+import org.mzd.shap.hibernate.search.AnalyzerNameBridge;
 import org.mzd.shap.hibernate.search.CommaTokenizerFactory;
 import org.mzd.shap.hibernate.search.FeatureFilterFactory;
 import org.mzd.shap.hibernate.search.ValueCollectionBridge;
@@ -125,6 +128,7 @@ public class Feature {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SEQUENCE_ID")
 	@Index(name="feature_sequence")
+	@IndexedEmbedded
 	@XStreamOmitField
 	@NotNull
 	private Sequence sequence;
@@ -135,6 +139,7 @@ public class Feature {
 	private Set<Annotation> annotations = new HashSet<Annotation>();
 	@ManyToOne(targetEntity=org.mzd.shap.analysis.SimpleDetector.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="DETECTOR_ID")
+	@Field(bridge=@FieldBridge(impl=AnalyzerNameBridge.class),analyzer=@Analyzer(impl=KeywordAnalyzer.class))
 	@XStreamOmitField
 	@NotNull
 	private Detector detector;

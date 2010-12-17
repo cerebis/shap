@@ -45,7 +45,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.mzd.shap.analysis.Annotator;
+import org.mzd.shap.hibernate.search.AnalyzerNameBridge;
 
 @Entity
 @Table(name="Annotations")
@@ -78,6 +80,7 @@ public class Annotation {
 	private Alignment alignment;
 	@ManyToOne(targetEntity=org.mzd.shap.analysis.SimpleAnnotator.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="ANNOTATOR_ID")
+	@Field(bridge=@FieldBridge(impl=AnalyzerNameBridge.class),analyzer=@Analyzer(impl=KeywordAnalyzer.class))
 	@NotNull
 	private Annotator annotator;
 	@Enumerated(EnumType.STRING)

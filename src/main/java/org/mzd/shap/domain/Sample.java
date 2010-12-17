@@ -45,10 +45,12 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.mzd.shap.hibernate.search.SampleFilterFactory;
 
 @Entity
@@ -79,9 +81,11 @@ public class Sample {
 	private Date creation;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID")
+	@IndexedEmbedded
 	@NotNull
 	private Project project;
 	@OneToMany(mappedBy="sample",fetch=FetchType.LAZY)
+	@ContainedIn
 	@Valid
 	private Set<Sequence> sequences = new HashSet<Sequence>();
 	

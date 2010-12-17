@@ -45,6 +45,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.FullTextFilterDef;
@@ -80,6 +81,7 @@ public class Project {
 	@ManyToMany(mappedBy="projects",targetEntity=org.mzd.shap.domain.authentication.User.class,fetch=FetchType.LAZY)
 	private Set<User> users = new HashSet<User>();
 	@OneToMany(mappedBy="project",fetch=FetchType.LAZY)
+	@ContainedIn
 	@Valid
 	private Set<Sample> samples = new HashSet<Sample>();
 	

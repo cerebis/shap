@@ -22,7 +22,6 @@ package org.mzd.shap.spring.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mzd.shap.domain.Feature;
 import org.mzd.shap.domain.Project;
 import org.mzd.shap.domain.Sample;
 import org.mzd.shap.domain.Sequence;
@@ -57,57 +56,10 @@ public class AbstractControllerSupport {
 		throw new NotFoundException("SecurityContext contained no authentication instance");
 	}
 
-	/**
-	 * Load the specified object graph from the store to the model. This is slightly pedantic 
-	 * as we do not want to expose data which does not belong to the authenticated user.
-	 * 
-	 * The identifiers are followed until the first NULL occurrence. This makes the
-	 * method generic for all calls to the graph, regardless of depth requested.
-	 * 
-	 * @param model
-	 * @param projectId
-	 * @param sampleId
-	 * @param sequenceId
-	 * @param featureId
-	 * @throws NotFoundException
-	 */
-	protected void getObjectGraph(Model model, Integer projectId, Integer sampleId,
-			Integer sequenceId, Integer featureId) throws NotFoundException {
-		
-		// Get user from session
-		User user = getSessionUser();
-		model.addAttribute("user",user);
-		
-		// Get contained project or stop
-		if (projectId == null) {
-			return;
-		}
-		Project project = getDataAdmin().getProject(user, projectId);
-		model.addAttribute("project",project);
-		
-		// Get contained sample or stop
-		if (sampleId == null) {
-			return;
-		}
-		Sample sample = getDataAdmin().getSample(project,sampleId);
-		model.addAttribute("sample", sample);
-		
-		// Get contained sequence or stop
-		if (sequenceId == null) {
-			return;
-		}
-		Sequence sequence = getDataAdmin().getSequence(sample,sequenceId);
-		model.addAttribute("sequence",sequence);
-		model.addAttribute("featureBreakdown",getDataAdmin().getFeatureBreakdown(sequenceId));
-		
-		// Get contained feature or stop
-		if (featureId == null) {
-			return;
-		}
-		Feature feature = getDataAdmin().getFeature(sequence, featureId);
-		model.addAttribute("feature",feature);
+	protected void addSessionUser(Model model) throws NotFoundException {
+		model.addAttribute("user", getSessionUser());
 	}
-
+	
 	/**
 	 * Check stepwise down the object graph that each child is owned by its parent. The check
 	 * goes from top to bottom and stops at the first occurrence of null in the supplied IDs.

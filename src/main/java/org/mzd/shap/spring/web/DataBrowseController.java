@@ -93,7 +93,7 @@ public class DataBrowseController extends AbstractControllerSupport {
 
 	@RequestMapping(method=RequestMethod.GET)
 	public String getProjects(Model model) throws NotFoundException {
-		getObjectGraph(model, null, null, null, null);
+		addSessionUser(model);
 		return "browse/projectsTab";
 	}
 
@@ -127,6 +127,8 @@ public class DataBrowseController extends AbstractControllerSupport {
 		if (obj == null) {
 			throw new NotFoundException("Failed to retrieve an object using the identifier [" + id + "]");
 		}
+		
+		addSessionUser(model);
 		
 		if (obj instanceof Project) {
 			model.addAttribute("project", obj);

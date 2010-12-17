@@ -37,7 +37,6 @@ import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.analysis.DetectorDao;
-import org.mzd.shap.domain.Annotation;
 import org.mzd.shap.domain.DuplicateException;
 import org.mzd.shap.domain.Feature;
 import org.mzd.shap.domain.Project;
@@ -64,6 +63,7 @@ import org.mzd.shap.util.Observable;
 
 public class DataAdminServiceImpl extends BaseObservable implements DataAdminService, Observable {
 	private final static String NOTIFICATION_TYPE = "shap.dataadminservice";
+	private final static Class<?>[] QUERY_CLASSES = {Project.class,Sample.class,Sequence.class,Feature.class};
 	private ProjectDao projectDao;
 	private SampleDao sampleDao;
 	private SequenceDao sequenceDao;
@@ -75,8 +75,7 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	private int batchSize = 40;
 	
 	public SearchResult<Report> getReports(String queryText, int firstResult, int maxResults) {
-		Class<?>[] allowedClasses = {Project.class,Sample.class,Sequence.class,Feature.class,Annotation.class};
-		return getFullTextSearch().find(queryText, allowedClasses, firstResult, maxResults);
+		return getFullTextSearch().find(queryText, QUERY_CLASSES, firstResult, maxResults);
 	}
 
 	public Object getObject(Integer id, User user) {
