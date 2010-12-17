@@ -116,6 +116,11 @@ html {
 	background-color: #ECFFB3;
 }
 
+.black_italics {
+	font-style: italic;
+	color: #000;
+}	
+
 #app_form {
 	margin-bottom: 1em;
 }

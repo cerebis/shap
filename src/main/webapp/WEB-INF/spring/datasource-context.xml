@@ -10,9 +10,9 @@
 <!-- Testing database -->
 <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 	<property name="driverClassName" value="org.postgresql.Driver"/>
-	<property name="url" value="jdbc:postgresql:dummy"/>
-	<property name="username" value="test"/>
-	<property name="password" value="xeno12"/>
+	<property name="url" value="jdbc:postgresql:shap-rc01"/>
+	<property name="username" value="annotation"/>
+	<property name="password" value="samich"/>
 	<property name="maxActive" value="40"/>
 </bean>
 

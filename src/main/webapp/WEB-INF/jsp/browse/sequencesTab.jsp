@@ -59,7 +59,7 @@
 
 	<div id="app_header">
 		<span id="app_title">SHAP Browse</span>
-		<span id="app_logout"><a href="<c:url value='/logout'/>">Logout</a></span>
+		<span id="app_logout"><span class="black_italics">${user.username} : </span><a href="<c:url value='/logout'/>">Logout</a></span>
 	</div>
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 	
@@ -67,8 +67,6 @@
 		<ul>
 			<li><a href="<c:url value='/app/'/>">Search</a></li>
 			<li>Browse</li>
-			<li><a href="<c:url value='/app/fetch'/>">Fetch</a></li>
-			<li><a href="<c:url value='/app/workbench'/>">Workbench</a></li>
 		</ul>
 	</div>
 
