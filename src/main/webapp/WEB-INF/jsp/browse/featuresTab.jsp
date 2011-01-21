@@ -19,12 +19,12 @@
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.dataTables.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/app.js"/>'></script>
 <script type="text/javascript" charset="utf-8">
-	var countUrl = "<c:url value='/app/bench/count_ajax'/>";
-	var mainUrl = "<c:url value='/app/'/>";
+	/*var countUrl = "<c:url value='/app/bench/count_ajax'/>";*/
+	var sessionTimeoutRedirectUrl = "<c:url value='/app/'/>";
 
 	$(document).ready(function() {
 
-		ajaxSessionItemCount();
+		/*ajaxSessionItemCount();*/
 	
 		$('#ajaxdata').dataTable( {
 			"bJQueryUI": true,
@@ -74,10 +74,12 @@
 
 	<div id="app_content" class="clearfix">
 
+		<!--
 		<div id="app_session">
 			<b>Session Store: </b><span id="app_session_count"></span>
 			<button id="clearAll">Clear All</button>
 		</div>
+		-->
 
 		<div id="app_browse_nav">
 			<span><a class="in_panel" href="<c:url value='/app/browse/'/>">Projects</a></span>

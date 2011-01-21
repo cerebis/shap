@@ -17,22 +17,48 @@
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.dataTables.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/app.js"/>'></script>
 <script type="text/javascript">
+	/* Session objects disabled */
+	/*
 	var countUrl = "<c:url value='/app/bench/count_ajax'/>";
 	var clearAllUrl = "<c:url value='/app/bench/clear_ajax'/>";
-	var mainUrl = "<c:url value='/app/search'/>";
+	*/
+	var sessionTimeoutRedirectUrl = "<c:url value='/app/search'/>";
 	
 	$(document).ready(function() {
-		$.get("<c:url value='/app/search/form'/>", function (data) {
+		/*$.get("<c:url value='/app/search/form'/>", function (data) {
 			$("#app_dynamic").html(data);
-		});
+		});*/
 	
-		$("#queryText").focus();
-		
-		ajaxSessionItemCount();
+		/*ajaxSessionItemCount();*/
+		/*$("#clearAll").click(clearAll);*/
 	
 		$('body').ajaxError(handleAjaxSessionTimeout);
+
+		$("#queryText").focus();
 		
-		$("#clearAll").click(clearAll);
+		/* Search Tab validation and submission */
+		$("#searchQuery").validate({
+			rules: {
+				queryText: {
+					required: true,
+					remote: "<c:url value='/app/search/validate_ajax'/>"
+					}
+				},
+			messages: {
+				queryText: {
+					required: "Please enter a search query",
+					remote: "Queries must be longer than 1 character and cannot begin with *"
+					}
+				},
+			errorLabelContainer: "#errors",
+			submitHandler: function(form) {
+				$.post("<c:url value='/app/search/query'/>",
+					$("#searchQuery").serialize(),
+					function(data) {$("#app_result").html(data);}
+				);
+				/*ajaxSessionItemCount();*/
+				}
+		});
 	});
 </script>
 </head>
@@ -54,11 +80,24 @@
 	</div>
 	
 	<div id="app_content" class="clearfix">
+		<!--
 		<div id="app_session">
 			<b>Session Store: </b><span id="app_session_count"></span>
 			<button id="clearAll">Clear All</button>
 		</div>
-		<div id="app_dynamic" class="dynamic"></div>
+		-->
+
+		<div id="app_form">
+			<h3>Search the system</h3>
+			<form id="searchQuery">
+				<input id="queryText" name="queryText" size="40" tabindex="1" value="${queryText}"/>
+				<input type="submit" tabindex="2" value="Search"/>
+				<div id="errors"></div>
+			</form>
+		</div>
+		
+		<div id="app_result"></div>
+
 	</div> <!-- app_content -->
 	
 	<div class="app_bar ui-widget-header ui-corner-all" style="border-top: none"></div>
