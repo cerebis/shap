@@ -20,7 +20,9 @@
  */
 package org.mzd.shap.spring.web;
 
+import org.mzd.shap.spring.NotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -28,7 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainViewController extends AbstractControllerSupport {
 	
 	@RequestMapping
-	public String getMain() {
+	public String getMain(Model model) throws NotFoundException {
+		addSessionUser(model);
 		return "main";
 	}
 	

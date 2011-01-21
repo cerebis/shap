@@ -26,6 +26,7 @@ import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
+import org.mzd.shap.spring.orm.Reporting;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -53,7 +54,7 @@ public class Index {
 
 			SessionFactory sessionFactory = (SessionFactory)ctx.getBean("sessionFactory");
 			Session session = sessionFactory.openSession();
-
+			
 			System.out.println(BEGIN_MSG);
 			LOGGER.info(BEGIN_MSG);
 			
@@ -67,6 +68,9 @@ public class Index {
 					.optimizeOnFinish(true)
 					.startAndWait();
 
+			LOGGER.debug(Reporting.reportQueryCacheStatistics(sessionFactory));
+			LOGGER.debug(Reporting.reportSecondLevleCacheStatistics(sessionFactory));
+			
 			System.out.println(FINISH_MSG);
 			LOGGER.info(FINISH_MSG);
 					

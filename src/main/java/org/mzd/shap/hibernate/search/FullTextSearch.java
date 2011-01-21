@@ -28,5 +28,5 @@ public interface FullTextSearch {
 
 	Object findUnique(final String queryText, final User user);
 	
-	SearchResult<Report> find(String queryText, Class<?>[] allowedClasses, int firstResult, int maxResults);
+	SearchResult<Report> find(String queryText, String[] queryFields, Class<?>[] allowedClasses, int firstResult, int maxResults);
 }

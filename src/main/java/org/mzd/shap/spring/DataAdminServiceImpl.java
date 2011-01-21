@@ -63,7 +63,6 @@ import org.mzd.shap.util.Observable;
 
 public class DataAdminServiceImpl extends BaseObservable implements DataAdminService, Observable {
 	private final static String NOTIFICATION_TYPE = "shap.dataadminservice";
-	private final static Class<?>[] QUERY_CLASSES = {Project.class,Sample.class,Sequence.class,Feature.class};
 	private ProjectDao projectDao;
 	private SampleDao sampleDao;
 	private SequenceDao sequenceDao;
@@ -75,7 +74,9 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	private int batchSize = 40;
 	
 	public SearchResult<Report> getReports(String queryText, int firstResult, int maxResults) {
-		return getFullTextSearch().find(queryText, QUERY_CLASSES, firstResult, maxResults);
+		Class<?>[] queryClasses = {Project.class,Sample.class,Sequence.class,Feature.class};
+		String[] queryFields = { "id","name","description","type","annotations.accession","annotations.description"};
+		return getFullTextSearch().find(queryText, queryFields, queryClasses, firstResult, maxResults);
 	}
 
 	public Object getObject(Integer id, User user) {

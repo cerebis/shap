@@ -28,6 +28,7 @@ import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 import org.hibernate.HibernateException;
@@ -43,13 +44,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextSearch {
 	private final static Version LUCENE_VERSION = Version.LUCENE_29;
-	private final static String[] FIELDS = 
-			{"id",
-			"name",
-			"description",
-			"type",
-			"annotations.accession",
-			"annotations.description"};
 	
 	public Object findUnique(final String queryText, final User user) {
 		return getHibernateTemplate().execute(new HibernateCallback<Object>() {
@@ -111,23 +105,34 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 			this.resultSize = resultSize;
 		}
 	}
+
+	/**
+	 * Create a MultiField query from a supplied query string, specifying a default operator between terms.
+	 * 
+	 * @param queryText - the query string to parse
+	 * @param operator - default operator between terms
+	 * @return MultiFieldQuery
+	 * @throws ParseException
+	 */
+	protected Query createMultiFieldQuery(String queryText, String[] fields, Operator operator) throws ParseException {
+		QueryParser qp = new MultiFieldQueryParser(LUCENE_VERSION, fields, new KeywordAnalyzer());
+		qp.setDefaultOperator(operator);
+		return qp.parse(queryText);
+	}
 	
 	@Override
-	public SearchResult<Report> find(final String queryText, final Class<?>[] allowedClasses, final int firstResult, final int maxResults) {
+	public SearchResult<Report> find(final String queryText, final String[] queryFields, final Class<?>[] allowedClasses, 
+			final int firstResult, final int maxResults) {
+		
 		return getHibernateTemplate().execute(new HibernateCallback<SearchResult<Report>>() {
 			public SearchResult<Report> doInHibernate(Session session) throws HibernateException, SQLException {
 				try {
 					SearchResult<Report> result = new SearchResult<Report>();
 
-					FullTextSession fts = Search.getFullTextSession(session);
+					Query query = createMultiFieldQuery(queryText, queryFields, Operator.AND);
 					
-					// prepare query
-					Query query = new MultiFieldQueryParser(
-							LUCENE_VERSION, FIELDS,
-							new KeywordAnalyzer())
-						.parse(queryText);
-					
-					FullTextQuery ftq = fts.createFullTextQuery(query,allowedClasses)
+					FullTextQuery ftq = Search.getFullTextSession(session)
+						.createFullTextQuery(query,allowedClasses)
 						.setFirstResult(firstResult)
 						.setMaxResults(maxResults);
 					
