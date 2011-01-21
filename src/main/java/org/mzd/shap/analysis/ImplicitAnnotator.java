@@ -29,9 +29,9 @@ import org.mzd.shap.exec.Executable;
 
 @Entity
 @DiscriminatorValue("IMPLICIT_ANNOTATOR")
-public class ImplicitAnnotator extends AbstractAnalyzer<Feature, Annotation> implements Annotator {
+public class ImplicitAnnotator extends SimpleAnnotator {
 
 	public final Annotation[] analyze(Executable exec, Feature... target) throws AnalyzerException {
-		throw new AnalyzerException("ImplicitAnalyzer does not act on the target");
+		throw new AnalyzerException("ImplicitAnalyzer does not act on the target, it is assigned at detection time");
 	}
 }
