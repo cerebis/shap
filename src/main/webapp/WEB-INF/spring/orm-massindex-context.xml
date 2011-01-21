@@ -25,10 +25,14 @@
 			<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
 			<prop key="hibernate.id.new_generator_mappings">true</prop>
 			<prop key="hibernate.generate_statistics">true</prop> 
+			<!-- Search --> 
 			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
 			<prop key="hibernate.search.default.indexBase">lucene</prop>
-			<!-- enabled just for mass-indexing -->
 			<prop key="hibernate.search.autoregister_listeners">true</prop>
+			<!-- Second level cache -->
+			<prop key="hibernate.cache.use_second_level_cache">false</prop>
+    		<prop key="hibernate.cache.use_query_cache">false</prop>
+    		<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>
 		</props>
 	</property>
 </bean>

@@ -25,6 +25,12 @@
 			<!-- Automatic indexing is currently disabled -->
 			<!-- There is an unresolved issue with lazy associations and non-JPA access -->
 			<prop key="hibernate.search.autoregister_listeners">true</prop>
+			<!--  Second level cache -->
+			<!--  This is explicitly disable for regular operations. Caching has not been -->
+			<!--  tested and has been brought in specifically for mass indexing performance -->
+			<prop key="hibernate.cache.use_second_level_cache">false</prop>
+    		<prop key="hibernate.cache.use_query_cache">false</prop>
+    		<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>
 		</props>
 	</property>
 </bean>

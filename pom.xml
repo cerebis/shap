@@ -36,16 +36,13 @@
 			<name>Atomikos Repository</name>
 			<url>http://repo.atomikos.com/</url>
 		</repository>
-<!--		<repository>
-			<id>geotools</id>
-			<name>GeoTools Repository</name>
-			<url>http://download.osgeo.org/webdav/geotools/</url>
+		<repository>
+			<id>sourceforge</id>
+			<url>http://oss.sonatype.org/content/groups/sourceforge/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</repository>
-  		<repository>
-			<id>org.biojava</id>
-			<name>BioJava Repository - Biojava Releases</name>
-			<url>http://www.biojava.org/download/maven</url>
-		</repository>-->
 	</repositories>
 	<dependencies>
 		<!-- Compile dependencies -->
@@ -249,6 +246,12 @@
 		    <artifactId>commons-fileupload</artifactId>
 		    <version>1.2.2</version>
 		    <scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.0</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<build>
