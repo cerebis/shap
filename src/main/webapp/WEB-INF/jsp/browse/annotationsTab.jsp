@@ -32,6 +32,9 @@
 			"bAutoWidth": false,
 			"bFilter": false,
 			"aaSorting": [[3,"asc"]],
+			"aoColumnDefs" : [
+  				{"sClass": "text_right", "aTargets": [0,3] },
+  			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${feature.id}/ajax'/>",
 			"fnServerData": function ( sSource, aoData, fnCallback ) {

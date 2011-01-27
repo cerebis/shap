@@ -32,6 +32,10 @@
 			"bServerSide": true,
 			"bFilter": false,
 			"aaSorting": [[1,"asc"]],
+			"aoColumnDefs" : [
+ 				{"sClass": "text_right", "aTargets": [0,1,2,4,8] },
+ 				{"sClass": "text_center", "aTargets": [9] },
+			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${sequence.id}/ajax'/>",
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
