@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -110,13 +111,13 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 	 * Create a MultiField query from a supplied query string, specifying a default operator between terms.
 	 * 
 	 * @param queryText - the query string to parse
-	 * @param operator - default operator between terms
+	 * @param defaultOperator - default operator between terms
 	 * @return MultiFieldQuery
 	 * @throws ParseException
 	 */
-	protected Query createMultiFieldQuery(String queryText, String[] fields, Operator operator) throws ParseException {
-		QueryParser qp = new MultiFieldQueryParser(LUCENE_VERSION, fields, new KeywordAnalyzer());
-		qp.setDefaultOperator(operator);
+	protected Query createMultiFieldQuery(String queryText, String[] queryfields, Operator defaultOperator) throws ParseException {
+		QueryParser qp = new MultiFieldQueryParser(LUCENE_VERSION, queryfields, new StandardAnalyzer(LUCENE_VERSION));
+		qp.setDefaultOperator(defaultOperator);
 		return qp.parse(queryText);
 	}
 	

@@ -75,7 +75,14 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 	
 	public SearchResult<Report> getReports(String queryText, int firstResult, int maxResults) {
 		Class<?>[] queryClasses = {Project.class,Sample.class,Sequence.class,Feature.class};
-		String[] queryFields = { "id","name","description","type","annotations.accession","annotations.description"};
+		String[] queryFields = { 
+				/* Basic fields */
+				"id","name","description","type","detector","annotator",
+				/* Feature associations */
+				"annotations.accession", "annotations.description",
+				"sequence.id", "sequence.name", "sequence.description",
+				"sequence.sample.id", "sequence.sample.name", "sequence.sample.description",
+				"sequence.sample.project.id", "sequence.sample.project.name", "sequence.sample.project.description"};
 		return getFullTextSearch().find(queryText, queryFields, queryClasses, firstResult, maxResults);
 	}
 
