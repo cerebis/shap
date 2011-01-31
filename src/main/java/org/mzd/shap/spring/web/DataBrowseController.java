@@ -21,6 +21,7 @@
 package org.mzd.shap.spring.web;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -43,8 +44,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/browse")
 public class DataBrowseController extends AbstractControllerSupport {
-	private final DateFormat dateFormatter = DateFormat.getDateInstance();
-
+	private final DateFormat dateFormat;
+	private final DecimalFormat sciFormat;
+	private final DecimalFormat deciFormat;
+	
+	public DataBrowseController() {
+		dateFormat = DateFormat.getDateInstance();
+		sciFormat = new DecimalFormat("0.000E0");
+		deciFormat = new DecimalFormat();
+		deciFormat.setMaximumFractionDigits(2);
+	}
+	
 	public class ProjectTableResponse extends DataTableResponse {
 		public ProjectTableResponse() {
 			super("id","name","description","creation","samples");
@@ -53,7 +63,7 @@ public class DataBrowseController extends AbstractControllerSupport {
 		@Override
 		public void addAll(List<Object[]> rows) {
 			for (Object[] row : rows) {
-				row[3] = dateFormatter.format(row[3]);
+				row[3] = dateFormat.format(row[3]);
 			}
 			setAaData(rows);
 		}
@@ -67,7 +77,7 @@ public class DataBrowseController extends AbstractControllerSupport {
 		@Override
 		public void addAll(List<Object[]> rows) {
 			for (Object[] row : rows) {
-				row[3] = dateFormatter.format(row[3]);
+				row[3] = dateFormat.format(row[3]);
 			}
 			setAaData(rows);
 		}
@@ -75,7 +85,15 @@ public class DataBrowseController extends AbstractControllerSupport {
 	
 	public class SequenceTableResponse extends DataTableResponse {
 		public SequenceTableResponse() {
-			super("id","name","description","coverage","taxonomy","length","features");
+			super("id","name","description","taxonomy","coverage","length","features");
+		}
+
+		@Override
+		public void addAll(List<Object[]> rows) {
+			for (Object[] row : rows) {
+				row[4] = deciFormat.format(row[4]);
+			}
+			setAaData(rows);
 		}
 	}
 
@@ -83,11 +101,27 @@ public class DataBrowseController extends AbstractControllerSupport {
 		public FeatureTableResponse() {
 			super("id","start","end","strand","frame","partial","confidence","type","length","annotations");
 		}
-	}
+
+		@Override
+		public void addAll(List<Object[]> rows) {
+			for (Object[] row : rows) {
+				row[6] = sciFormat.format(row[6]);
+			}
+			setAaData(rows);
+		}
+}
 
 	public class AnnotationTableResponse extends DataTableResponse {
 		public AnnotationTableResponse() {
 			super("accession", "description", "confidence", "annotator");
+		}
+
+		@Override
+		public void addAll(List<Object[]> rows) {
+			for (Object[] row : rows) {
+				row[2] = sciFormat.format(row[2]);
+			}
+			setAaData(rows);
 		}
 	}
 

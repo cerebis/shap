@@ -33,7 +33,7 @@
 			"bFilter": false,
 			"aaSorting": [[3,"asc"]],
 			"aoColumnDefs" : [
-  				{"sClass": "text_right", "aTargets": [0,3] },
+  				{"sClass": "text_right", "aTargets": [0,2,3] },
   			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${feature.id}/ajax'/>",
@@ -98,7 +98,7 @@
 				<tr><td class="label">Sequence Id</td><td>${sequence.id}</td></tr>
 				<tr><td class="label">Type</td><td>${feature.type}</td></tr>
 				<tr><td class="label">Detector</td><td>${feature.detector.name}</td></tr>
-				<tr><td class="label">Confidence</td><td><fmt:formatNumber value="${feature.confidence}" pattern="#.##E0"/></td></tr>
+				<tr><td class="label">Confidence</td><td><fmt:formatNumber value="${feature.confidence}" pattern="0.000E0"/></td></tr>
 				<tr><td class="label">Location</td><td>${feature.location}</td></tr>
 				<tr><td class="label">Partial</td><td>${feature.partial}</td></tr>
 			</table>

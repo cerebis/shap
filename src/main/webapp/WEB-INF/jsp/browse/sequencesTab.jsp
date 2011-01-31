@@ -32,10 +32,18 @@
 			"bFilter": false,
 			"aaSorting": [[1,"asc"]],
 			"aoColumnDefs" : [
- 				{"sClass": "text_right", "aTargets": [0,5] },
- 				{"sClass": "text_center", "aTargets": [6] },
- 				{"sWidth": "30%", "aTargets": [2]},
+ 				{"sClass": "text_right", "aTargets": [0,4,5] },
+ 				{"sClass": "text_center", "aTargets": [6] }
  			],
+			"aoColumns": [
+				{"sName": "id"},
+				{"sName": "name"},
+				{"sName": "description"},
+				{"sName": "coverage"},
+				{"sName": "taxonomy"},
+				{"sName": "length"},
+				{"sName": "features"}
+			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${sample.id}/ajax'/>",
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -132,8 +140,8 @@
 				<th>Id</th>
 				<th>Name</th>
 				<th>Description</th>
-				<th>Coverage</th>
 				<th>Taxonomy</th>
+				<th>Coverage</th>
 				<th>Length</th>
 				<th>Features</th>
 				</tr></thead>
@@ -146,8 +154,8 @@
 				<th>Id</th>
 				<th>Name</th>
 				<th>Description</th>
-				<th>Coverage</th>
 				<th>Taxonomy</th>
+				<th>Coverage</th>
 				<th>Length</th>
 				<th>Features</th>
 				</tr></tfoot>

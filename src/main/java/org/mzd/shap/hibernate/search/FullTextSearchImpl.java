@@ -134,10 +134,11 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 					
 					FullTextQuery ftq = Search.getFullTextSession(session)
 						.createFullTextQuery(query,allowedClasses)
+						.setProjection(FullTextQuery.SCORE,FullTextQuery.THIS)
 						.setFirstResult(firstResult)
 						.setMaxResults(maxResults);
 					
-					List<?> objResult = ftq.list();
+					List<?> resultSet = ftq.list();
 					
 					ReportBuilderFactory builderFactory = new ReportBuilderFactory("detail","=");
 					
@@ -145,8 +146,9 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 					// In the future, this should use a projection and possible the conversion then
 					// becomes a ResultTransformer.
 					List<Report> reports = new ArrayList<Report>();
-					for (Object obj : objResult) {
-						reports.add(builderFactory.buildReport(obj));
+					for (Object obj : resultSet) {
+						Object[] row = (Object[])obj;
+						reports.add(builderFactory.buildReport((Float)row[0], row[1]));
 					}
 					
 					result.setResults(reports);

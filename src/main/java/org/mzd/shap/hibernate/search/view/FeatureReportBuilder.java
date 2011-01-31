@@ -29,8 +29,8 @@ public class FeatureReportBuilder extends ReportBuilder{
 	}
 	
 	@Override
-	public Report build(Object obj) {
-		Report report = super.build(obj);
+	public Report build(Float score, Object obj) {
+		Report report = super.build(score, obj);
 		Feature target = (Feature)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getSequence().getId());

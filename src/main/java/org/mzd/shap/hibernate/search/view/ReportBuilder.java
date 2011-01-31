@@ -40,8 +40,9 @@ public abstract class ReportBuilder {
 				.getSimpleName();
 	}
 	
-	public Report build(Object obj) {
+	public Report build(Float score, Object obj) {
 		Report report = new Report();
+		report.setScore(score);
 		report.setLabel(getShortClassName(obj));
 		return report;
 	}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt' %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <script type="text/javascript" charset="utf-8">
 	/* Session objects disabled */
@@ -24,6 +25,10 @@
 			"bFilter": false,
 			"bSort": false,		
 			"sPaginationType": "full_numbers",
+			"aaSorting": [[1,"asc"]],
+			"aoColumnDefs" : [
+				{"sClass": "text_right", "aTargets": [0,3] }
+			],
 			/*"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 				if ( jQuery.inArray(aData[0], aSelectedId) != -1 ) {
 					$(nRow).addClass('row_selected');
@@ -31,11 +36,6 @@
 				}
 				return nRow;
 			},*/
-			"aoColumns": [
-				{"bVisible": 0 }, /* ID column */
-		  		null,
-		  		null,
-				null]
 		});
 	
 	
@@ -68,24 +68,25 @@
 	});
 </script>
 
+		<!--
 		<button id="selectAll">All</button>
 		<button id="selectNone">None</button>
+		-->
+		
 		<table cellpadding="0" cellspacing="0" border="0" class="display ex_highlight" id="table_results">
 			<thead><tr>
-			<th>id</th>
-			<!--<th></th>-->
-			<th></th>
+			<th>Id</th>
 			<th>Class</th>
 			<th>Details</th>
+			<th>Score</th>
 			</tr></thead>
 			<tbody>
 				<c:forEach items="${results}" var="item">
 				<tr>
-					<td>${item.id}</td>
-					<!--<td><input type="checkbox" name="itemIds" value="${item.id}"/></td>-->
-					<td><a class="in_panel" href="<c:url value='/app/browse/object/${item.id}'/>">View</a></td>
+					<td><a class="in_panel" href="<c:url value='/app/browse/object/${item.id}'/>">${item.id}</a></td>
 					<td>${item.label}</td>
 					<td>${item.detail}</td>
+					<td><fmt:formatNumber maxFractionDigits="2" value="${item.score}"/></td>
 				</tr>
 				</c:forEach>
 			</tbody>

@@ -29,8 +29,8 @@ public class SequenceReportBuilder extends ReportBuilder {
 	}
 	
 	@Override
-	public Report build(Object obj) {
-		Report report = super.build(obj);
+	public Report build(Float score, Object obj) {
+		Report report = super.build(score, obj);
 		Sequence target = (Sequence)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getSample().getId());

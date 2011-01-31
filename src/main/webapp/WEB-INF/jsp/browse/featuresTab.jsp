@@ -102,13 +102,15 @@
 				<tr><td class="label">Name</td><td>${sequence.name}</td></tr>
 				<tr><td class="label">Description</td><td>${sequence.description}</td></tr>
 				<tr><td class="label">Taxonomy</td><td>${fn:toLowerCase(sequence.taxonomy)}</td></tr>
-				<tr><td class="label">Coverage</td><td><fmt:formatNumber maxFractionDigits="1" value="${sequence.coverage}"/></td></tr>
+				<tr><td class="label">Coverage</td><td><fmt:formatNumber maxFractionDigits="2" value="${sequence.coverage}"/></td></tr>
+				<c:if test="${not empty featureBreakdown}">
 				<tr>
 				<td class="label">Feature Breakdown</td>
 				<td><table>
 					<c:forEach items="${featureBreakdown}" var="ftype"><tr class="label"><td>${ftype.type.shortName}</td><td>${ftype.count}</td></tr></c:forEach>
 				</table></td>
 				</tr>
+				</c:if>
 			</table>
 		</div>
 		<div id="app_export">

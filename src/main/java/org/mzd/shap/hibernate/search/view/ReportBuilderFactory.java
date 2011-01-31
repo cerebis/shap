@@ -63,17 +63,19 @@ public class ReportBuilderFactory {
 	 * The method looks up the associated builder from the registry and then invokes its build method on
 	 * the same target object to produce a report.
 	 * 
+	 * @param score
 	 * @param targetObject
+	 * 
 	 * @return report for targetObject
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public Report buildReport(Object targetObject) {
+	public Report buildReport(Float score, Object targetObject) {
 		String className = HibernateProxyHelper
 			.getClassWithoutInitializingProxy(targetObject)
 				.getName();
 		
-		return getBuilder(className).build(targetObject);
+		return getBuilder(className).build(score, targetObject);
 	}
 	
 	/**

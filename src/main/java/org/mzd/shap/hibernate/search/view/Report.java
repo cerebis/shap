@@ -32,6 +32,7 @@ public class Report {
 	private Integer parentId;
 	private String detail;
 	private String label;
+	private Float score;
 
 	public Integer getId() {
 		return id;
@@ -56,5 +57,11 @@ public class Report {
 	}
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	public Float getScore() {
+		return score;
+	}
+	public void setScore(Float score) {
+		this.score = score;
 	}
 }

@@ -29,8 +29,8 @@ public class SampleReportBuilder extends ReportBuilder {
 	}
 	
 	@Override
-	public Report build(Object obj) {
-		Report report = super.build(obj);
+	public Report build(Float score, Object obj) {
+		Report report = super.build(score, obj);
 		Sample target = (Sample)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getProject().getId());
