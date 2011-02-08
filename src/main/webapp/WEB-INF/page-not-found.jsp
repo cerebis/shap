@@ -18,8 +18,8 @@
 <div id="app_container" class="clearfix">
 <div id="app_header">Page Not Found</div>
 <div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
-<div id="app_content" class="clearfix">
-	<h3>The requested page was not found.</h3>
+<div id="app_content" class="clearfix" style="text-align: center;">
+	<h3 style=">The requested page was not found.</h3>
 	Click <a href="<c:url value='/app/'/>">here</a> if not redirected shortly.
 </div>
 <div class="app_bar ui-widget-header ui-corner-all" style="border-top: none"></div>
