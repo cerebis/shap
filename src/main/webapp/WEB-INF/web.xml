@@ -74,4 +74,9 @@
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/page-not-found.jsp</location>
+	</error-page>
+	
 </web-app>
