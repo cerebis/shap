@@ -62,10 +62,8 @@
 <body>
 <div id="app_container" class="clearfix">
 
-	<div id="app_header">
-		<span id="app_title">SHAP Browse</span>
-		<span id="app_logout"><span class="black_italics">${user.username} : </span><a href="<c:url value='/logout'/>">Logout</a></span>
-	</div>
+	<jsp:include page="browse_header.jsp"/>
+	
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 	
 	<div id="app_nav"> 

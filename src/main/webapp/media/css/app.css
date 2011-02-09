@@ -2,12 +2,41 @@ html {
 	font-family: Verdana,Arial,sans-serif; font-size: 1.0em;
 }
 
+body {
+	background-color: #F2F7F7;
+}
+
+a {
+	color:#245199;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
 .text_center {
 	text-align: center;
 }
 
 .text_right {
 	text-align: right;
+}
+
+.result_score {
+	vertical-align: middle;
+	height: 10px;
+	background-color: #CC1D13;
+	display: inline-block;
+	float: right;
+}
+
+div.result_detail {
+	font-size: 0.8em;
+}
+
+.result_detail em {
+	color: #6D97BF;
 }
 
 .dataTables_info {
@@ -71,7 +100,7 @@ html {
 #app_info .label {
 	text-align: right;
 	padding-right: 10px;	
-	color: #05A;
+/*	color: #05A;*/
 }
 
 #app_export {
@@ -79,25 +108,49 @@ html {
 }
 
 #app_auth {
-	width: 15em;
-	padding: 1.5em;
-	margin-top: 2em;
+	width: 225px;
+	margin-top: 50px;
+	margin-bottom: 50px;
 	margin-left: auto;
 	margin-right: auto;
-	border: 1px solid black;
-}
-#app_auth label {
-	display: -moz-inline-box;
-	display: inline-block;
-	width: 5em;
-}
-#app_auth div {
-	padding: .2em .1em;
+	border: 5px solid #246199;
+	background-color: #74A1CC;
 }
 
-#app_title {
+#app_auth table {
+	padding: 15px;
+	background-color: inherit;
+}
+
+#app_auth input {
+	border: 1px solid black;
+}
+
+#app_auth input[type="submit"] {
+	float: right;
+}
+
+#app_header {
+	height: 50px;
+	font-size: 2em;
+	color: #246199;
+	padding-top: 10px;
+}
+
+.header_title {
 	float: left;
 }
+
+.header_comment {
+	color: #74A1CC;
+	font-size: smaller;
+}
+
+.header_action {
+	float: right;
+	font-size: smaller;
+}
+
 #app_logout {
 	float: right;
 	font-size: 0.6em;
@@ -116,11 +169,6 @@ html {
 	height: 100%;
 	min-height: 100%;
 }
-#app_header {
-	height: 50px;
-	font-size: 2em;
-	color: #066;
-}
 
 .app_bar {
 	height: 25px;
@@ -137,6 +185,7 @@ html {
 
 #app_form {
 	margin-bottom: 1em;
+	padding: none;
 }
 #app_content {
 	padding: 1em 2em;

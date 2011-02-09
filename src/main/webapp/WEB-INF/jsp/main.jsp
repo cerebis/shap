@@ -11,6 +11,41 @@
 	@import "<c:url value='/media/css/demo_table.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
+<style type="text/css">
+#insert_search {
+	width: 80%;
+	padding: 0;
+	padding-left: 20px;
+}
+
+#insert_search td {
+	padding: 5px;
+}
+
+table td.result_detail {
+	width: 100%;
+}
+
+table td:first-child {
+	vertical-align: top;
+}
+
+.result_background {
+	border: 1px solid black;
+	background-color: #FF9F87;
+	float: right;
+	width: 25px;
+	margin-top: 5px;
+}
+
+#searchWord {
+	display: none;
+}
+
+.searchWord {
+	font-style: italic;
+}
+</style>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-1.4.2.min.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-ui-1.8.5.custom.min.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.validate.js"/>'></script>
@@ -23,21 +58,15 @@
 	var clearAllUrl = "<c:url value='/app/bench/clear_ajax'/>";
 	*/
 	var sessionTimeoutRedirectUrl = "<c:url value='/app/search'/>";
-	
+
 	$(document).ready(function() {
-		/*$.get("<c:url value='/app/search/form'/>", function (data) {
-			$("#app_dynamic").html(data);
-		});*/
-	
-		/*ajaxSessionItemCount();*/
-		/*$("#clearAll").click(clearAll);*/
 	
 		$('body').ajaxError(handleAjaxSessionTimeout);
 
 		$("#queryText").focus();
 		
 		/* Search Tab validation and submission */
-		$("#searchQuery").validate({
+		/*$("#searchQuery").validate({
 			rules: {
 				queryText: {
 					required: true,
@@ -52,22 +81,87 @@
 				},
 			errorLabelContainer: "#errors",
 			submitHandler: function(form) {
-				$.post("<c:url value='/app/search/query'/>",
+				$.post("<c:url value='/app/search/query_json'/>",
 					$("#searchQuery").serialize(),
 					function(data) {$("#app_result").html(data);}
 				);
-				/*ajaxSessionItemCount();*/
 				}
+		});*/
+
+		$(".search_button").click(function() {
+			var queryText = $("#queryText").val();
+			var dataString = "queryText=" + queryText;
+			if (queryText == "") {}
+			else {
+				$.ajax( {
+					"dataType": "json",
+					"type": "GET",
+					"url": "<c:url value='/app/search/query_json'/>",
+					"data": dataString,
+					"cache" : false,
+					"beforeSend": function(html) {
+						document.getElementById("insert_search").innerHTML = "";
+						$("#flash").show();
+						$("#searchWord").show();
+						$(".searchWord").html("'" + queryText + "'");
+						$("#flash").html('<img src="/shap/media/images/ajax-loader.gif" align="absmiddle">&nbsp;Loading Results...');
+					},
+					"complete": function(html) {
+						$("#flash").hide();
+					},
+					"success": function(data) {
+						$(".searchCount").html("<span> returned " + data.resultSize + " results</span>");
+						if (data.results.length > 0) {
+							var maxScore = data.results[0].score;
+							for (var i=0; i<data.results.length; i++) {
+								var an = $("<a/>");
+								an.text(data.results[i].label + " " + data.results[i].id);
+								an.attr("href","<c:url value='/app/browse/object/'/>" + data.results[i].id);
+			
+								var sbar = $("<div/>",{"class": "result_score"});
+								sbar.attr("title", "Score: " + data.results[i].score);
+								sbar.width(Math.round(25 * data.results[i].score / maxScore));
+								
+								var score = $("<div/>",{"class": "result_background"});
+								score.append(sbar);
+
+								var head = $("<div/>", {"class": "result_heading"});
+								head.append(an);
+														
+								var detail = $("<div/>", {"class": "result_detail"});
+								detail.html(data.results[i].detail);
+
+								var td_detail = $("<td/>", {"class": "result_detail"});
+								td_detail.append(head);
+								td_detail.append(detail);
+								
+								var td_score = $("<td/>");
+								td_score.append(score);
+
+								var row = $("<tr/>", {"class": "result_row"});
+								row.append(td_score);
+								row.append(td_detail);
+								$("#insert_search").append(row);
+							}
+							$("#insert_search").show();
+						}
+					}
+				} );
+			}
+			return false;
 		});
+
 	});
+
+	
 </script>
 </head>
 <body>
 <div id="app_container" class="clearfix">
 
 	<div id="app_header">
-		<span id="app_title">SHAP Search</span>
-		<span id="app_logout"><span class="black_italics">${user.username} : </span><a href="<c:url value='/logout'/>">Logout</a></span>
+		<div class="header_title">SHAP <span class="header_comment">search</span></div>
+		<div class="header_action">${user.username} <a href="<c:url value='/logout'/>">logout</a></div>
 	</div>
 	
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
@@ -80,23 +174,20 @@
 	</div>
 	
 	<div id="app_content" class="clearfix">
-		<!--
-		<div id="app_session">
-			<b>Session Store: </b><span id="app_session_count"></span>
-			<button id="clearAll">Clear All</button>
-		</div>
-		-->
-
 		<div id="app_form">
 			<h3>Search the system</h3>
 			<form id="searchQuery">
 				<input id="queryText" name="queryText" size="40" tabindex="1" value="${queryText}"/>
-				<input type="submit" tabindex="2" value="Search"/>
+				<input type="submit" tabindex="2" value="Search" class="search_button"/>
 				<div id="errors"></div>
 			</form>
 		</div>
 		
-		<div id="app_result"></div>
+		<div id="app_result">
+			<div id="searchWord">Search for <span class="searchWord"></span><span class="searchCount"></span></div>
+			<div id="flash"></div>
+			<table id="insert_search" class="update"></table>
+		</div>
 
 	</div> <!-- app_content -->
 	

@@ -25,7 +25,7 @@ $(function() {
 <body>
 <div id="app_container" class="clearfix">
 
-<div id="app_header">SHAP Login</div>
+<div id="app_header"><div class="header_title">SHAP <span class="header_comment">login</span></div></div>
 <div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 
 <div id="app_content" class="clearfix">
@@ -40,11 +40,11 @@ $(function() {
 				<a id="logout" href="<c:url value='/logout'/>">Logout</a>
 			</c:when>
 			<c:otherwise> 
-				<div class="app_form" class="clearfix">
+				<table class="app_form" class="clearfix">
 					<form name="f" action="<c:url value='j_spring_security_check'/>" method="post">
-						<div class="ui-widget clearfix"><label for="username">Username</label><input id="username" name="j_username" type="text" size="10" maxlength="10" tabindex="1" value="<c:if test='${not empty param.login_error}'><c:out value='${SPRING_SECURITY_LAST_USERNAME}'/></c:if>"/></div>
-						<div class="ui-widget clearfix"><label for="password">Password</label><input id="password" name="j_password" type="password" size="10" maxlength="10" tabindex="2"/></div>
-						<div class="ui-widget clearfix"><label></label><input name="submit" type="submit" tabindex="3" value="Submit"/></div>
+						<tr><td>Username</td><td><input id="username" name="j_username" type="text" size="10" maxlength="10" tabindex="1" value="<c:if test='${not empty param.login_error}'><c:out value='${SPRING_SECURITY_LAST_USERNAME}'/></c:if>"/></td></tr>
+						<tr><td>Password</td><td><input id="password" name="j_password" type="password" size="10" maxlength="10" tabindex="2"/></td></tr>
+						<tr><td/><td><input name="submit" type="submit" tabindex="3" value="Login"/></td></tr>
 					</form>
 					<c:if test="${not empty param.login_error}">
 						<div class="ui-widget">
@@ -53,7 +53,7 @@ $(function() {
 							</div>
 						</div>
 					</c:if>
-				</div>
+				</table>
 			</c:otherwise>
 		</c:choose>
 	</div>
