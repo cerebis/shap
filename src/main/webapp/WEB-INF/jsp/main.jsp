@@ -101,6 +101,7 @@ table td:first-child {
 					"cache" : false,
 					"beforeSend": function(html) {
 						document.getElementById("insert_search").innerHTML = "";
+						$(".searchCount").html("");
 						$("#flash").show();
 						$("#searchWord").show();
 						$(".searchWord").html("'" + queryText + "'");
@@ -110,7 +111,7 @@ table td:first-child {
 						$("#flash").hide();
 					},
 					"success": function(data) {
-						$(".searchCount").html("<span> returned " + data.resultSize + " results</span>");
+						$(".searchCount").html(" returned " + data.resultSize + " results");
 						if (data.results.length > 0) {
 							var maxScore = data.results[0].score;
 							for (var i=0; i<data.results.length; i++) {

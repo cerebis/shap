@@ -40,7 +40,7 @@ $(function() {
 				<a id="logout" href="<c:url value='/logout'/>">Logout</a>
 			</c:when>
 			<c:otherwise> 
-				<table class="app_form" class="clearfix">
+				<table id="app_form" class="clearfix">
 					<form name="f" action="<c:url value='j_spring_security_check'/>" method="post">
 						<tr><td>Username</td><td><input id="username" name="j_username" type="text" size="10" maxlength="10" tabindex="1" value="<c:if test='${not empty param.login_error}'><c:out value='${SPRING_SECURITY_LAST_USERNAME}'/></c:if>"/></td></tr>
 						<tr><td>Password</td><td><input id="password" name="j_password" type="password" size="10" maxlength="10" tabindex="2"/></td></tr>
