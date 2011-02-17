@@ -52,7 +52,7 @@ import org.mzd.shap.domain.dao.FeatureDaoSpringHibernate.FeatureBreakdownDTO;
 import org.mzd.shap.domain.io.FeatureIOXstream;
 import org.mzd.shap.domain.io.SequenceIOXstream;
 import org.mzd.shap.hibernate.search.FullTextSearch;
-import org.mzd.shap.hibernate.search.FullTextSearchImpl.SearchResult;
+import org.mzd.shap.hibernate.search.SearchResult;
 import org.mzd.shap.hibernate.search.view.Report;
 import org.mzd.shap.io.Fasta;
 import org.mzd.shap.io.FastaReader;

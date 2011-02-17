@@ -31,7 +31,7 @@ import org.mzd.shap.domain.Sample;
 import org.mzd.shap.domain.Sequence;
 import org.mzd.shap.domain.authentication.User;
 import org.mzd.shap.domain.dao.FeatureDaoSpringHibernate.FeatureBreakdownDTO;
-import org.mzd.shap.hibernate.search.FullTextSearchImpl.SearchResult;
+import org.mzd.shap.hibernate.search.SearchResult;
 import org.mzd.shap.hibernate.search.view.Report;
 
 public interface DataViewService {
