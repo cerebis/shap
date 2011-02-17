@@ -36,6 +36,18 @@
  				{"sClass": "text_right", "aTargets": [0,1,2,4,8] },
  				{"sClass": "text_center", "aTargets": [9] },
 			],
+			"aoColumns": [
+			  	{"sName": "id"},
+			  	{"sName": "start"},
+			  	{"sName": "end"},
+			  	{"sName": "strand"},
+			  	{"sName": "frame"},
+			  	{"sName": "partial"},
+			  	{"sName": "confidence"},
+			  	{"sName": "type"},
+			  	{"sName": "length"},
+			  	{"sName": "annotations"}
+			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${sequence.id}/ajax'/>",
 			"fnServerData": function ( sSource, aoData, fnCallback ) {

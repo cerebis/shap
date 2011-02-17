@@ -9,6 +9,7 @@
 	@import "<c:url value='/media/css/smoothness/jquery-ui-1.8.5.custom.css'/>";
 	@import "<c:url value='/media/css/demo_table_jui.css'/>";
 	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/pagination.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
 <style type="text/css">
@@ -49,6 +50,7 @@ table td:first-child {
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-1.4.2.min.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-ui-1.8.5.custom.min.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.validate.js"/>'></script>
+<script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.pagination.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.dataTables.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/app.js"/>'></script>
 <script type="text/javascript">
@@ -58,102 +60,115 @@ table td:first-child {
 	var clearAllUrl = "<c:url value='/app/bench/clear_ajax'/>";
 	*/
 	var sessionTimeoutRedirectUrl = "<c:url value='/app/search'/>";
+	
+	var maxItems = 10;
+	var maxScore = 1.0;
+	var queryUrl = "<c:url value='/app/search/query_json'/>";
+	
+function replaceRows(data) {
+	
+	$("#resultTable").hide().empty();
+	
+	if (data.firstResult == 0) {
+		$("#resultTable").data("page",0);
+		maxScore = data.results[0].score;
+	}
+
+	for (var i=0; i<data.results.length; i++) {
+		var an = $("<a/>");
+		an.text(data.results[i].label + " " + data.results[i].id);
+		an.attr("href","<c:url value='/app/browse/object/'/>" + data.results[i].id);
+
+		var sbar = $("<div/>",{"class": "result_score"});
+		sbar.attr("title", "Score: " + data.results[i].score);
+		sbar.width(Math.round(25 * data.results[i].score / maxScore));
+		
+		var score = $("<div/>",{"class": "result_background"});
+		score.append(sbar);
+
+		var head = $("<div/>", {"class": "result_heading"});
+		head.append(an);
+								
+		var detail = $("<div/>", {"class": "result_detail"});
+		detail.html(data.results[i].detail);
+
+		var td_detail = $("<td/>", {"class": "result_detail"});
+		td_detail.append(head);
+		td_detail.append(detail);
+		
+		var td_score = $("<td/>");
+		td_score.append(score);
+
+		var row = $("<tr/>", {"class": "result_row"});
+		row.append(td_score);
+		row.append(td_detail);
+		
+		$("#resultTable").append(row);
+	}
+
+	$("#resultTable").show();
+}
+
+function prepareForSubmit(queryText) {
+	$(".searchCount").html("");
+	$("#flash").html('<img src="/shap/media/images/ajax-loader.gif" align="absmiddle">&nbsp;Loading Results...');
+	$("#flash").show();
+	$(".searchWord").html("'" + queryText + "'");
+	$("#searchWord").show();
+	$("#resultTable").hide().empty();
+	$("#pagination").hide();
+}
+
+function cleanUpSubmit() {
+	$("#flash").hide();
+}
+
+function submitSearch() {
+	var queryText = $("#queryText").val();
+	if (queryText == "") {/*...*/}
+	else {
+		$.ajax({
+			cache: false,
+			dataType: "json",
+			url: queryUrl,
+			data: "queryText=" + queryText,
+			beforeSend: function() {
+				prepareForSubmit(queryText);
+			},
+			success: function(data) {
+				$(".searchCount").html(" returned " + data.resultSize + " results");
+				if (data.resultSize > 0) {
+					replaceRows(data);
+					$("#pagination").show();
+					$("#pagination").pagination(
+						data.resultSize,
+						{callback: function(pageIndex, jq) {
+								if (pageIndex != $("#resultTable").data("page")) {
+									$.ajax({
+										cache: false,
+										dataType: "json",
+										url: queryUrl,
+										data: "queryText=" + queryText + "&first=" + pageIndex*maxItems + "&max=" + maxItems,
+										success: function(data) {replaceRows(data);}
+									});
+									$("#resultTable").data("page",pageIndex);
+								}
+						}}
+					);
+				}
+			},
+			complete: cleanUpSubmit
+		});
+	}
+	
+	return false;
+}
 
 	$(document).ready(function() {
-	
 		$('body').ajaxError(handleAjaxSessionTimeout);
-
 		$("#queryText").focus();
-		
-		/* Search Tab validation and submission */
-		/*$("#searchQuery").validate({
-			rules: {
-				queryText: {
-					required: true,
-					remote: "<c:url value='/app/search/validate_ajax'/>"
-					}
-				},
-			messages: {
-				queryText: {
-					required: "Please enter a search query",
-					remote: "Queries must be longer than 1 character and cannot begin with *"
-					}
-				},
-			errorLabelContainer: "#errors",
-			submitHandler: function(form) {
-				$.post("<c:url value='/app/search/query_json'/>",
-					$("#searchQuery").serialize(),
-					function(data) {$("#app_result").html(data);}
-				);
-				}
-		});*/
-
-		$(".search_button").click(function() {
-			var queryText = $("#queryText").val();
-			var dataString = "queryText=" + queryText;
-			if (queryText == "") {}
-			else {
-				$.ajax( {
-					"dataType": "json",
-					"type": "GET",
-					"url": "<c:url value='/app/search/query_json'/>",
-					"data": dataString,
-					"cache" : false,
-					"beforeSend": function(html) {
-						document.getElementById("insert_search").innerHTML = "";
-						$(".searchCount").html("");
-						$("#flash").show();
-						$("#searchWord").show();
-						$(".searchWord").html("'" + queryText + "'");
-						$("#flash").html('<img src="/shap/media/images/ajax-loader.gif" align="absmiddle">&nbsp;Loading Results...');
-					},
-					"complete": function(html) {
-						$("#flash").hide();
-					},
-					"success": function(data) {
-						$(".searchCount").html(" returned " + data.resultSize + " results");
-						if (data.results.length > 0) {
-							var maxScore = data.results[0].score;
-							for (var i=0; i<data.results.length; i++) {
-								var an = $("<a/>");
-								an.text(data.results[i].label + " " + data.results[i].id);
-								an.attr("href","<c:url value='/app/browse/object/'/>" + data.results[i].id);
-			
-								var sbar = $("<div/>",{"class": "result_score"});
-								sbar.attr("title", "Score: " + data.results[i].score);
-								sbar.width(Math.round(25 * data.results[i].score / maxScore));
-								
-								var score = $("<div/>",{"class": "result_background"});
-								score.append(sbar);
-
-								var head = $("<div/>", {"class": "result_heading"});
-								head.append(an);
-														
-								var detail = $("<div/>", {"class": "result_detail"});
-								detail.html(data.results[i].detail);
-
-								var td_detail = $("<td/>", {"class": "result_detail"});
-								td_detail.append(head);
-								td_detail.append(detail);
-								
-								var td_score = $("<td/>");
-								td_score.append(score);
-
-								var row = $("<tr/>", {"class": "result_row"});
-								row.append(td_score);
-								row.append(td_detail);
-								$("#insert_search").append(row);
-							}
-							$("#insert_search").show();
-						}
-					}
-				} );
-			}
-			return false;
-		});
-
+		$(".search_button").click(submitSearch);
 	});
-
 	
 </script>
 </head>
@@ -187,7 +202,8 @@ table td:first-child {
 		<div id="app_result">
 			<div id="searchWord">Search for <span class="searchWord"></span><span class="searchCount"></span></div>
 			<div id="flash"></div>
-			<table id="insert_search" class="update"></table>
+			<table id="resultTable" class="update"></table>
+			<div id="pagination" class="pagination"></div>
 		</div>
 
 	</div> <!-- app_content -->

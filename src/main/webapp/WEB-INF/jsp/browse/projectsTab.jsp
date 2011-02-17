@@ -31,11 +31,18 @@
 			"bServerSide": true,
 			"bFilter": false,
 			"aaSorting": [[1,"asc"]],
-			"aoColumnDefs" : [
+			"aoColumnDefs": [
 	 			{"sClass": "text_right", "aTargets": [0,3] },
 	 			{"sClass": "text_center", "aTargets": [4] },
 				{"sWidth": "40%", "aTargets": [2]},
 				{"sWidth": "15%", "aTargets": [3,4]},
+			],
+			"aoColumns": [
+				{"sName": "id"},
+				{"sName": "name"},
+				{"sName": "description"},
+				{"sName": "creation"},
+				{"sName": "samples"},
 			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/ajax'/>",

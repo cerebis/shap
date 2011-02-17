@@ -31,7 +31,7 @@
 			"bServerSide": true,
 			"bFilter": false,
 			"aaSorting": [[1,"asc"]],
-			"aoColumnDefs" : [
+			"aoColumnDefs": [
  				{"sClass": "text_right", "aTargets": [0,4,5] },
  				{"sClass": "text_center", "aTargets": [6] }
  			],

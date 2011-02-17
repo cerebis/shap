@@ -32,8 +32,14 @@
 			"bAutoWidth": false,
 			"bFilter": false,
 			"aaSorting": [[3,"asc"]],
-			"aoColumnDefs" : [
+			"aoColumnDefs": [
   				{"sClass": "text_right", "aTargets": [0,2,3] },
+  			],
+  			"aoColumns": [
+				{"sName": "accession"},
+				{"sName": "description"},
+				{"sName": "confidence"},
+				{"sName": "annotator"}
   			],
 			"sPaginationType": "full_numbers", 
 			"sAjaxSource": "<c:url value='/app/browse/object/${feature.id}/ajax'/>",
