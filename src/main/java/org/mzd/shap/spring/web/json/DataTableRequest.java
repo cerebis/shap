@@ -45,6 +45,8 @@ public class DataTableRequest {
 	@Range(min=0,max=100)
 	private Integer iColumns;
 	private String sSearchGlobal;
+	@NotNull
+	private String sColumns;
 	private Boolean	bEscapeRegexGlobal;
 	private List<Boolean> bSortable = new ArrayList<Boolean>();
 	private List<Boolean> bSearchable = new ArrayList<Boolean>();
@@ -66,6 +68,7 @@ public class DataTableRequest {
 			.append("iDisplayLength",getIDisplayLength())
 			.append("iColumns",getIColumns())
 			.append("sSearchGlobal",getSSearchGlobal())
+			.append("sColumns",getsColumns())
 			.append("bEscapeRegexGlobal",getBEscapeRegexGlobal())
 			.append("bSortable",getBSortable())
 			.append("bSearchable",getBSearchable())
@@ -78,6 +81,13 @@ public class DataTableRequest {
 			.toString();
 	}
 	
+	public String getsColumns() {
+		return sColumns;
+	}
+	public void setsColumns(String sColumns) {
+		this.sColumns = sColumns;
+	}
+
 	public String getSortingDirection() {
 		for (String s : getSSortDir()) {
 			if (s != null) {
@@ -86,6 +96,15 @@ public class DataTableRequest {
 			}
 		}
 		return null;
+	}
+	
+	public String getSortedColumn() {
+		String[] colNames = getsColumns().split(",");
+		Integer idx = getSortedColumnIndex();
+		if (idx > colNames.length-1 || idx < 0) {
+			throw new RuntimeException("Requested sorting column index outside bounds of column list");
+		}
+		return colNames[idx];
 	}
 	
 	public Integer getSortedColumnIndex() {

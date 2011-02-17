@@ -20,15 +20,21 @@
  */
 package org.mzd.shap.spring.web;
 
-import javax.validation.Valid;
+import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import org.mzd.shap.ApplicationException;
 import org.mzd.shap.constraints.MinimalQuery;
-import org.mzd.shap.hibernate.search.FullTextSearchImpl.SearchResult;
+import org.mzd.shap.hibernate.search.SearchResult;
 import org.mzd.shap.hibernate.search.view.Report;
 import org.mzd.shap.spring.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -46,6 +52,37 @@ public class DataSearchController extends AbstractControllerSupport {
 		public void setQueryText(String queryText) {this.queryText = queryText;}
 	}
 	
+	public static class LuceneQueryPaged {
+		@MinimalQuery
+		private String queryText;
+		@Min(0)
+		private Integer first = 0;
+		@Min(10)
+		@Max(100)
+		private Integer max = 10;
+		
+		public String getQueryText() {
+			return queryText;
+		}
+		public void setQueryText(String queryText) {
+			this.queryText = queryText;
+		}
+		
+		public Integer getFirst() {
+			return first;
+		}
+		public void setFirst(Integer first) {
+			this.first = first;
+		}
+
+		public Integer getMax() {
+			return max;
+		}
+		public void setMax(Integer max) {
+			this.max = max;
+		}
+	}
+
 	@RequestMapping("/form")
 	public String getMain(LuceneQuery query) {
 		return "search/searchTab";
@@ -69,35 +106,18 @@ public class DataSearchController extends AbstractControllerSupport {
 		return "search/searchResult";
 	}
 	
-//	public static class SearchTableResponse extends DataTableResponse {
-//		public SearchTableResponse() {
-//			super("id","label","detail");
-//		}
-//		
-//		public void addAll(List<Report> reports) {
-//			for (Report r : reports) {
-//				getAaData().add(new Object[]{r.getId(),r.getLabel(),r.getDetail()});
-//			}
-//		}
-//	}
-//	
-//	@RequestMapping("/query_json")
-//	@ResponseBody
-//	public SearchTableResponse searchJson(@Valid LuceneQuery luceneQuery, @Valid DataTableRequest data) {
-//		SearchTableResponse response = new SearchTableResponse();
-//		
-//		SearchResult<Report> result = getDataAdmin().getReports(
-//						luceneQuery.getQueryText(), 
-//						data.getIDisplayStart(), 
-//						data.getIDisplayLength());
-//		
-//		response.addAll(result.getResults());
-//		response.setsEcho(data.getSEcho());
-//		response.setiTotalRecords((long)result.getResultSize());
-//		response.setiTotalDisplayRecords((long)result.getResultSize());
-//		
-//		return response;
-//	}
+	@RequestMapping("/query_json")
+	@ResponseBody
+	public SearchResult<Report> searchJson(@Valid LuceneQueryPaged luceneQuery, BindingResult result) throws ApplicationException {
+		if (result.hasErrors()) {
+			List<ObjectError> errors = result.getAllErrors();
+			for (ObjectError e : errors) {
+				getLogger().warn(e);
+			}
+			return null;
+		}
+		return getDataAdmin().getReports(luceneQuery.getQueryText(), luceneQuery.getFirst(), luceneQuery.getMax());
+	}
 	
 	//	@ModelAttribute("targetTypes")
 //	public List<DomainTarget> getTargetTypes() {

@@ -20,9 +20,14 @@
  */
 package org.mzd.shap.spring.web.json;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -32,14 +37,44 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * 
  */
 public class DataTableResponse {
+	private static Log logger = LogFactory.getLog(DataTableResponse.class);
 	private Long iTotalRecords;
 	private Long iTotalDisplayRecords;
 	private String sEcho;
 	private List<Object[]> aaData = new ArrayList<Object[]>();
 	private String[] columnNames;
-	
+	private final DateFormat dateFormat;
+	private final DecimalFormat sciFormat;
+	private final DecimalFormat deciFormat;
+
 	public DataTableResponse(String... columnNames) {
+		dateFormat = DateFormat.getDateInstance();
+		sciFormat = new DecimalFormat("0.000E0");
+		deciFormat = new DecimalFormat();
+		deciFormat.setMaximumFractionDigits(2);
 		this.columnNames = columnNames;
+	}
+	
+	public String safeFormat(Format fmt, Object obj) {
+		try {
+			return fmt.format(obj);
+		}
+		catch (IllegalArgumentException ex) {
+			logger.debug("failed to format object [" + obj + "] using [" + fmt + "]",ex);
+			return "";
+		}
+	}
+	
+	public String deciFormat(Object obj) {
+		return safeFormat(deciFormat,obj);
+	}
+	
+	public String sciFormat(Object obj) {
+		return safeFormat(sciFormat,obj);
+	}
+	
+	public String dateFormat(Object obj) {
+		return safeFormat(dateFormat,obj);
 	}
 	
 	@JsonIgnore
@@ -60,6 +95,16 @@ public class DataTableResponse {
 	@JsonIgnore
 	public String getColumnName(int index) {
 		return this.columnNames[index];
+	}
+	
+	@JsonIgnore
+	public Integer getColumnIndex(String name) {
+		for (int i=0; i<columnNames.length; i++) {
+			if (columnNames[i].equals(name)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	public String getsColumns() {
