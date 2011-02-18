@@ -1,4 +1,4 @@
-html {
+* {
 	font-family: Verdana,Arial,sans-serif; font-size: 1.0em;
 }
 
@@ -57,7 +57,7 @@ div.result_detail {
 
 #app_nav {
 	width: 100%;
-	height: 30px;
+	height: 10px;
 }
 
 #app_nav ul {
@@ -100,7 +100,6 @@ div.result_detail {
 #app_info .label {
 	text-align: right;
 	padding-right: 10px;	
-/*	color: #05A;*/
 }
 
 #app_export {
@@ -113,17 +112,13 @@ div.result_detail {
 	margin-bottom: 50px;
 	margin-left: auto;
 	margin-right: auto;
-	border: 5px solid #246199;
-	background-color: #74A1CC;
+	border: none;
 }
 
 #app_auth table {
 	padding: 15px;
-	background-color: inherit;
-}
-
-#app_auth input {
-	border: 1px solid black;
+	border: 5px solid #246199;
+	background-color: #74A1CC;
 }
 
 #app_auth input[type="submit"] {
@@ -184,9 +179,16 @@ div.result_detail {
 }	
 
 #app_form {
-	margin-bottom: 1em;
-	padding: none;
 }
+
+#app_form input {
+	border: 1px solid black;
+}
+
+#app_result {
+	margin: 25px 0;
+}
+
 #app_content {
 	padding: 1em 2em;
 }
