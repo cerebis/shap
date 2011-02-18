@@ -80,7 +80,7 @@ public class HtmlFormatter {
 	protected String valueToString(Object value) {
 		String ret;
 		if (value == null) {
-			ret = "[nil]";
+			ret = "";
 		}
 		else if (value instanceof Number) {
 			ret = decimalFormat.format(value);
