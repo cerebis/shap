@@ -34,11 +34,12 @@ public class SequenceReportBuilder extends ReportBuilder {
 		Sequence target = (Sequence)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getSample().getId());
-		report.setDetail(
-				getFormatter().propertyToHtml("name", target.getName()) + " " +
-				getFormatter().propertyToHtml("desc", target.getDescription()) + " " +
-				getFormatter().propertyToHtml("cov", target.getCoverage()) + " " +
-				getFormatter().propertyToHtml("tax", target.getTaxonomy()));
+		report.appendDetail("<div>")
+			.appendDetail("<em>Name</em> " + target.getName() + " <em>Desc</em>" + target.getDescription())
+			.appendDetail("</div>")
+			.appendDetail("<div>")
+			.appendDetail("<em>Taxonomy</em> " + target.getTaxonomy() + " <em>Coverage</em> " + target.getCoverage())
+			.appendDetail("</div>");
 		return report;
 	}
 }

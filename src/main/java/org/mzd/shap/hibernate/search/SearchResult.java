@@ -20,12 +20,36 @@
  */
 package org.mzd.shap.hibernate.search;
 
-import org.mzd.shap.domain.authentication.User;
-import org.mzd.shap.hibernate.search.view.Report;
+import java.util.List;
 
-public interface FullTextSearch {
-
-	Object findUnique(final String queryText, final User user);
+public class SearchResult<T> {
+	private List<T> results;
+	private Integer firstResult;
+	private Integer maxResults;
+	private Integer resultSize;
 	
-	SearchResult<Report> find(String queryText, String[] queryFields, Class<?>[] allowedClasses, int firstResult, int maxResults);
+	public List<T> getResults() {
+		return results;
+	}
+	public void setResults(List<T> results) {
+		this.results = results;
+	}
+	public Integer getFirstResult() {
+		return firstResult;
+	}
+	public void setFirstResult(Integer firstResult) {
+		this.firstResult = firstResult;
+	}
+	public Integer getMaxResults() {
+		return maxResults;
+	}
+	public void setMaxResults(Integer maxResults) {
+		this.maxResults = maxResults;
+	}
+	public Integer getResultSize() {
+		return resultSize;
+	}
+	public void setResultSize(Integer resultSize) {
+		this.resultSize = resultSize;
+	}
 }

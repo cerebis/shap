@@ -20,6 +20,7 @@
  */
 package org.mzd.shap.hibernate.search.view;
 
+import org.apache.commons.lang.StringUtils;
 import org.mzd.shap.domain.Feature;
 
 public class FeatureReportBuilder extends ReportBuilder{
@@ -34,12 +35,20 @@ public class FeatureReportBuilder extends ReportBuilder{
 		Feature target = (Feature)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getSequence().getId());
-		report.setDetail(
-				getFormatter().propertyToHtml("type", target.getType()) + " " +
-				getFormatter().propertyToHtml("contained-in", target.getSequence().getName()) + " " +
-				getFormatter().propertyToHtml("loc",target.getLocation()) + " " +
-				getFormatter().propertyToHtml("found-by", target.getDetector().getName()) + " " +
-				getFormatter().propertyToHtml("conf", target.getConfidence()));
+
+		// Location
+		report.appendDetail("<div>")
+			.appendDetail("<em>Type</em> " + target.getType() + " <em>Found By</em> " + target.getDetector().getName())
+			.appendDetail("</div>")
+			.appendDetail("<div>")
+			.appendDetail("<em>Seq</em> " + target.getSequence().getName() + " <em>Loc</em> " + target.getLocation())
+			.appendDetail("</div>");
+
+		// Aliases
+		if (target.getAliases().size() > 0) {
+			report.appendDetail("<div><em>Aliases</em> " + StringUtils.join(target.getAliases().toArray(), ", ") + "</div>");
+		}
+		
 		return report;
 	}
 }

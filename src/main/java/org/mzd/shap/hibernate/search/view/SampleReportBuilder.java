@@ -34,9 +34,9 @@ public class SampleReportBuilder extends ReportBuilder {
 		Sample target = (Sample)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getProject().getId());
-		report.setDetail(
-				getFormatter().propertyToHtml("name", target.getName()) + " " +
-				getFormatter().propertyToHtml("desc", target.getDescription()));
+		report.appendDetail("<div>")
+			.appendDetail("<em>Name</em> " + target.getName() + " <em>Desc</em> " + target.getDescription())
+			.appendDetail("</div>");
 		return report;
 	}
 

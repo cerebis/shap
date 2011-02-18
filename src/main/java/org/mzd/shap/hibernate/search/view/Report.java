@@ -30,7 +30,7 @@ package org.mzd.shap.hibernate.search.view;
 public class Report {
 	private Integer id;
 	private Integer parentId;
-	private String detail;
+	private StringBuffer detail;
 	private String label;
 	private Float score;
 
@@ -40,24 +40,35 @@ public class Report {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
 	public Integer getParentId() {
 		return parentId;
 	}
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
+	
 	public String getDetail() {
-		return detail;
+		return detail.toString();
 	}
 	public void setDetail(String detail) {
-		this.detail = detail;
+		this.detail = new StringBuffer(detail);
 	}
+	public Report appendDetail(String info) {
+		if (this.detail == null) {
+			this.detail = new StringBuffer();
+		}
+		this.detail.append(info);
+		return this;
+	}
+
 	public String getLabel() {
 		return label;
 	}
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
 	public Float getScore() {
 		return score;
 	}

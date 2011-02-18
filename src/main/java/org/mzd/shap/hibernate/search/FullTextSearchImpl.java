@@ -75,38 +75,6 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 		});
 	}
 	
-	public static class SearchResult<T> {
-		private List<T> results;
-		private Integer firstResult;
-		private Integer maxResults;
-		private Integer resultSize;
-		
-		public List<T> getResults() {
-			return results;
-		}
-		public void setResults(List<T> results) {
-			this.results = results;
-		}
-		public Integer getFirstResult() {
-			return firstResult;
-		}
-		public void setFirstResult(Integer firstResult) {
-			this.firstResult = firstResult;
-		}
-		public Integer getMaxResults() {
-			return maxResults;
-		}
-		public void setMaxResults(Integer maxResults) {
-			this.maxResults = maxResults;
-		}
-		public Integer getResultSize() {
-			return resultSize;
-		}
-		public void setResultSize(Integer resultSize) {
-			this.resultSize = resultSize;
-		}
-	}
-
 	/**
 	 * Create a MultiField query from a supplied query string, specifying a default operator between terms.
 	 * 
@@ -132,6 +100,7 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 
 					Query query = createMultiFieldQuery(queryText, queryFields, Operator.AND);
 					
+					// Return the managed objects and their search scores.
 					FullTextQuery ftq = Search.getFullTextSession(session)
 						.createFullTextQuery(query,allowedClasses)
 						.setProjection(FullTextQuery.SCORE,FullTextQuery.THIS)

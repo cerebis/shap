@@ -34,12 +34,12 @@ public class AnnotationReportBuilder extends ReportBuilder {
 		Annotation target = (Annotation)obj;
 		report.setId(target.getId());
 		report.setParentId(target.getFeature().getId());
-		report.setDetail(
-				getFormatter().propertyToHtml("acc", target.getAccession()) + " " +
-				getFormatter().propertyToHtml("feature", target.getFeature().getId()) + " " +
-				getFormatter().propertyToHtml("found-by", target.getAnnotator().getName()) + " " +
-				getFormatter().propertyToHtml("conf", target.getConfidence()) + " " +
-				getFormatter().propertyToHtml("desc", target.getDescription()));		
+		report.appendDetail("<div>")
+			.appendDetail("<em>Feature</em> " + target.getFeature().getId())
+			.appendDetail(" <em>Acc</em> " + target.getAccession())
+			.appendDetail(" <em>Desc</em> " + target.getDescription())
+			.appendDetail(" <em>Annotator</em> " + target.getAnnotator().getName())
+			.appendDetail("</div>");
 		return report;
 	}
 }
