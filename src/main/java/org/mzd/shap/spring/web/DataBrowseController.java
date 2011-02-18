@@ -109,7 +109,7 @@ public class DataBrowseController extends AbstractControllerSupport {
 		@Override
 		public void addAll(List<Object[]> rows) {
 			for (Object[] row : rows) {
-				//row[2] = sciFormat(row[2]);
+				row[2] = sciFormat(row[2]);
 			}
 			setAaData(rows);
 		}
