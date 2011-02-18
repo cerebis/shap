@@ -60,109 +60,131 @@ table td:first-child {
 	var clearAllUrl = "<c:url value='/app/bench/clear_ajax'/>";
 	*/
 	var sessionTimeoutRedirectUrl = "<c:url value='/app/search'/>";
-	
+
+	/* Search result pagination */
 	var maxItems = 10;
 	var maxScore = 1.0;
 	var queryUrl = "<c:url value='/app/search/query_json'/>";
+
+	/**
+	 * Fill the result table with rows from the response JSON object.
+     *
+	 * @param data - JSON responses object
+	 **/
+	function fillResultTable(data) {
+		
+		$("#resultTable").hide().empty();
+
+		/* Set the maximum score if this is the first page */
+		if (data.firstResult == 0) {
+			$("#resultTable").data("page",0);
+			maxScore = data.results[0].score;
+		}
 	
-function replaceRows(data) {
+		for (var i=0; i<data.results.length; i++) {
+			var an = $("<a/>");
+			an.text(data.results[i].label + " " + data.results[i].id);
+			an.attr("href","<c:url value='/app/browse/object/'/>" + data.results[i].id);
 	
-	$("#resultTable").hide().empty();
+			var sbar = $("<div/>",{"class": "result_score"});
+			sbar.width(Math.round(25 * data.results[i].score / maxScore));
+			
+			var score = $("<div/>",{"class": "result_background"});
+			score.attr("title", "Score: " + data.results[i].score);
+			score.append(sbar);
 	
-	if (data.firstResult == 0) {
-		$("#resultTable").data("page",0);
-		maxScore = data.results[0].score;
+			var head = $("<div/>", {"class": "result_heading"});
+			head.append(an);
+									
+			var detail = $("<div/>", {"class": "result_detail"});
+			detail.html(data.results[i].detail);
+	
+			var td_detail = $("<td/>", {"class": "result_detail"});
+			td_detail.append(head);
+			td_detail.append(detail);
+			
+			var td_score = $("<td/>");
+			td_score.append(score);
+	
+			var row = $("<tr/>", {"class": "result_row"});
+			row.append(td_score);
+			row.append(td_detail);
+			
+			$("#resultTable").append(row);
+		}
+	
+		$("#resultTable").show();
 	}
 
-	for (var i=0; i<data.results.length; i++) {
-		var an = $("<a/>");
-		an.text(data.results[i].label + " " + data.results[i].id);
-		an.attr("href","<c:url value='/app/browse/object/'/>" + data.results[i].id);
-
-		var sbar = $("<div/>",{"class": "result_score"});
-		sbar.attr("title", "Score: " + data.results[i].score);
-		sbar.width(Math.round(25 * data.results[i].score / maxScore));
-		
-		var score = $("<div/>",{"class": "result_background"});
-		score.append(sbar);
-
-		var head = $("<div/>", {"class": "result_heading"});
-		head.append(an);
-								
-		var detail = $("<div/>", {"class": "result_detail"});
-		detail.html(data.results[i].detail);
-
-		var td_detail = $("<td/>", {"class": "result_detail"});
-		td_detail.append(head);
-		td_detail.append(detail);
-		
-		var td_score = $("<td/>");
-		td_score.append(score);
-
-		var row = $("<tr/>", {"class": "result_row"});
-		row.append(td_score);
-		row.append(td_detail);
-		
-		$("#resultTable").append(row);
+	/**
+	 * Pre-submission preparation.
+     *
+	 * User visual cues for immediate submit of search query.
+	 **/
+	function prepareForSubmit(queryText) {
+		$(".searchCount").html("");
+		$("#flash").html('<img src="/shap/media/images/ajax-loader.gif" align="absmiddle">&nbsp;Loading Results...');
+		$("#flash").show();
+		$(".searchWord").html("'" + queryText + "'");
+		$("#searchWord").show();
+		$("#resultTable").hide().empty();
+		$("#pagination").hide();
 	}
 
-	$("#resultTable").show();
-}
-
-function prepareForSubmit(queryText) {
-	$(".searchCount").html("");
-	$("#flash").html('<img src="/shap/media/images/ajax-loader.gif" align="absmiddle">&nbsp;Loading Results...');
-	$("#flash").show();
-	$(".searchWord").html("'" + queryText + "'");
-	$("#searchWord").show();
-	$("#resultTable").hide().empty();
-	$("#pagination").hide();
-}
-
-function cleanUpSubmit() {
-	$("#flash").hide();
-}
-
-function submitSearch() {
-	var queryText = $("#queryText").val();
-	if (queryText == "") {/*...*/}
-	else {
-		$.ajax({
-			cache: false,
-			dataType: "json",
-			url: queryUrl,
-			data: "queryText=" + queryText,
-			beforeSend: function() {
-				prepareForSubmit(queryText);
-			},
-			success: function(data) {
-				$(".searchCount").html(" returned " + data.resultSize + " results");
-				if (data.resultSize > 0) {
-					replaceRows(data);
-					$("#pagination").show();
-					$("#pagination").pagination(
-						data.resultSize,
-						{callback: function(pageIndex, jq) {
-								if (pageIndex != $("#resultTable").data("page")) {
-									$.ajax({
-										cache: false,
-										dataType: "json",
-										url: queryUrl,
-										data: "queryText=" + queryText + "&first=" + pageIndex*maxItems + "&max=" + maxItems,
-										success: function(data) {replaceRows(data);}
-									});
-									$("#resultTable").data("page",pageIndex);
-								}
-						}}
-					);
-				}
-			},
-			complete: cleanUpSubmit
-		});
+	/**
+	 * Post-submission.
+     *
+	 * Remove working indicators, etc from view.
+	 **/
+	function cleanUpSubmit() {
+		$("#flash").hide();
 	}
-	
-	return false;
-}
+
+	/**
+	 * Submit the search query to the server.
+     *
+	 * Pagination callback registered here.
+	 **/
+	function submitSearch() {
+		var queryText = $("#queryText").val();
+		if (queryText == "") {/*...*/}
+		else {
+			$.ajax({
+				cache: false,
+				dataType: "json",
+				url: queryUrl,
+				data: "queryText=" + queryText,
+				beforeSend: function() {
+					prepareForSubmit(queryText);
+				},
+				success: function(data) {
+					$(".searchCount").html(" returned " + data.resultSize + " results");
+					if (data.resultSize > 0) {
+						fillResultTable(data);
+						$("#pagination").show();
+						$("#pagination").pagination(
+							data.resultSize,
+							{callback: function(pageIndex, jq) {
+									if (pageIndex != $("#resultTable").data("page")) {
+										$.ajax({
+											cache: false,
+											dataType: "json",
+											url: queryUrl,
+											data: "queryText=" + queryText + "&first=" + pageIndex*maxItems + "&max=" + maxItems,
+											success: function(data) {fillResultTable(data);}
+										});
+										$("#resultTable").data("page",pageIndex);
+									}
+							}}
+						);
+					}
+				},
+				complete: cleanUpSubmit
+			});
+		}
+		
+		return false;
+	}
 
 	$(document).ready(function() {
 		$('body').ajaxError(handleAjaxSessionTimeout);
