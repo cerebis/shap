@@ -21,7 +21,7 @@
 <body>
 <div id="app_container" class="clearfix">
 
-<div id="app_header"><div class="header_title">SHAP <span class="header_comment">logout</span></div></div>
+<div id="app_header"><div class="header_title">SHAP <span class="header_comment">Logout</span></div></div>
 <div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 	
 <div id="app_content" class="clearfix text_center">
@@ -38,8 +38,8 @@
 				<div>You have logged out.</div>
 			</c:otherwise>
 		</c:choose>
-	</div>
 	<div class="text_center">Click <a href="<c:url value='/app/'/>">here</a> if not redirected shortly.</div>
+	</div>
 </div>
 
 <div class="app_bar ui-widget-header ui-corner-all" style="border-top: none"></div>

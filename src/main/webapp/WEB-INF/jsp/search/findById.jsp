@@ -10,8 +10,7 @@
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.js"/>'></script>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-ui-custom.min.js"/>'></script>
 <style type="text/css" title="currentStyle">
-	@import "<c:url value='/media/css/demo_page.css'/>";
-	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/table.css'/>";
 	@import "<c:url value='/media/css/ui-lightness/jquery-ui-1.8.4.custom.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>

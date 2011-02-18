@@ -15,7 +15,7 @@
 </head>
 <body>
 <div id="app_container" class="clearfix">
-	<div id="app_header"><div class="header_title">SHAP <span class="header_comment">page not found</span></div></div>
+	<div id="app_header"><div class="header_title">SHAP <span class="header_comment">Page not found</span></div></div>
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 	<div id="app_content" class="clearfix text_center">
 		<h3>The requested page was not found.</h3>
@@ -25,4 +25,3 @@
 </div>
 </body>
 </html>
-						

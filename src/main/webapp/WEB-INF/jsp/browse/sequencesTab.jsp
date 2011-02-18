@@ -8,8 +8,8 @@
 <title>SHAP</title>
 <style type="text/css" title="currentStyle">
 	@import "<c:url value='/media/css/smoothness/jquery-ui-1.8.5.custom.css'/>";
-	@import "<c:url value='/media/css/demo_table_jui.css'/>";
-	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/table_jui.css'/>";
+	@import "<c:url value='/media/css/table.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-1.4.2.min.js"/>'></script>
@@ -39,8 +39,8 @@
 				{"sName": "id"},
 				{"sName": "name"},
 				{"sName": "description"},
-				{"sName": "coverage"},
 				{"sName": "taxonomy"},
+				{"sName": "coverage"},
 				{"sName": "length"},
 				{"sName": "features"}
 			],
@@ -70,7 +70,7 @@
 <body>
 <div id="app_container" class="clearfix">
 
-	<jsp:include page="browse_header.jsp"/>
+	<%@include file="browse_header.jsp" %>
 
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 	

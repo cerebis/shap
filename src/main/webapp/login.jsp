@@ -19,13 +19,14 @@
 <script type="text/javascript">
 $(function() {
 	$("#username").focus();
+	$("#app_form #login_button").button();
 });
 </script>
 </head>
 <body>
 <div id="app_container" class="clearfix">
 
-<div id="app_header"><div class="header_title">SHAP <span class="header_comment">login</span></div></div>
+<div id="app_header"><div class="header_title">SHAP <span class="header_comment">Login</span></div></div>
 <div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
 
 <div id="app_content" class="clearfix">
@@ -44,7 +45,7 @@ $(function() {
 					<form name="f" action="<c:url value='j_spring_security_check'/>" method="post">
 						<tr><td>Username</td><td><input id="username" name="j_username" type="text" size="10" maxlength="10" tabindex="1" value="<c:if test='${not empty param.login_error}'><c:out value='${SPRING_SECURITY_LAST_USERNAME}'/></c:if>"/></td></tr>
 						<tr><td>Password</td><td><input id="password" name="j_password" type="password" size="10" maxlength="10" tabindex="2"/></td></tr>
-						<tr><td/><td><input name="submit" type="submit" tabindex="3" value="Login"/></td></tr>
+						<tr><td/><td><input id="login_button" name="submit" type="submit" tabindex="3" value="Login"/></td></tr>
 					</form>
 					<c:if test="${not empty param.login_error}">
 						<div class="ui-widget">

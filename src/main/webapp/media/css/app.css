@@ -8,11 +8,10 @@ body {
 
 a {
 	color:#245199;
-	text-decoration:none;
 }
 
 a:hover {
-	text-decoration:underline;
+	color: #CC5223;
 }
 
 .text_center {
@@ -67,15 +66,14 @@ div.result_detail {
 }
 
 #app_nav ul li {
+	padding: 5px 10px 15px 5px;
 	display: inline;
-	height: 30px;
 	float: left;
 	list-style: none;
-	margin-right: 15px;
 }
 
 #app_nav ul li a {
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 #app_nav  ul li a:hover {}
@@ -125,6 +123,10 @@ div.result_detail {
 	float: right;
 }
 
+#login_button {
+	font-size: 12px;
+}
+
 #app_header {
 	height: 50px;
 	font-size: 2em;
@@ -143,7 +145,7 @@ div.result_detail {
 
 .header_action {
 	float: right;
-	font-size: smaller;
+	font-size: 12px;
 }
 
 #app_logout {
@@ -178,15 +180,12 @@ div.result_detail {
 	color: #000;
 }	
 
-#app_form {
-}
-
-#app_form input {
-	border: 1px solid black;
+input {
+	border: 1px solid #000;
 }
 
 #app_result {
-	margin: 25px 0;
+	margin: 25px 0 50px 0;
 }
 
 #app_content {
@@ -213,4 +212,51 @@ span.detail_dlm {
 }
 span.detail_val {
 	color: #000;
+}
+
+#resultTable {
+	width: 80%;
+	padding: 0;
+	padding-left: 20px;
+}
+
+#resultTable td {
+	padding: 5px;
+}
+
+table td.result_detail {
+	width: 100%;
+}
+
+table td:first-child {
+	vertical-align: top;
+}
+
+.result_background {
+	border: 1px solid black;
+	background-color: #FF9F87;
+	float: right;
+	width: 25px;
+	margin-top: 5px;
+}
+
+#searchWord {
+	display: none;
+	margin: 10px 0;
+}
+
+.searchWord {
+	font-style: italic;
+}
+
+.search_button {
+	font-size: 0.9em;
+}
+
+#app_form #queryText {
+	padding: 5px;
+	border-bottom-style: groove;
+	border-bottom-width: 3px;
+	border-right-style: groove;
+	border-right-width: 3px;
 }

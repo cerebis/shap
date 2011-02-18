@@ -9,8 +9,7 @@
 <title>Find Features Result</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style type="text/css" title="currentStyle">
-	@import "<c:url value='/media/css/demo_page.css'/>";
-	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/table.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery.js"/>'></script>

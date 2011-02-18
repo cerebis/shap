@@ -7,44 +7,14 @@
 <title>SHAP</title>
 <style type="text/css" title="currentStyle">
 	@import "<c:url value='/media/css/smoothness/jquery-ui-1.8.5.custom.css'/>";
-	@import "<c:url value='/media/css/demo_table_jui.css'/>";
-	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/table_jui.css'/>";
+	@import "<c:url value='/media/css/table.css'/>";
 	@import "<c:url value='/media/css/pagination.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
 <style type="text/css">
-#insert_search {
-	width: 80%;
-	padding: 0;
-	padding-left: 20px;
-}
-
-#insert_search td {
-	padding: 5px;
-}
-
-table td.result_detail {
-	width: 100%;
-}
-
-table td:first-child {
-	vertical-align: top;
-}
-
-.result_background {
-	border: 1px solid black;
-	background-color: #FF9F87;
-	float: right;
-	width: 25px;
-	margin-top: 5px;
-}
-
-#searchWord {
-	display: none;
-}
-
-.searchWord {
-	font-style: italic;
+#pagination {
+	margin: 10px 0;
 }
 </style>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-1.4.2.min.js"/>'></script>
@@ -190,6 +160,8 @@ table td:first-child {
 		$('body').ajaxError(handleAjaxSessionTimeout);
 		$("#queryText").focus();
 		$(".search_button").click(submitSearch);
+		$(".search_button").button();
+		$(".header_action a").button();
 	});
 	
 </script>
@@ -198,8 +170,8 @@ table td:first-child {
 <div id="app_container" class="clearfix">
 
 	<div id="app_header">
-		<div class="header_title">SHAP <span class="header_comment">search</span></div>
-		<div class="header_action">${user.username} <a href="<c:url value='/logout'/>">logout</a></div>
+		<div class="header_title">SHAP <span class="header_comment">Search</span></div>
+		<div class="header_action"><a href="<c:url value='/logout'/>"><em>[${user.username}]</em> logout</a></div>
 	</div>
 	
 	<div class="app_bar ui-widget-header ui-corner-all " style="border-bottom: none"></div>
@@ -215,7 +187,7 @@ table td:first-child {
 		<div id="app_form">
 			<h3>Search the system</h3>
 			<form id="searchQuery">
-				<input id="queryText" name="queryText" size="40" tabindex="1" value="${queryText}"/>
+				<input id="queryText" type="text" name="queryText" size="40" tabindex="1" value="${queryText}"/>
 				<input type="submit" tabindex="2" value="Search" class="search_button"/>
 				<div id="errors"></div>
 			</form>

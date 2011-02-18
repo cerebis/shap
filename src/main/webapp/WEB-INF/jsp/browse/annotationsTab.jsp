@@ -8,8 +8,8 @@
 <title>SHAP</title>
 <style type="text/css" title="currentStyle">
 	@import "<c:url value='/media/css/smoothness/jquery-ui-1.8.5.custom.css'/>";
-	@import "<c:url value='/media/css/demo_table_jui.css'/>";
-	@import "<c:url value='/media/css/demo_table.css'/>";
+	@import "<c:url value='/media/css/table_jui.css'/>";
+	@import "<c:url value='/media/css/table.css'/>";
 	@import "<c:url value='/media/css/app.css'/>";
 </style>
 <script type="text/javascript" language="javascript" src='<c:url value="/media/js/jquery-1.4.2.min.js"/>'></script>
