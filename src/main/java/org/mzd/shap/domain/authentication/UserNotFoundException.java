@@ -20,26 +20,26 @@
  */
 package org.mzd.shap.domain.authentication;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.dao.DataAccessException;
+public class UserNotFoundException extends Exception {
+	private static final long serialVersionUID = -5004548278757313155L;
 
-public class UserDetailsServiceImpl implements UserDetailsService {
-	private UserDao userDao;
-	
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
-		User user = getUserDao().findByField("username", username);
-		if (user == null) {
-			throw new UsernameNotFoundException(username);
-		}
-		return user;
+	public UserNotFoundException() {
+		// TODO Auto-generated constructor stub
 	}
 
-	public UserDao getUserDao() {
-		return userDao;
+	public UserNotFoundException(String arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
 	}
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
+
+	public UserNotFoundException(Throwable arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
 	}
+
+	public UserNotFoundException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+		// TODO Auto-generated constructor stub
+	}
+
 }

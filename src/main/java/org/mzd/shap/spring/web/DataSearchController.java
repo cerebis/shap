@@ -30,9 +30,7 @@ import org.mzd.shap.ApplicationException;
 import org.mzd.shap.constraints.MinimalQuery;
 import org.mzd.shap.hibernate.search.SearchResult;
 import org.mzd.shap.hibernate.search.view.Report;
-import org.mzd.shap.spring.NotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,18 +92,6 @@ public class DataSearchController extends AbstractControllerSupport {
 		return !result.hasErrors();
 	}
 
-	@RequestMapping("/query")
-	public String searchAjax(@Valid LuceneQuery luceneQuery, BindingResult result, Model model) throws NotFoundException {
-		if (!result.hasErrors()) {
-			SearchResult<Report> searchResult = getDataAdmin().getReports(luceneQuery.getQueryText(), 0, 100);
-			model.addAttribute("results",searchResult.getResults());
-			model.addAttribute("firstResult", searchResult.getFirstResult());
-			model.addAttribute("maxResults",searchResult.getMaxResults());
-			model.addAttribute("resultSize", searchResult.getResultSize());
-		}
-		return "search/searchResult";
-	}
-	
 	@RequestMapping("/query_json")
 	@ResponseBody
 	public SearchResult<Report> searchJson(@Valid LuceneQueryPaged luceneQuery, BindingResult result) throws ApplicationException {

@@ -143,6 +143,11 @@ div.result_detail {
 	font-size: smaller;
 }
 
+.header_alert {
+	color: #A11;
+	font-size: smaller;
+}
+
 .header_action {
 	float: right;
 	font-size: 12px;

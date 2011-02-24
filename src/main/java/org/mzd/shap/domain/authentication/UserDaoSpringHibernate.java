@@ -20,7 +20,16 @@
  */
 package org.mzd.shap.domain.authentication;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.transform.Transformers;
 import org.mzd.shap.spring.orm.BaseDaoSpringHibernate;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 public class UserDaoSpringHibernate extends BaseDaoSpringHibernate<User, Integer> implements UserDao {
 
@@ -32,4 +41,19 @@ public class UserDaoSpringHibernate extends BaseDaoSpringHibernate<User, Integer
 		return findByField("username", username);
 	}
 
+	public List<UserView> listUsers() {
+		return getHibernateTemplate().execute(new HibernateCallback<List<UserView>>() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public List<UserView> doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createCriteria(getPersistentClass())
+				.addOrder(Order.asc("name"))
+				.setProjection(Projections.projectionList()
+					.add(Projections.property("name"),"name")
+					.add(Projections.property("username"),"username"))
+				.setResultTransformer(Transformers.aliasToBean(UserView.class))
+				.list();
+			}
+		});
+	}
 }

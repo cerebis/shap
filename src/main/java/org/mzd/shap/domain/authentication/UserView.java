@@ -20,13 +20,28 @@
  */
 package org.mzd.shap.domain.authentication;
 
-import java.util.List;
+public class UserView {
+	private String name;
+	private String username;
 
-import org.mzd.shap.hibernate.BaseDao;
-
-public interface UserDao extends BaseDao<User, Integer> {
-
-	User findByUsername(String username);
+	public UserView() {/*...*/}
 	
-	List<UserView> listUsers();
+	public UserView(String name, String username) {
+		this.name = name;
+		this.username = username;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }

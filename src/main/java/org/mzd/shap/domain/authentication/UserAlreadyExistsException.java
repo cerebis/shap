@@ -20,13 +20,26 @@
  */
 package org.mzd.shap.domain.authentication;
 
-import java.util.List;
+public class UserAlreadyExistsException extends Exception {
+	private static final long serialVersionUID = -5004548278757313155L;
 
-import org.mzd.shap.hibernate.BaseDao;
+	public UserAlreadyExistsException() {
+		// TODO Auto-generated constructor stub
+	}
 
-public interface UserDao extends BaseDao<User, Integer> {
+	public UserAlreadyExistsException(String arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
+	}
 
-	User findByUsername(String username);
-	
-	List<UserView> listUsers();
+	public UserAlreadyExistsException(Throwable arg0) {
+		super(arg0);
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserAlreadyExistsException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+		// TODO Auto-generated constructor stub
+	}
+
 }
