@@ -20,8 +20,16 @@
  */
 package org.mzd.shap.domain.authentication;
 
+import java.util.List;
+
 import org.mzd.shap.hibernate.BaseDao;
 
 public interface RoleDao extends BaseDao<Role, Integer> {
 
+	/**
+	 * Get the human friendly name used for each role.
+	 * 
+	 * @return a list of role names
+	 */
+	List<String> getRoleNames();
 }

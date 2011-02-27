@@ -24,10 +24,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.mzd.shap.domain.authentication.User;
 import org.mzd.shap.domain.authentication.UserAdminService;
 import org.mzd.shap.domain.authentication.UserAlreadyExistsException;
-import org.mzd.shap.domain.authentication.UserNotFoundException;
 import org.mzd.shap.domain.authentication.UserView;
 import org.mzd.shap.spring.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,35 +85,47 @@ public class AdminController extends AbstractControllerSupport {
 		return getUserAdminService().listExistingUsers();
 	}
 
+	@RequestMapping("/rolelist")
+	@ResponseBody
+	public List<String> getRoleList() {
+		return getUserAdminService().listRoles();
+	}
+
 	@RequestMapping("/delete")
 	@ResponseBody
 	public CommandResponse deleteUser(@RequestParam(required=true) String username) {
 		try {
 			getUserAdminService().deleteUser(username);
 			return CommandResponse.success();
-		} catch (UserNotFoundException ex) {
+		} catch (NotFoundException ex) {
+			getLogger().warn(ex.getMessage());
 			return CommandResponse.failure(ex.getMessage());
 		}
 	}
 	
 	@RequestMapping(value="/update",method=RequestMethod.POST)
 	@ResponseBody
-	public CommandResponse updateUser(@Valid User user) {
+	public CommandResponse updateUser(@Valid UserView user) {
 		try {
 			getUserAdminService().updateUser(user);
 			return CommandResponse.success();
-		} catch (UserNotFoundException ex) {
+		} catch (NotFoundException ex) {
+			getLogger().warn(ex.getMessage());
 			return CommandResponse.failure(ex.getMessage());
 		}
 	}
 
 	@RequestMapping(value="/create",method=RequestMethod.POST)
 	@ResponseBody
-	public CommandResponse createUser(@Valid User user) {
+	public CommandResponse createUser(@Valid UserView user) {
 		try {
 			getUserAdminService().createUser(user);
 			return CommandResponse.success();
 		} catch (UserAlreadyExistsException ex) {
+			getLogger().warn(ex.getMessage());
+			return CommandResponse.failure(ex.getMessage());
+		} catch (NotFoundException ex) {
+			getLogger().warn(ex.getMessage());
 			return CommandResponse.failure(ex.getMessage());
 		}
 	}
@@ -127,5 +137,4 @@ public class AdminController extends AbstractControllerSupport {
 	public UserAdminService getUserAdminService() {
 		return userAdminService;
 	}
-	
 }

@@ -28,5 +28,10 @@ public interface UserDao extends BaseDao<User, Integer> {
 
 	User findByUsername(String username);
 	
-	List<UserView> listUsers();
+	/**
+	 * Get all users in a read-only projection view format.
+	 * 
+	 * @return a list of DTO objects.
+	 */
+	List<UserView> getUsers();
 }

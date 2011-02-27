@@ -22,12 +22,14 @@ package org.mzd.shap.domain.authentication;
 
 import java.util.List;
 
+import org.mzd.shap.spring.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.dao.DataAccessException;
 
 public class UserAdminServiceImpl implements UserAdminService {
 	private UserDao userDao;
+	private RoleDao roleDao;
 	
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 		User user = getUserDao().findByField("username", username);
@@ -37,42 +39,75 @@ public class UserAdminServiceImpl implements UserAdminService {
 		return user;
 	}
 	
-	public User loadUser(String userName) throws UserNotFoundException {
+	public User loadUser(String userName) throws NotFoundException {
 		try {
 			return (User)loadUserByUsername(userName);
 		}
 		catch (UsernameNotFoundException ex) {
-			throw new UserNotFoundException(ex);
+			throw new NotFoundException(ex);
 		}
 	}
 	
-	public void updateUser(User user) throws UserNotFoundException {
-		User existingUser = getUserDao().findByUsername(user.getUsername());
-		if (existingUser == null) {
-			throw new UserNotFoundException("User [" + user.getUsername() + "] does not exist");
+	public void updateUser(UserView modRequest) throws NotFoundException {
+		User user = getUserDao().findByUsername(modRequest.getUsername());
+		if (user == null) {
+			throw new NotFoundException("User [" + modRequest.getUsername() + "] does not exist");
 		}
-		user.setId(existingUser.getId());
+		
+		user.setName(modRequest.getName());
+		user.setUsername(modRequest.getUsername());
+		user.setPassword(modRequest.getPassword());
+		
+		user.getRoles().clear();
+		for (String rn : modRequest.getRoles()) {
+			Role reqRole = getRoleDao().findByField("name", rn);
+			if (reqRole == null) {
+				throw new NotFoundException("Requested role [" + rn + "] does not exist");
+			}
+			if (!user.getRoles().contains(reqRole)) {
+				user.addRole(reqRole);
+			}
+		}
+		
 		getUserDao().saveOrUpdate(user);
 	}
 	
-	public void createUser(User user) throws UserAlreadyExistsException {
-		User oldUser = getUserDao().findByUsername(user.getUsername());
-		if (oldUser != null) {
-			throw new UserAlreadyExistsException("User [" + user.getUsername() + "] already exists");
+	public void createUser(UserView createRequest) throws UserAlreadyExistsException, NotFoundException {
+		if (getUserDao().findByUsername(createRequest.getUsername()) != null) {
+			throw new UserAlreadyExistsException("User [" + createRequest.getUsername() + "] already exists");
 		}
+		
+		User user = new User();
+		user.setName(createRequest.getName());
+		user.setUsername(createRequest.getUsername());
+		user.setPassword(createRequest.getPassword());
+		
+		for (String rn : createRequest.getRoles()) {
+			Role reqRole = getRoleDao().findByField("name", rn);
+			if (reqRole == null) {
+				throw new NotFoundException("Requested role [" + rn + "] does not exist");
+			}
+			user.addRole(reqRole);
+		}
+		
 		getUserDao().saveOrUpdate(user);
 	}
 	
-	public void deleteUser(String userName) throws UserNotFoundException {
+	public void deleteUser(String userName) throws NotFoundException {
 		User userToDelete = getUserDao().findByUsername(userName);
 		if (userToDelete == null) {
-			throw new UserNotFoundException("User [" + userName + "] does not exist");
+			throw new NotFoundException("User [" + userName + "] does not exist");
 		}
 		getUserDao().delete(userToDelete);
 	}
 
 	public List<UserView> listExistingUsers() {
-		return getUserDao().listUsers();
+		return getUserDao().getUsers();
+	}
+
+	@Override
+	public List<String> listRoles() {
+		return getRoleDao().getRoleNames();
 	}
 	
 	public UserDao getUserDao() {
@@ -80,5 +115,12 @@ public class UserAdminServiceImpl implements UserAdminService {
 	}
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
+	}
+
+	public RoleDao getRoleDao() {
+		return roleDao;
+	}
+	public void setRoleDao(RoleDao roleDao) {
+		this.roleDao = roleDao;
 	}
 }

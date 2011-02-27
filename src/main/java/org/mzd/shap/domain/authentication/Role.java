@@ -30,6 +30,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -41,9 +43,10 @@ public class Role implements GrantedAuthority, Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="ROLE_ID")
 	private Integer id;
-	@Column(nullable=false)
+	@Column(nullable=false,unique=true)
 	@NotNull
 	private String name;
+	@Column(unique=true)
 	@NotNull
 	private String authority;
 
@@ -83,4 +86,21 @@ public class Role implements GrantedAuthority, Serializable {
 			.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Role == false) {
+			return false;
+		}
+		Role other = (Role)obj;
+		return new EqualsBuilder()
+			.append(getName(), other.getName())
+			.isEquals();
+	}
+	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(7,17)
+			.append(getName())
+			.toHashCode();
+	}
 }

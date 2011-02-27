@@ -20,15 +20,35 @@
  */
 package org.mzd.shap.domain.authentication;
 
-public class UserView {
-	private String name;
-	private String username;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class UserView {
+	@NotNull
+	@Size(min=3,max=25)
+	private String name;
+	@NotNull
+	@Size(min=3,max=16)
+	private String username;
+	@NotNull
+	@Size(min=3,max=8)
+	private String password;
+	@NotNull
+	@Size(min=1)
+	private List<String> roles = new ArrayList<String>();
+	
 	public UserView() {/*...*/}
 	
-	public UserView(String name, String username) {
-		this.name = name;
-		this.username = username;
+	public UserView(User user) {
+		this.name = user.getName();
+		this.username = user.getUsername();
+		this.password = user.getPassword();
+		for (Role r : user.getRoles()) {
+			addRole(r.getName());
+		}
 	}
 	
 	public String getName() {
@@ -43,5 +63,22 @@ public class UserView {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+	public void addRole(String role) {
+		getRoles().add(role);
 	}
 }

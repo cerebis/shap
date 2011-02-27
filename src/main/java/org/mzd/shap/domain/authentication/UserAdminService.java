@@ -22,6 +22,7 @@ package org.mzd.shap.domain.authentication;
 
 import java.util.List;
 
+import org.mzd.shap.spring.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserAdminService extends UserDetailsService {
@@ -31,33 +32,34 @@ public interface UserAdminService extends UserDetailsService {
 	 * 
 	 * @param username
 	 * @return
-	 * @throws UserNotFoundException
+	 * @throws NotFoundException
 	 */
-	public User loadUser(String username) throws UserNotFoundException;
+	public User loadUser(String username) throws NotFoundException;
 	
 	/**
 	 * Update an existing user.
 	 * 
 	 * @param user
-	 * @throws UserNotFoundException 
+	 * @throws NotFoundException 
 	 */
-	public void updateUser(User user) throws UserNotFoundException;
+	public void updateUser(UserView user) throws NotFoundException;
 	
 	/**
 	 * Create a new user.
 	 * 
 	 * @param user
 	 * @throws UserAlreadyExistsException
+	 * @throws NotFoundException 
 	 */
-	public void createUser(User user) throws UserAlreadyExistsException;
+	public void createUser(UserView user) throws UserAlreadyExistsException, NotFoundException;
 	
 	/**
 	 * Delete an existing user.
 	 * 
 	 * @param userName
-	 * @throws UserNotFoundException
+	 * @throws NotFoundException
 	 */
-	public void deleteUser(String userName) throws UserNotFoundException;
+	public void deleteUser(String userName) throws NotFoundException;
 	
 	/**
 	 * List existing users.
@@ -65,4 +67,11 @@ public interface UserAdminService extends UserDetailsService {
 	 * @return
 	 */
 	public List<UserView> listExistingUsers();
+	
+	/**
+	 * List roles by name
+	 * 
+	 * @return
+	 */
+	public List<String> listRoles();
 }

@@ -60,6 +60,7 @@
 
     <beans:bean id="localUserDetailsService" class="org.mzd.shap.domain.authentication.UserAdminServiceImpl">
 		<beans:property name="userDao" ref="userDao"/>
+		<beans:property name="roleDao" ref="roleDao"/>
 	</beans:bean>  
 
     <beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
@@ -67,6 +68,7 @@
 	<tx:advice id="userDetailsServiceAdvice" transaction-manager="transactionManager">
 			<tx:attributes>
 				<tx:method name="load*" read-only="true"/>
+				<tx:method name="list*" read-only="true"/>
 				<tx:method name="*" read-only="false"/>
 			</tx:attributes>
 	</tx:advice>

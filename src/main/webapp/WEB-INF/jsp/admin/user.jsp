@@ -34,12 +34,7 @@ div#app_content { width: 350px; margin: 20px 0; }
 <script type="text/javascript">
 
 	$(document).ready(function() {
-	var name = $("#name");
-	var username = $("#username");
-	var password = $("#password");
-	var verify = $("#verify");
 	var tips = $(".validateTips");
-	var allFields = $( [] ).add(name).add(username).add(password).add(verify);
 	var existingUsers;
 
 	function updateTips( t ) {
@@ -96,6 +91,20 @@ div#app_content { width: 350px; margin: 20px 0; }
 		);
 	}
 	
+	function fetchRoles() {
+		$.getJSON(
+			"<c:url value='/app/admin/rolelist'/>",
+			function(data) {
+				var items = []
+				$.each(data, function(key,val) {
+					items.push("<option>" + val + "</option>");
+				});
+				$(".select-roles").empty().append(items.join(''));
+			}
+		);
+	}
+	
+	fetchRoles();
 	fetchExistingUsers();
 
 		$(".header_action a").button();
@@ -114,16 +123,16 @@ div#app_content { width: 350px; margin: 20px 0; }
 		
 		$("#create-form").dialog({
 			autoOpen: false,
-			height: 380,
+			height: 430,
 			width: 350,
 			modal: true,
 			buttons: {
 				"Create": function() {
 					var bValid = true;
-					allFields.removeClass("ui-state-error");
-					bValid = bValid && checkLength(username, "username", 3, 10);
-					bValid = bValid && checkLength(password, "password", 6, 16);
-					bValid = bValid && verifyPassword(password, verify);
+					$("#create-form input").removeClass("ui-state-error");
+					bValid = bValid && checkLength($("#create-username"), "username", 3, 10);
+					bValid = bValid && checkLength($("#create-password"), "password", 6, 16);
+					bValid = bValid && verifyPassword($("#create-password"), $("#create-verify"));
 					if (bValid) {
 						$.ajax({
 							type: 'POST',
@@ -150,27 +159,30 @@ div#app_content { width: 350px; margin: 20px 0; }
 				}
 			},
 			close: function() {
-				allFields.val("").removeClass("ui-state-error");
+				$("#create-form input").val("").removeClass("ui-state-error");
 			}
 		});
 		
 		$("#modify-form").dialog({
 			autoOpen: false,
-			height: 380,
+			height: 430,
 			width: 350,
 			modal: true,
 			buttons: {
 				"Modify": function() {
 					var bValid = true;
-					allFields.removeClass("ui-state-error");
-					bValid = bValid && checkLength(username, "username", 3, 10);
-					bValid = bValid && checkLength(password, "password", 6, 16);
-					bValid = bValid && verifyPassword(password, verify);
+					$("#modify-form input").removeClass("ui-state-error");
+					bValid = bValid && checkLength($("#modify-username"), "username", 3, 10);
+					bValid = bValid && checkLength($("#modify-password"), "password", 6, 16);
+					bValid = bValid && verifyPassword($("#modify-password"), $("#modify-verify"));
 					if (bValid) {
 						$.ajax({
 							type: 'POST',
 							url: "<c:url value='/app/admin/update'/>",
 							data: $("#modify-form form").serialize(),
+							beforeSend: function() {
+								alert($("#modify-form form").serialize());
+							},
 							success: function(data){
 								if (data.statusOk) {
 									$("#modify-form").dialog("close");
@@ -191,7 +203,7 @@ div#app_content { width: 350px; margin: 20px 0; }
 				}
 			},
 			close: function() {
-				allFields.val("").removeClass("ui-state-error");
+				$("#modify-form input").val("").removeClass("ui-state-error");
 			}
 		});
 		
@@ -238,8 +250,16 @@ div#app_content { width: 350px; margin: 20px 0; }
 			.click(function() {
 				var su = getSelectedUser()
 				if (su != null) {
-					$("#modify-form #name").val(su.name);
-					$("#modify-form #username").val(su.username);				
+					$("#modify-name").val(su.name);
+					$("#modify-username").val(su.username);
+					$("#modify-password").val(su.password);
+					$("#modify-verify").val(su.password);
+					$("#modify-form .select-roles option").each(function() {
+						$(this).removeAttr("selected");
+						if ($.inArray($(this).text(), su.roles) > -1) {
+							$(this).attr("selected","selected");
+						}
+					});
 					$("#modify-form").dialog("open");
 				}
 			});
@@ -295,13 +315,15 @@ div#app_content { width: 350px; margin: 20px 0; }
 			<form>
 				<fieldset>
 				<label for="name">Real Name</label>
-				<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+				<input type="text" name="name" id="create-name" class="text ui-widget-content ui-corner-all" />
 				<label for="username">Username</label>
-				<input type="text" name="username" id="username" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="text" name="username" id="create-username" value="" class="text ui-widget-content ui-corner-all" />
 				<label for="password">Password</label>
-				<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="password" name="password" id="create-password" value="" class="text ui-widget-content ui-corner-all" />
 				<label for="verify">Verify Password</label>
-				<input type="password" name="verify" id="verify" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="password" name="verify" id="create-verify" value="" class="text ui-widget-content ui-corner-all" />
+				<label for="create-roles">User Role</label>
+				<select name="roles" id="create-roles" class="select-roles" multiple="multiple" size="2"></select>
 				</fieldset>
 			</form>
 		</div>
@@ -311,13 +333,15 @@ div#app_content { width: 350px; margin: 20px 0; }
 			<form>
 				<fieldset>
 				<label for="name">Real Name</label>
-				<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+				<input type="text" name="name" id="modify-name" class="text ui-widget-content ui-corner-all" />
 				<label for="username">Username</label>
-				<input type="text" name="username" id="username" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="text" name="username" id="modify-username" value="" class="text ui-widget-content ui-corner-all" />
 				<label for="password">Password</label>
-				<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="password" name="password" id="modify-password" value="" class="text ui-widget-content ui-corner-all" />
 				<label for="verify">Verify Password</label>
-				<input type="password" name="verify" id="verify" value="" class="text ui-widget-content ui-corner-all" />
+				<input type="password" name="verify" id="modify-verify" value="" class="text ui-widget-content ui-corner-all" />
+				<label for="modify-roles">User Role</label>
+				<select name="roles" id="modify-roles" class="select-roles" multiple="multiple" size="2"></select>
 				</fieldset>
 			</form>
 		</div>
