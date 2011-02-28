@@ -1,14 +1,18 @@
 #!/bin/bash
+#
+# Command-line starter script.
+#
 
-which gfind &> /dev/null > /dev/null
-if [ $? -eq 0 ]
+if [ -z "$*" ]
 then
-	FIND=gfind
-else
-	FIND=find
+	echo "No command class supplied"
+	exit 1
 fi
 
-CLASSPATH=war/WEB-INF/classes`$FIND local-lib war/WEB-INF/lib -name '*.jar' -printf ":%p"`
+# SHAP's dependent libraries
+PROG_LIBS=`find war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
+
+# SHAP's class files.
+CLASSPATH=$PROG_LIBS"war/WEB-INF/classes"
 
 java -cp $CLASSPATH $*
-
