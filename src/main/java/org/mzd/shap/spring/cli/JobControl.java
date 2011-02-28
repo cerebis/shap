@@ -155,8 +155,8 @@ public class JobControl extends BaseCommand {
 				restartAndWait();
 			}
 		}
-		catch (Exception ex) {
-			System.out.println(ex.getMessage());
+		catch (Throwable t) {
+			System.err.println(t.getMessage());
 			System.exit(1);
 		}
 	}

@@ -60,7 +60,7 @@ public class User implements UserDetails {
 	@Size(min=3,max=255)
 	private String username;
 	@NotNull
-	@Size(min=6,max=15)
+	@Size(min=6,max=8)
 	private String password;
 	private boolean credentialsNonExpired = true;
 	private boolean accountNonExpired = true;

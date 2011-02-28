@@ -52,6 +52,22 @@
 	<aop:advisor advice-ref="batchAdminServiceAdvice" pointcut-ref="batchAdminServiceOperation"/>
 </aop:config>
 
+<bean id="localUserDetailsService" class="org.mzd.shap.domain.authentication.UserAdminServiceImpl">
+	<property name="userDao" ref="userDao"/>
+	<property name="roleDao" ref="roleDao"/>
+</bean>
+<tx:advice id="userDetailsServiceAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="load*" read-only="true"/>
+			<tx:method name="list*" read-only="true"/>
+			<tx:method name="*" read-only="false"/>
+		</tx:attributes>
+</tx:advice>
+<aop:config>
+	<aop:pointcut id="userDetailsServiceOperation" expression="execution(* org.mzd.shap.domain.authentication.UserAdminService.*(..))"/>
+	<aop:advisor advice-ref="userDetailsServiceAdvice" pointcut-ref="userDetailsServiceOperation"/>
+</aop:config>
+
 <bean id="fastaWriterTarget" class="org.mzd.shap.spring.io.FastaWriterImpl">
 	<property name="featureDao" ref="featureDao"/>
 	<property name="sequenceDao" ref="sequenceDao"/>

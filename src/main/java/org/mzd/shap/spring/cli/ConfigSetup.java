@@ -60,44 +60,50 @@ public class ConfigSetup {
 			System.out.println("Usage: [local|grid]");
 			System.exit(1);
 		}
-
-		String[] paths = null;
-		if (args[0].equals("local")) {
-			paths = new String[] {
-					"war/WEB-INF/spring/datasource-context.xml",
-					"war/WEB-INF/spring/local-analyzer-config.xml",
-					"war/WEB-INF/spring/orm-context.xml" };
-		} else if (args[0].equals("grid")) {
-			paths = new String[] {
-					"war/WEB-INF/spring/datasource-context.xml",
-					"war/WEB-INF/spring/grid-analyzer-config.xml",
-					"war/WEB-INF/spring/orm-context.xml" };
-		} else {
-			System.out.println("Usage: [local|grid]");
+	
+		try {
+			String[] paths = null;
+			if (args[0].equals("local")) {
+				paths = new String[] {
+						"war/WEB-INF/spring/datasource-context.xml",
+						"war/WEB-INF/spring/local-analyzer-config.xml",
+						"war/WEB-INF/spring/orm-context.xml" };
+			} else if (args[0].equals("grid")) {
+				paths = new String[] {
+						"war/WEB-INF/spring/datasource-context.xml",
+						"war/WEB-INF/spring/grid-analyzer-config.xml",
+						"war/WEB-INF/spring/orm-context.xml" };
+			} else {
+				System.out.println("Usage: [local|grid]");
+				System.exit(1);
+			}
+	
+			ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
+	
+			AnnotatorDao annotatorDao = (AnnotatorDao) ctx.getBean("annotatorDao");
+			DetectorDao detectorDao = (DetectorDao) ctx.getBean("detectorDao");
+	
+			ConfigSetup config = (ConfigSetup) ctx.getBean("configuration");
+	
+			for (Annotator an : config.getAnnotators()) {
+				System.out.println("Adding annotator: " + an.getName());
+				annotatorDao.saveOrUpdate(an);
+			}
+	
+			for (Detector dt : config.getDetectors()) {
+				System.out.println("Adding detector: " + dt.getName());
+				detectorDao.saveOrUpdate(dt);
+			}
+	
+			RoleDao roleDao = (RoleDao) ctx.getBean("roleDao");
+			roleDao.saveOrUpdate(new Role("admin", "ROLE_ADMIN"));
+			roleDao.saveOrUpdate(new Role("user", "ROLE_USER"));
+	
+			System.exit(0);
+		}
+		catch (Throwable t) {
+			System.err.println(t.getMessage());
 			System.exit(1);
 		}
-
-		ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
-
-		AnnotatorDao annotatorDao = (AnnotatorDao) ctx.getBean("annotatorDao");
-		DetectorDao detectorDao = (DetectorDao) ctx.getBean("detectorDao");
-
-		ConfigSetup config = (ConfigSetup) ctx.getBean("configuration");
-
-		for (Annotator an : config.getAnnotators()) {
-			System.out.println("Adding annotator: " + an.getName());
-			annotatorDao.saveOrUpdate(an);
-		}
-
-		for (Detector dt : config.getDetectors()) {
-			System.out.println("Adding detector: " + dt.getName());
-			detectorDao.saveOrUpdate(dt);
-		}
-
-		RoleDao roleDao = (RoleDao) ctx.getBean("roleDao");
-		roleDao.saveOrUpdate(new Role("admin", "ROLE_ADMIN"));
-		roleDao.saveOrUpdate(new Role("user", "ROLE_USER"));
-
-		System.exit(0);
 	}
 }

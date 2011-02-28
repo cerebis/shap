@@ -421,8 +421,8 @@ public class ImportData extends BaseCommand {
 				removeFeature(inputFile);
 			}
 		}
-		catch (Exception ex) {
-			System.out.println(ex.getMessage());
+		catch (Throwable t) {
+			System.err.println(t.getMessage());
 			System.exit(1);
 		}
 	}

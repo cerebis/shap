@@ -27,21 +27,27 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserView {
-	@NotNull
-	@Size(min=3,max=25)
+	@Size(min=3,max=255)
 	private String name;
 	@NotNull
-	@Size(min=3,max=16)
+	@Size(min=3,max=255)
 	private String username;
 	@NotNull
-	@Size(min=3,max=8)
+	@Size(min=6,max=8)
 	private String password;
 	@NotNull
 	@Size(min=1)
 	private List<String> roles = new ArrayList<String>();
 	
 	public UserView() {/*...*/}
-	
+
+	public UserView(String name, String username, String password) {
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		addRole("user");
+	}
+
 	public UserView(User user) {
 		this.name = user.getName();
 		this.username = user.getUsername();
@@ -49,6 +55,32 @@ public class UserView {
 		for (Role r : user.getRoles()) {
 			addRole(r.getName());
 		}
+	}
+	
+	/**
+	 * Create a regular user.
+	 * 
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static UserView createUser(String name, String username, String password) {
+		return new UserView(name,username,password);
+	}
+	
+	/**
+	 * Create a user with administator role.
+	 * 
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static UserView createAdminUser(String name, String username, String password) {
+		UserView admin = createUser(name, username, password);
+		admin.addRole("admin");
+		return admin;
 	}
 	
 	public String getName() {
