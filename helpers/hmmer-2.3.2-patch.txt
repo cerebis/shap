@@ -1,0 +1,337 @@
+diff -Naur hmmer-2.3.2/src/hmmpfam.c hmmer-2.3.2-mod/src/hmmpfam.c
+--- hmmer-2.3.2/src/hmmpfam.c	2011-03-01 14:41:27.613486316 +1100
++++ hmmer-2.3.2-mod/src/hmmpfam.c	2010-11-29 10:49:26.981264790 +1100
+@@ -65,6 +65,7 @@
+    --null2       : turn OFF the post hoc second null model\n\
+    --pvm         : run on a PVM (Parallel Virtual Machine) cluster\n\
+    --xnu         : turn ON XNU filtering of query protein sequence\n\
++   --xml <s>     : write result as XML to file <s> (mzd 15/2/07)\n\
+ \n";
+ 
+ 
+@@ -88,6 +89,7 @@
+   { "--null2",   FALSE, sqdARG_NONE },  
+   { "--pvm",     FALSE, sqdARG_NONE },  
+   { "--xnu",     FALSE, sqdARG_NONE },
++  { "--xml",     FALSE, sqdARG_STRING },
+ };
+ #define NOPTIONS (sizeof(OPTIONS) / sizeof(struct opt_s))
+ 
+@@ -148,7 +150,155 @@
+ static void *worker_thread(void *ptr);
+ #endif /* HMMER_THREADS */
+ 
++/**
++ * Simple function for trimming the leading and trailing white space
++ * from struct fancyali_s character arrays. It assumes that all
++ * of these arrays always have 3 leading and 3 trailing whitespaces.
++ * (This seems to be true as it's a formatting choice)
++ *
++ * Returns malloc'd trimmed char array.
++ * 
++ * MZD 12/06/2007
++ */
++static char* trimmedSeq(char *seq) {
++	const int offset = 3;
++	int nch = strlen(seq);
++	
++	char* trimmed = malloc(sizeof(char)*(nch+1));
++	if (trimmed == NULL) {
++		printf("Error allocating memory in trimmedSeq\n");
++		exit(1);
++
++	}
++	
++	if (strcpy(trimmed, &seq[offset]) == NULL) {
++		printf("Error in trimmedSeq\n");
++		exit(1);
++	}
++	
++	trimmed[nch - 2*offset] = '\0';
++	
++	return trimmed;
++}
+ 
++/**
++ * Hmmer's formatting of output sucks and only writes to stdout. This
++ * function is used to write the output in an XML format and takes a
++ * FILE pointer so that it can be written to any destination.
++ *
++ * MZD 12/06/2007
++ */
++void appendResultXML(
++    FILE *fp,
++    int show_acc,
++    SQINFO *sqinfo, 
++    struct threshold_s *thresh, 
++    struct tophit_s *ghit,
++    struct tophit_s *dhit,
++    struct fancyali_s *ali) {
++  
++  float sc;
++  double pvalue,evalue;
++  char *name, *acc, *desc;
++  int i,ndom;
++  
++  fprintf(fp, "\t<result>\n");
++  fprintf(fp, "\t\t<query>\n");
++  fprintf(fp, "\t\t\t<name>%s</name>\n", sqinfo->name);
++  fprintf(fp, "\t\t\t<accession>%s</accession>\n", sqinfo->flags &SQINFO_ACC ? sqinfo->acc  : "[none]");
++  fprintf(fp, "\t\t\t<description>%s</description>\n", sqinfo->flags &SQINFO_DESC? sqinfo->desc : "[none]");
++  fprintf(fp, "\t\t</query>\n");
++  fprintf(fp, "\t\t<global-hits>\n");
++  for (i = 0; i<ghit->num; i++) {
++    
++    GetRankedHit(ghit, i, 
++      &pvalue, &sc, NULL, NULL,
++      &name, &acc, &desc,
++      NULL, NULL, NULL, 	  /* seq positions */
++      NULL, NULL, NULL, 	  /* HMM positions */
++      NULL, &ndom,		  /* domain info   */
++      NULL);			  /* alignment info*/
++
++    evalue = pvalue * (double) thresh->Z;
++
++    /* sneaky trick warning:
++     * if we're using dynamic Pfam score cutoffs (GA, TC, NC),
++     * then the list of hits is already correct and does not
++     * need any score cutoffs. Unset the thresholds. They'll
++     * be reset in the main_loop if we still have sequences
++     * to process.
++     */
++    if (thresh->autocut != CUT_NONE) {
++      thresh->globE = thresh->domE = FLT_MAX;
++      thresh->globT = thresh->domT = -FLT_MAX;
++    }
++
++    if (evalue <= thresh->globE && sc >= thresh->globT) {
++      fprintf(fp, "\t\t\t<hit>\n");
++      fprintf(fp, "\t\t\t\t<model>%s</model>\n", (show_acc && acc != NULL) ?  acc : name);
++      fprintf(fp, "\t\t\t\t<description>%s</description>\n", desc);
++      fprintf(fp, "\t\t\t\t<score>%.1f</score>\n", sc);
++      fprintf(fp, "\t\t\t\t<evalue>%.2g</evalue>\n", evalue);
++      fprintf(fp, "\t\t\t\t<ndom>%d</ndom>\n", ndom);
++      fprintf(fp, "\t\t\t</hit>\n");
++    }
++  }
++  fprintf(fp, "\t\t</global-hits>\n");
++  
++  fprintf(fp, "\t\t<domain-hits>\n");
++  for (i = 0; i<dhit->num; i++) {
++    double motherp;
++    float mothersc;
++    int sqfrom, sqto, hmmfrom, hmmto, hmmlen, domidx;
++    char *tmpStr;
++    
++    GetRankedHit(dhit, i, 
++      &pvalue, &sc, &motherp, &mothersc,
++      &name, &acc, NULL,
++      &sqfrom, &sqto, NULL, 
++      &hmmfrom, &hmmto, &hmmlen, 
++      &domidx, &ndom,
++      &ali);
++      
++    evalue = pvalue * (double) thresh->Z;
++	  
++    if (motherp * (double)thresh->Z > thresh->globE || mothersc < thresh->globT) {
++      continue;
++    }
++    else if (evalue <= thresh->domE && sc >= thresh->domT) {
++      fprintf(fp, "\t\t\t<hit>\n");
++      fprintf(fp, "\t\t\t\t<model>%s</model>\n", (show_acc && acc != NULL) ?  acc : name);
++      fprintf(fp, "\t\t\t\t<index>%d</index>\n", domidx);
++      fprintf(fp, "\t\t\t\t<ndom>%d</ndom>\n", ndom);
++      fprintf(fp, "\t\t\t\t<seq-from>%d</seq-from>\n", sqfrom);
++      fprintf(fp, "\t\t\t\t<seq-to>%d</seq-to>\n", sqto);
++      fprintf(fp, "\t\t\t\t<seq-start>%s</seq-start>\n", sqfrom == 1 ? "true" : "false");
++      fprintf(fp, "\t\t\t\t<seq-end>%s</seq-end>\n", sqto == sqinfo->len ? "true" : "false");
++      fprintf(fp, "\t\t\t\t<hmm-from>%d</hmm-from>\n", hmmfrom);
++      fprintf(fp, "\t\t\t\t<hmm-to>%d</hmm-to>\n", hmmto);
++      fprintf(fp, "\t\t\t\t<hmm-start>%s</hmm-start>\n", hmmfrom == 1 ? "true" : "false");
++      fprintf(fp, "\t\t\t\t<hmm-end>%s</hmm-end>\n", hmmto == hmmlen ? "true" : "false");
++      fprintf(fp, "\t\t\t\t<score>%.1f</score>\n", sc);
++      fprintf(fp, "\t\t\t\t<evalue>%.2g</evalue>\n", evalue);
++      
++      tmpStr = trimmedSeq(ali->aseq);
++      fprintf(fp, "\t\t\t\t<query-seq>%s</query-seq>\n", tmpStr);
++      free(tmpStr);
++      
++      tmpStr = trimmedSeq(ali->model);
++      fprintf(fp, "\t\t\t\t<subject-seq>%s</subject-seq>\n", tmpStr);
++      free(tmpStr);
++      
++      tmpStr = trimmedSeq(ali->mline);
++      fprintf(fp, "\t\t\t\t<consensus-seq>%s</consensus-seq>\n", tmpStr);
++      free(tmpStr);
++      
++      fprintf(fp, "\t\t\t</hit>\n");      
++    }
++  }  
++  fprintf(fp, "\t\t</domain-hits>\n");
++  fprintf(fp, "\t</result>\n");
++}
+ 
+ 
+ int
+@@ -200,6 +350,8 @@
+   int   threads_support;	/* TRUE if threads support compiled in */
+   int   pvm_support;		/* TRUE if PVM support compiled in     */
+ 
++  FILE *xmlfp;                  /* File pointer to the output XML file. NULL when not requested. (mzd 15/02/07) */
++  
+   /*********************************************** 
+    * Parse command line
+    ***********************************************/
+@@ -213,6 +365,8 @@
+   be_backwards= FALSE; 
+   show_acc    = FALSE;
+   
++  xmlfp       = NULL; /* Default set to NULL (mzd 15/02/07) */
++  
+   pvm_support     = FALSE;
+   threads_support = FALSE;
+   num_threads     = 0;
+@@ -250,7 +404,15 @@
+     else if (strcmp(optname, "--forward") == 0) do_forward     = TRUE;
+     else if (strcmp(optname, "--null2")   == 0) do_null2       = FALSE;
+     else if (strcmp(optname, "--pvm")     == 0) do_pvm         = TRUE;
+-    else if (strcmp(optname, "--xnu")     == 0) do_xnu         = TRUE; 
++    else if (strcmp(optname, "--xnu")     == 0) do_xnu         = TRUE;
++    else if (strcmp(optname, "--xml")     == 0) {
++      /* possibly add some checks for permissions, etc (mzd 15/02/07)*/
++      xmlfp = fopen(optarg,"w");
++      if (xmlfp == NULL) {
++       Die("There was a problem opening the output XML file \"%s\" for writing.", optarg);
++      }
++      fprintf(xmlfp, "<hmmpfam>\n");
++    }
+     else if (strcmp(optname, "--informat") == 0) {
+       format = String2SeqfileFormat(optarg);
+       if (format == SQFILE_UNKNOWN) 
+@@ -309,6 +471,12 @@
+   HMMERBanner(stdout, banner);
+   printf(   "HMM file:                 %s\n", hmmfile);
+   printf(   "Sequence file:            %s\n", seqfile);
++  if (xmlfp != NULL) {
++    fprintf(xmlfp, "\t<database-file>%s</database-file>\n", hmmfile);
++    fprintf(xmlfp, "\t<sequence-file>%s</sequence-file>\n", seqfile);
++    fprintf(xmlfp, "\t<results>\n");
++  }
++  
+   if (do_pvm)
+     printf( "PVM:                      ACTIVE\n");
+   printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+@@ -316,7 +484,6 @@
+   /*********************************************** 
+    * Search each HMM against each sequence
+    ***********************************************/
+-
+   while (ReadSeq(sqfp, format, &seq, &sqinfo)) 
+     {
+       ghit = AllocTophits(20);   /* keeps full seq scores */
+@@ -494,16 +661,27 @@
+ 
+ 
+       printf("//\n");
++      
++      if (xmlfp != NULL) {
++        appendResultXML(xmlfp, show_acc, &sqinfo, &thresh, ghit, dhit, ali);
++      }
++      
+       FreeSequence(seq, &sqinfo); 
+       FreeTophits(ghit);
+       FreeTophits(dhit);
+ 
+       HMMFileRewind(hmmfp);
+     }
+-
++  
+   /*********************************************** 
+    * Clean-up and exit.
+    ***********************************************/
++  if (xmlfp != NULL) {
++    fprintf(xmlfp, "\t</results>\n");
++    fprintf(xmlfp, "</hmmpfam>\n");
++    fclose(xmlfp);
++  }
++
+   SeqfileClose(sqfp);
+   HMMFileClose(hmmfp);
+   SqdClean();
+diff -Naur hmmer-2.3.2/src/Makefile.local hmmer-2.3.2-mod/src/Makefile.local
+--- hmmer-2.3.2/src/Makefile.local	1970-01-01 10:00:00.000000000 +1000
++++ hmmer-2.3.2-mod/src/Makefile.local	2011-03-01 14:30:00.727151630 +1100
+@@ -0,0 +1,62 @@
++CC     = icc
++CFLAGS = -O3 -static -march=core2 -xSSSE3 -pthread -ipo
++DEFS   = -DHAVE_CONFIG_H
++LIBS   = -lm
++
++all: hmmpfam.icc hmmsearch.icc hmmalign.icc hmmcalibrate.icc hmmbuild.icc
++
++hmmpfam.icc: hmmpfam.c alphabet.c core_algorithms.c debug.c display.c emit.c \
++	emulation.c fast_algorithms.c histogram.c hmmio.c mathsupport.c masks.c \
++	misc.c modelmakers.c plan7.c plan9.c postprob.c prior.c pvm.c threads.c \
++	tophits.c  trace.c ../squid/msa.c ../squid/msf.c ../squid/gki.c ../squid/ssi.c \
++	../squid/sre_math.c ../squid/sre_random.c ../squid/sre_ctype.c ../squid/sre_string.c \
++	../squid/sqerror.c ../squid/sqio.c ../squid/selex.c ../squid/types.c \
++	../squid/vectorops.c ../squid/file.c ../squid/alignio.c ../squid/a2m.c \
++	../squid/hsregex.c ../squid/phylip.c ../squid/getopt.c ../squid/dayhoff.c \
++	../squid/stockholm.c ../squid/clustal.c ../squid/iupac.c
++	$(CC) $(CFLAGS) $(DEFS) -I ../squid $^ -o $@ $(LIBS)
++
++hmmsearch.icc: hmmsearch.c alphabet.c core_algorithms.c debug.c display.c emit.c \
++	emulation.c fast_algorithms.c histogram.c hmmio.c mathsupport.c masks.c \
++	misc.c modelmakers.c plan7.c plan9.c postprob.c prior.c pvm.c threads.c \
++	tophits.c  trace.c ../squid/msa.c ../squid/msf.c ../squid/gki.c ../squid/ssi.c \
++	../squid/sre_math.c ../squid/sre_random.c ../squid/sre_ctype.c ../squid/sre_string.c \
++	../squid/sqerror.c ../squid/sqio.c ../squid/selex.c ../squid/types.c \
++	../squid/vectorops.c ../squid/file.c ../squid/alignio.c ../squid/a2m.c \
++	../squid/hsregex.c ../squid/phylip.c ../squid/getopt.c ../squid/dayhoff.c \
++	../squid/stockholm.c ../squid/clustal.c ../squid/iupac.c
++	$(CC) $(CFLAGS) $(DEFS) -I ../squid $^ -o $@ $(LIBS)
++
++hmmalign.icc: hmmalign.c alphabet.c core_algorithms.c debug.c display.c emit.c \
++	emulation.c fast_algorithms.c histogram.c hmmio.c mathsupport.c masks.c \
++	misc.c modelmakers.c plan7.c plan9.c postprob.c prior.c pvm.c threads.c \
++	tophits.c  trace.c ../squid/msa.c ../squid/msf.c ../squid/gki.c ../squid/ssi.c \
++	../squid/sre_math.c ../squid/sre_random.c ../squid/sre_ctype.c ../squid/sre_string.c \
++	../squid/sqerror.c ../squid/sqio.c ../squid/selex.c ../squid/types.c \
++	../squid/vectorops.c ../squid/file.c ../squid/alignio.c ../squid/a2m.c \
++	../squid/hsregex.c ../squid/phylip.c ../squid/getopt.c ../squid/dayhoff.c \
++	../squid/stockholm.c ../squid/clustal.c ../squid/iupac.c
++	$(CC) $(CFLAGS) $(DEFS) -I ../squid $^ -o $@ $(LIBS)
++
++hmmcalibrate.icc: hmmcalibrate.c alphabet.c core_algorithms.c debug.c display.c emit.c \
++	emulation.c fast_algorithms.c histogram.c hmmio.c mathsupport.c masks.c \
++	misc.c modelmakers.c plan7.c plan9.c postprob.c prior.c pvm.c threads.c \
++	tophits.c  trace.c ../squid/msa.c ../squid/msf.c ../squid/gki.c ../squid/ssi.c \
++	../squid/sre_math.c ../squid/sre_random.c ../squid/sre_ctype.c ../squid/sre_string.c \
++	../squid/sqerror.c ../squid/sqio.c ../squid/selex.c ../squid/types.c \
++	../squid/vectorops.c ../squid/file.c ../squid/alignio.c ../squid/a2m.c \
++	../squid/hsregex.c ../squid/phylip.c ../squid/getopt.c ../squid/dayhoff.c \
++	../squid/stockholm.c ../squid/clustal.c ../squid/iupac.c ../squid/stopwatch.c
++	$(CC) $(CFLAGS) $(DEFS) -I ../squid $^ -o $@ $(LIBS)
++
++hmmbuild.icc: hmmbuild.c alphabet.c core_algorithms.c debug.c display.c emit.c \
++	emulation.c fast_algorithms.c histogram.c hmmio.c mathsupport.c masks.c \
++	misc.c modelmakers.c plan7.c plan9.c postprob.c prior.c pvm.c threads.c \
++	tophits.c  trace.c ../squid/msa.c ../squid/msf.c ../squid/gki.c ../squid/ssi.c \
++	../squid/sre_math.c ../squid/sre_random.c ../squid/sre_ctype.c ../squid/sre_string.c \
++	../squid/sqerror.c ../squid/sqio.c ../squid/selex.c ../squid/types.c \
++	../squid/vectorops.c ../squid/file.c ../squid/alignio.c ../squid/a2m.c \
++	../squid/hsregex.c ../squid/phylip.c ../squid/getopt.c ../squid/dayhoff.c \
++	../squid/stockholm.c ../squid/clustal.c ../squid/iupac.c ../squid/weight.c \
++	../squid/cluster.c ../squid/aligneval.c ../squid/stack.c
++	$(CC) $(CFLAGS) $(DEFS) -I ../squid $^ -o $@ $(LIBS)
+diff -Naur hmmer-2.3.2/src/trace.c hmmer-2.3.2-mod/src/trace.c
+--- hmmer-2.3.2/src/trace.c	2011-03-01 14:41:27.594486943 +1100
++++ hmmer-2.3.2-mod/src/trace.c	2007-06-12 11:51:38.078153670 +1000
+@@ -854,7 +854,6 @@
+ } 
+ 
+ 
+-
+ /* Function: TraceDecompose()
+  * Date:     Sat Aug 30 11:18:40 1997 (Denver CO)
+  * 
