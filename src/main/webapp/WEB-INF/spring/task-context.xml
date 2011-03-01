@@ -144,7 +144,7 @@
 <bean id="jobDaemon" class="org.mzd.shap.spring.JobDaemonImpl">
 	<property name="taskExecutor" ref="taskExecutor"/>
 	<property name="batchAdminService" ref="batchAdminService"/>
-	<property name="maxQueued" value="15"/>
+	<property name="maxQueued" value="${analysis.jobdaemon.maxqueued}"/>
 	<property name="observer" ref="consoleWriterObserver"/>
 </bean>
 

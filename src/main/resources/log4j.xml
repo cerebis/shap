@@ -3,64 +3,64 @@
 
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
+	<!-- 
+		Console event log 
+	    
+	    Within an application server, this will probably be redirected to a log file
+	-->
+	<!--
 	<appender name="toConsole" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
 	</appender>
-
+	-->
+	
+	<!-- 
+		Chainsaw event log
+		
+		Log events directly to a running instance of Chainsaw
+	 -->
+	<!--
+	<appender name="toChainsaw" class="org.apache.log4j.net.SocketAppender">
+		<param name="remoteHost" value="localhost"/>
+		<param name="port" value="4445"/>
+		<param name="locationInfo" value="true"/>
+	</appender>
+	-->
+	
+	<!--
+		File event log
+		
+		This is configured to write to Tomcat's log/ folder
+	 -->
 	<appender name="toFile" class="org.apache.log4j.RollingFileAppender">
-		<param name="file" value="shap.log" />
-		<param name="MaxFileSize" value="10000KB" />
+		<param name="file" value="../log/shap.log" />
+		<param name="MaxFileSize" value="5000KB" />
 		<!-- Keep one backup file -->
 		<param name="MaxBackupIndex" value="1" />
+		<layout class="org.apache.log4j.xml.XMLLayout"/>
+		<!--
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
+		-->
 	</appender> 
 	
-	<logger name="com.thoughtworks.xstream">
-		<level value="debug"/>
-	</logger>
-	
 	<logger name="org.mzd">
-		<level value="debug" />
-	</logger>
-	
-	<logger name="org.springframework.web">
-		<level value="debug" />
-	</logger>	
-
-	<logger name="org.springframework.orm">
-		<level value="debug" />
-	</logger>	
-	
-	<logger name="org.springframework.security">
-		<level value="info" />
-	</logger>	
-
-	<!--<logger name="org.springframework.beans">
 		<level value="info" />
 	</logger>
 	
-	<logger name="org.springframework.context">
+	<logger name="org.springframework">
 		<level value="info" />
-	</logger>
-
-	<logger name="org.springframework.web">
-		<level value="info" />
-	</logger>-->
+	</logger>	
 
 	<logger name="org.hibernate">
 		<level value="info" />
 	</logger>
 	
-	<logger name="org.hibernate.search">
-		<level value="debug" />
-	</logger>
-
 	<logger name="org.apache.lucene">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 
 	<root>

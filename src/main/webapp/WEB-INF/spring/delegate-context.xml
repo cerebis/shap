@@ -12,7 +12,7 @@
 
 <!-- Grid Execution Delegate -->
 <bean id="gridSession" class="org.mzd.shap.exec.drmaa.SessionBean" init-method="init" destroy-method="destroy">
-	<property name="specification" value="-o /dev/null -e /dev/null -w e -p 0 -b yes -V -shell yes -l hp=TRUE"/>
+	<property name="specification" value="${analysis.sge.specification}"/>
 </bean>
 <bean id="delegate" class="org.mzd.shap.exec.GridDelegate" scope="prototype">
 	<property name="sessionBean"><ref local="gridSession"/></property>
@@ -20,8 +20,8 @@
 
 <!-- Task Executor -->
 <bean id="taskExecutor" class="org.mzd.shap.spring.task.PooledTaskExecutor" init-method="init" destroy-method="destroy">
-	<property name="corePoolSize" value="20"/>
-	<property name="maximumPoolSize" value="20"/>
+	<property name="corePoolSize" value="${analysis.executor.threads}"/>
+	<property name="maximumPoolSize" value="${analysis.executor.threads}"/>
 	<property name="taskAdvisor" ref="taskAdvisor"/>
 </bean>
 
