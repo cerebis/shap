@@ -51,13 +51,13 @@ Building from source
 	
 5) Once completed, there will be a directory "target/" which contains the built WAR file.
 
-	shap-{version}-SNAPSHOT.war
+	shap-{version}.war
 	
 This can be deployed to an application server such as Tomcat for web access to analysis results.
 
 6) The server-side analysis tools are contained in the WAR file. Extract this file within the SHAP folder as follows:
 
-	unzip -q target/shap-{version}-SNAPSHOT.war -d war
+	unzip -q target/shap-{version}.war -d war
 	
 You should now have a folder "war/" containing the contents of the WAR file. All the helper scripts in "bin/" have been written assuming this path.
 
