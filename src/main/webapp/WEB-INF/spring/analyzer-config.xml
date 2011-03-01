@@ -130,7 +130,7 @@
 <bean id="aragorn" parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
 	<property name="name" value="aragorn"/>
 	<property name="argumentString">
-		<value>aragorn -t -i -w -o %2$s %1$s</value>
+		<value>aragornXML.sh %s %s</value>
 	</property>
 	<property name="parserClass" value="org.mzd.shap.analysis.aragorn.AragornParserXml"/>
 	<property name="implicitAnnotator">
