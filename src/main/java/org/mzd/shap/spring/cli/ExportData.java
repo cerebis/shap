@@ -44,7 +44,7 @@ import org.mzd.shap.domain.dao.SampleDao;
 import org.mzd.shap.domain.dao.SequenceDao;
 import org.mzd.shap.io.FastaWriter;
 import org.mzd.shap.io.GenbankWriter;
-import org.mzd.shap.io.ReportWriter;
+//import org.mzd.shap.io.ReportWriter;
 import org.mzd.shap.io.TableWriter;
 
 public class ExportData extends BaseCommand {
@@ -79,41 +79,41 @@ public class ExportData extends BaseCommand {
 					.create())
 			.create();
 	
-	private final static Option HISTOGRAM_ANNOTATOR = CommandLineApplication.buildOption()
-			.withLongName("annotator")
-			.withDescription("Name of annotator")
-			.withRequired(true)
-			.withArgument(CommandLineApplication.buildArgument()
-					.withDescription("name")
-					.withMinimum(1)
-					.withMaximum(1)
-					.withName("name")
-					.create())
-			.create();
-	
-	private final static Double DEFAULT_CONFIDENCE = 1.0E-5; 
-	private final static Option HISTOGRAM_CONFIDENCE = CommandLineApplication.buildOption()
-			.withLongName("confidence")
-			.withDescription("Confidence threshold cut-off (default: " + DEFAULT_CONFIDENCE + ")")
-			.withArgument(CommandLineApplication.buildArgument()
-					.withName("float")
-					.withMinimum(1)
-					.withMaximum(1)
-					.withDefault(DEFAULT_CONFIDENCE)
-					.withValidator(CommandLineApplication.getFloatValidator())
-					.create())
-			.create();
-			
-	private final static Option HISTOGRAM = CommandLineApplication.buildOption()
-			.withLongName("histogram")
-			.withDescription("Histogram of hits for a given annotator")
-			.withChildren(CommandLineApplication.buildGroup()
-					.withDescription("Histogram options")
-					.withName("Options")
-					.withOption(HISTOGRAM_ANNOTATOR)
-					.withOption(HISTOGRAM_CONFIDENCE)
-					.create())
-			.create();
+//	private final static Option HISTOGRAM_ANNOTATOR = CommandLineApplication.buildOption()
+//			.withLongName("annotator")
+//			.withDescription("Name of annotator")
+//			.withRequired(true)
+//			.withArgument(CommandLineApplication.buildArgument()
+//					.withDescription("name")
+//					.withMinimum(1)
+//					.withMaximum(1)
+//					.withName("name")
+//					.create())
+//			.create();
+//	
+//	private final static Double DEFAULT_CONFIDENCE = 1.0E-5; 
+//	private final static Option HISTOGRAM_CONFIDENCE = CommandLineApplication.buildOption()
+//			.withLongName("confidence")
+//			.withDescription("Confidence threshold cut-off (default: " + DEFAULT_CONFIDENCE + ")")
+//			.withArgument(CommandLineApplication.buildArgument()
+//					.withName("float")
+//					.withMinimum(1)
+//					.withMaximum(1)
+//					.withDefault(DEFAULT_CONFIDENCE)
+//					.withValidator(CommandLineApplication.getFloatValidator())
+//					.create())
+//			.create();
+//			
+//	private final static Option HISTOGRAM = CommandLineApplication.buildOption()
+//			.withLongName("histogram")
+//			.withDescription("Histogram of hits for a given annotator")
+//			.withChildren(CommandLineApplication.buildGroup()
+//					.withDescription("Histogram options")
+//					.withName("Options")
+//					.withOption(HISTOGRAM_ANNOTATOR)
+//					.withOption(HISTOGRAM_CONFIDENCE)
+//					.create())
+//			.create();
 	
 	private final static Option GENBANK = CommandLineApplication.buildOption()
 			.withLongName("genbank")
@@ -201,8 +201,8 @@ public class ExportData extends BaseCommand {
 			.withMaximum(1)
 			.withOption(ANNOTATION)
 			.withOption(FASTA)
-			.withOption(GENBANK)	
-			.withOption(HISTOGRAM)
+			.withOption(GENBANK)
+//			.withOption(HISTOGRAM)
 			.create();
 		
 		Group targetGroup = CommandLineApplication.buildGroup()
@@ -453,31 +453,31 @@ public class ExportData extends BaseCommand {
 		}
 	}
 
-	private void writeHistogram(DomainTarget target, String annotatorName, List<String> idList, 
-			Double confidence, List<Taxonomy> excludedTaxa, File outputFile)
-				throws ApplicationException, IOException {
-		
-		ReportWriter writer = (ReportWriter)getApp()
-			.getContext()
-				.getBean("annotatorHistographicReportWriter");
-		
-		switch (target) {
-		default:
-			throw new ApplicationException("Unimplemented");
-			
-		case SAMPLE:
-			SampleDao sampleDao = (SampleDao)getApp()
-				.getContext()
-					.getBean("sampleDao");
-			
-			for (String s: idList) {
-				Sample sample = sampleDao.findByID(Integer.parseInt(s));
-				writer.write(outputFile, sample, annotatorName, confidence, excludedTaxa);
-				sampleDao.evict(sample);
-			}
-			break;
-		}
-	}
+//	private void writeHistogram(DomainTarget target, String annotatorName, List<String> idList, 
+//			Double confidence, List<Taxonomy> excludedTaxa, File outputFile)
+//				throws ApplicationException, IOException {
+//		
+//		ReportWriter writer = (ReportWriter)getApp()
+//			.getContext()
+//				.getBean("annotatorHistographicReportWriter");
+//		
+//		switch (target) {
+//		default:
+//			throw new ApplicationException("Unimplemented");
+//			
+//		case SAMPLE:
+//			SampleDao sampleDao = (SampleDao)getApp()
+//				.getContext()
+//					.getBean("sampleDao");
+//			
+//			for (String s: idList) {
+//				Sample sample = sampleDao.findByID(Integer.parseInt(s));
+//				writer.write(outputFile, sample, annotatorName, confidence, excludedTaxa);
+//				sampleDao.evict(sample);
+//			}
+//			break;
+//		}
+//	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -556,15 +556,15 @@ public class ExportData extends BaseCommand {
 			else if (cl.hasOption(GENBANK)) {
 				writeGenbank(target, idList, excludedTaxa, outputFile);
 			}
-			else if (cl.hasOption(HISTOGRAM)) {
-				writeHistogram(
-						target, 
-						(String)cl.getValue(HISTOGRAM_ANNOTATOR), 
-						idList, 
-						(Double)cl.getValue(HISTOGRAM_CONFIDENCE), 
-						excludedTaxa, 
-						outputFile);
-			}
+//			else if (cl.hasOption(HISTOGRAM)) {
+//				writeHistogram(
+//						target, 
+//						(String)cl.getValue(HISTOGRAM_ANNOTATOR), 
+//						idList, 
+//						(Double)cl.getValue(HISTOGRAM_CONFIDENCE), 
+//						excludedTaxa, 
+//						outputFile);
+//			}
 		}
 		catch (Throwable t) {
 			System.err.println(t.getMessage());
