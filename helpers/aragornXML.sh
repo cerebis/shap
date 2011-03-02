@@ -9,10 +9,20 @@
 # MZD 18/07/2008
 #
 
+function assertExists {
+	type -P $1 &> /dev/null || { echo "$1 does not appear to be installed" >&2; exit 1; }
+}
+
+ARAGORN="aragorn"
+
+# Check for the command
+# Comment this out if you choose to use an explicit path.
+assertExists $ARAGORN
+
 if [ $# -ne 2 ]
 then
-        echo "Usage: aragornXML.sh <input fasta file> <output file>"
-        exit 1
+	echo "Usage: aragornXML.sh <input fasta file> <output file>"
+	exit 1
 fi
 
 if [ ! -r $1 ]
@@ -23,11 +33,11 @@ fi
 
 if [ -d $2 ]
 then
-        echo "The output path '$2' is a directory"
-        exit 1
+	echo "The output path '$2' is a directory"
+	exit 1
 fi
 
-/array/informatics/bin/aragorn -t -i -w 2>&1 $1 | awk -v outfile=$2 '
+$ARAGORN -t -i -w 2>&1 $1 | awk -v outfile=$2 '
 
 BEGIN {
 	print "<aragorn>" > outfile

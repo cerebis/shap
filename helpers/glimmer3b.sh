@@ -1,5 +1,17 @@
 #!/bin/bash
 
+#
+# Comment out the statement below once paths are set for:
+#  - Glimmer scripts folder
+#  - Glimmer bin folder
+#  - Elph executable
+#
+echo -e "Please modify the script before using.\nYou need to set paths"; exit 1
+
+AWKPATH=/usr/local/glimmer3.02/scripts
+GLIMMERPATH=/usr/local/glimmer3.02/bin
+ELPH=/usr/local/ELPH/bin/Linux-i386/elph
+
 if [ $# -ne 2 ]
 then
 	echo "Usage: ${0##*/} <input_fasta> <output_file>"
@@ -9,10 +21,6 @@ fi
 GENOME=$1
 TAG=`basename $2`
 OUTDIR=`dirname $2`
-
-AWKPATH=/array/informatics/glimmer3.02/scripts
-GLIMMERPATH=/array/informatics/glimmer3.02/bin
-ELPH=/array/informatics/ELPH/bin/Linux-i386/elph
 
 # add/change glimmer options here
 GLIMMEROPTS="-o50 -g110 -t30"

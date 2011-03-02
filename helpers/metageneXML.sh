@@ -8,7 +8,16 @@
 # mzd.analysis.metagene.bean
 #
 # MZD 17/07/2008
-# 
+#
+
+function assertExists {
+	type -P $1 &> /dev/null || { echo "$1 does not appear to be installed" >&2; exit 1; }
+}
+
+METAGENE="metagene"
+# Check for the command
+# Comment this out if you choose to use an explicit path.
+assertExists $METAGENE
 
 if [ $# -ne 2 ]
 then
@@ -23,7 +32,7 @@ then
 fi
 
 # Call metagene and pipe stderr and stdout to awk script
-metagene $1 2>&1 | grep -v "Input sequences will be individually treated." | awk -v outfile=$2 '
+$METAGENE $1 2>&1 | grep -v "Input sequences will be individually treated." | awk -v outfile=$2 '
 
 function modelFlagToName(flag) {
 	if (flag == "-") {
