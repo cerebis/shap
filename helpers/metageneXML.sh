@@ -14,7 +14,14 @@ function assertExists {
 	type -P $1 &> /dev/null || { echo "$1 does not appear to be installed" >&2; exit 1; }
 }
 
-METAGENE="metagene"
+#
+# Metagene is distributed as a binary for 2 architectures.
+#
+# 32 bit version
+METAGENE="mga_linux_ia32"
+# 64 bit version
+#METAGENE="mga_linux_ia64"
+
 # Check for the command
 # Comment this out if you choose to use an explicit path.
 assertExists $METAGENE
