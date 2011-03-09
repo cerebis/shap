@@ -42,66 +42,37 @@ public interface DataViewService {
 	
 	Map<String,List<?>> getFullTextResult(String queryText, User user);
 	
-	/*
-	 * Set of gets for following the tree of ownership.
-	 * 
-	 * We require a loaded instance of the containing object to load the child. Rather
-	 * than specify the entire graph of relations in each method call, it is expected
-	 * that a user call each in succession.
-	 */
-	Project getProject(User user, Integer projectId) throws NotFoundException;
-	Sample getSample(Project project, Integer sampleId) throws NotFoundException;
-	Sequence getSequence(Sample sample, Integer sequenceId) throws NotFoundException;
-	Feature getFeature(Sequence sequence, Integer featureId) throws NotFoundException;
-	
-	
-	Project getProject(Integer projectId) throws NotFoundException;
-
-	Project getProject(String projectName) throws NotFoundException;
-	
 	Detector getDetector(String detectorName) throws NotFoundException;
 	Annotator getAnnotator(String annotatorName) throws NotFoundException;
 	
-	List<Object[]> getProjectTable(Integer userId, int firstResult, int maxResults, int sortFieldIndex,  String sortDirection) throws NotFoundException;
-	
+	Project getProject(User user, Integer projectId) throws NotFoundException;
+	Project getProject(Integer projectId) throws NotFoundException;
+	Project getProject(String projectName) throws NotFoundException;
+	List<Object[]> getProjectTable(int firstResult, int maxResults, int sortFieldIndex,  String sortDirection) throws NotFoundException;
 	Long getProjectCount(Integer userId);
 	
-	
+	Sample getSample(Project project, Integer sampleId) throws NotFoundException;
 	Sample getSample(Integer sampleId) throws NotFoundException;
-
 	Sample getSample(Project project, String sampleName) throws NotFoundException;
-
 	Sample getSample(String projectName, String sampleName) throws NotFoundException;
-
 	List<Object[]> getSampleTable(Integer projectId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException;
-	
 	Long getSampleCount(Integer projectId);
 
-
+	Sequence getSequence(Sample sample, Integer sequenceId) throws NotFoundException;
 	Sequence getSequence(Integer sequenceId) throws NotFoundException;
-
 	Sequence getSequence(Sample sample, String sequenceName) throws NotFoundException;
-
 	Sequence getSequence(String projectName, String sampleName, String sequenceName) throws NotFoundException;
-
 	List<Object[]> getSequenceTable(Integer sampleId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException;
-	
 	Long getSequenceCount(Integer sampelId);
-	
 	List<Sequence> getSequences(List<Integer> sequenceIds) throws NotFoundException;
 	
-	
+	Feature getFeature(Sequence sequence, Integer featureId) throws NotFoundException;
 	Feature getFeature(Integer featureId) throws NotFoundException;
-
 	List<Object[]> getFeatureTable(Integer sequenceId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException;
-	
 	Long getFeatureCount(Integer sequenceId);
-	
 	List<FeatureBreakdownDTO> getFeatureBreakdown(Integer featureId);
-	
 	List<Feature> getFeatures(List<Integer> featureIds) throws NotFoundException;
 	
 	List<Object[]> getAnnotationTable(Integer featureId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException;
-	
 	Long getAnnotationCount(Integer featureId);
 }

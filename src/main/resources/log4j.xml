@@ -39,12 +39,10 @@
 		<param name="MaxFileSize" value="5000KB" />
 		<!-- Keep one backup file -->
 		<param name="MaxBackupIndex" value="1" />
-		<layout class="org.apache.log4j.xml.XMLLayout"/>
-		<!--
+		<!--<layout class="org.apache.log4j.xml.XMLLayout"/>-->
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
-		-->
 	</appender> 
 	
 	<logger name="org.mzd">

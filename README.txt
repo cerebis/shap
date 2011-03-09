@@ -84,31 +84,52 @@ Note. The system account used to invoke these commands will need superuser autho
 
 1) Create a database user with full privileges to the shap database.
 
-	createuser -PE shap-user
+	createuser -SDRPE shapuser
 
 The predefined password for this user is simply "shap01". If a stronger password is used here remember to update the shap.properties file. You will need to remember this password for step 3. To improve data security PostgreSQL client authentication (pg_hba.conf) can be used. In addition, the web application for SHAP needs only write access to the Users and UserRoles tables. A further step could be the definition of a second PostgreSQL user with read-only (select) access to all other tables.
 
 2) Create a database for SHAP.
 
-	createdb -O shap-user shap
+	createdb -O shapuser shap
 
 3) Using a superuser and psql modify the privileges on the shap database.
 
-	psql> grant all on shap to shap-user;
+	psql> grant all on shap to shapuser;
 
-A second limited user could be defined for the web application. Please remember that you will need to update the application post deployment.
+A second limited user could be defined for the web application. Please remember that you will need to update the application post deployment if you chose to use a restricted user.
 
-	psql> grant select on shap to shap-readonly;
-	psql> grant select, insert, delete, update on Users, UserRoles to shap-readonly.
+	psql> grant select on shap to shapreadonly;
+	psql> grant select, insert, delete, update on Users, UserRoles to shapreadonly.
 
 4) In the extracted shap folder from the earlier source or binary installation section, carry over any changes you made to the user in the shap.properties file.
 
 The line should read:
 
-	database.username=shap-user
+	database.username=shapuser
 	database.password={chosen password}
 
 For application servers, if you changed the password, user or database name you will need to update this file post deployment.
+
+5) Make sure the PostgreSQL server has been configured to listen for TCP connections. SHAP connects to the database server by TCP, whether it is hosted on the same system or not. Without this feature being enabled, any attempt by SHAP to connect to the database will fail.
+
+For most Linux systems, the file is located at: 
+
+	/var/lib/pgsql/data/postgresql.conf
+
+Uncomment the "listen_address" line. If the web application, annotation pipeline all reside on the same physical server, you need only listen to the localhost IP address.
+
+	listen_address = 'localhost'
+
+6) PostgreSQL allow provides fine-grained control of client authentication. The shap user will require permission to connect by providing a password. These rules are set in the file located at:
+
+	/var/lib/pgsql/data/pg_hba.conf
+
+The order of rules is important. The more explicit the rule, the earlier it should come. It is recommended to place the shape rules at the beginning of the list of rules. The following rules permit local Unix-domain sockets and host TCP/IP sockets from the localhost.
+
+	local shap shapuser md5
+	host  shap shapuser 127.0.0.1/32 md5
+
+7) On first invocation, SHAP will automatically create its table structure.
 	
 Setup Analyzers
 ---------------

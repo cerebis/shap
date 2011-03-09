@@ -127,7 +127,6 @@ public class DataBrowseController extends AbstractControllerSupport {
 		User user = getSessionUser();
 		ProjectTableResponse response = new ProjectTableResponse();
 		List<Object[]> rows = getDataAdmin().getProjectTable(
-				user.getId(), 
 				data.getIDisplayStart(), 
 				data.getIDisplayLength(),
 				data.getSortedColumnIndex(),

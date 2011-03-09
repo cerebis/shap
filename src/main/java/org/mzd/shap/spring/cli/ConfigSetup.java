@@ -62,21 +62,10 @@ public class ConfigSetup {
 		}
 	
 		try {
-			String[] paths = null;
-			if (args[0].equals("local")) {
-				paths = new String[] {
+			String[] paths = new String[] {
 						"war/WEB-INF/spring/datasource-context.xml",
-						"war/WEB-INF/spring/local-analyzer-config.xml",
+						"war/WEB-INF/spring/analyzer-config.xml",
 						"war/WEB-INF/spring/orm-context.xml" };
-			} else if (args[0].equals("grid")) {
-				paths = new String[] {
-						"war/WEB-INF/spring/datasource-context.xml",
-						"war/WEB-INF/spring/grid-analyzer-config.xml",
-						"war/WEB-INF/spring/orm-context.xml" };
-			} else {
-				System.out.println("Usage: [local|grid]");
-				System.exit(1);
-			}
 	
 			ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
 	

@@ -69,7 +69,7 @@ public class UserControl extends BaseCommand {
 	
 	private final static Option ADMIN = CommandLineApplication.buildOption()
 		.withLongName("admin")
-		.withDescription("User had administration privileges")
+		.withDescription("User has administration privileges")
 		.withRequired(false)
 		.create();
 	

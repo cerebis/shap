@@ -143,8 +143,8 @@ public class DataAdminServiceImpl extends BaseObservable implements DataAdminSer
 		return anno;
 	}
 
-	public List<Object[]> getProjectTable(Integer userId, int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException {
-		return getProjectDao().findPageRowsByUser(userId,firstResult,maxResults,sortFieldIndex,sortDirection);
+	public List<Object[]> getProjectTable(int firstResult, int maxResults, int sortFieldIndex, String sortDirection) throws NotFoundException {
+		return getProjectDao().findAnyPageRows(firstResult,maxResults,sortFieldIndex,sortDirection);
 	}
 	
 	public Long getProjectCount(Integer userId) {
