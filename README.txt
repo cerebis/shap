@@ -22,7 +22,7 @@ Discussion
 
 The SHAP codebase is comprised of a web application for accessing analysis results and a server-side command-line based analysis system. The web application is deployed to a Servlet container such as Tomcat. The analysis system is invoked, as you would expect, from the command-line.
 
-The system is built via the Maven build manager. Maven fetches dependent libraries from remote repositories and eliminates bundling them as part of the SHAP project. Therefore if building from source, you will need to have a working installation of Maven on your system. The first time the system is built and depending on your local repository, Maven may need to fetch many dependent libraries. 
+The system is built using the Maven build manager. Maven resolves dependencies using remote repositories and eliminates the need to bundle supporting libraries as part of the SHAP project. Therefore if building from source, you will need to have a working installation of Maven on your system. The first time the system is built and depending on your local repository, Maven may need to fetch many dependent libraries. 
 
 Once completed, you will find the deployable WAR file in the "target" folder. This WAR file contains both the web application and the server-side system. Currently, the two modes of  operation have not been made into separate codebases.
 
