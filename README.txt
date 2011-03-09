@@ -96,11 +96,6 @@ The predefined password for this user is simply "shap01". If a stronger password
 
 	psql> grant all on shap to shapuser;
 
-A second limited user could be defined for the web application. Please remember that you will need to update the application post deployment if you chose to use a restricted user.
-
-	psql> grant select on shap to shapreadonly;
-	psql> grant select, insert, delete, update on Users, UserRoles to shapreadonly.
-
 4) In the extracted shap folder from the earlier source or binary installation section, carry over any changes you made to the user in the shap.properties file.
 
 The line should read:
