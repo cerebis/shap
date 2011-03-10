@@ -159,6 +159,25 @@ For Hmmpfam a patch must be applied to v2.3.2 to add XML output as an option. Th
 
 Note. All underlying tools, whether called directly or as a wrapper script must be accessible from any machine that intends to execute analysis jobs. Nothing stops users of SHAP from defining multiple analysers which reflect differing runtime environments, such as a local and grid definition.
 
+Configuration of execution environment
+---------------------------------------
+
+The system architecture on which the server-side analysis pipeline will be run dictates the configuration of SHAP's task execution. SHAP is capable processing work either as regular local processes or by submission to a GRID system.   Configuration details are found in the two files:
+
+	war/WEB-INF/classes/shap.properties
+	war/WEB-INF/spring/delegate-context.xml
+
+The shap.properties file contains more commonly changed details, such as the number of concurrent and queued tasks, the working directory location and if using GRID processing, the general details required to submit jobs to an appropriate queue. 
+
+	analysis.executor.threads=20
+	analysis.jobdaemon.maxqueued=15
+	analysis.workdir=/tmp
+	analysis.sge.specification=-o /dev/null -e /dev/null -w e -p 0 -b yes -V -shell yes -l hp=TRUE
+
+The delegate-context.xml file contains two bean definitions for the execution delegate. One provides local process execution, the other GRID execution.
+
+By default, SHAP has been configured to use local processes and the parallelism is limited two 2 simultaneous processes.
+
 SHAP Server-side Commands
 -------------------------
 
