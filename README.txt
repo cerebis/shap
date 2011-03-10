@@ -281,6 +281,8 @@ An example annotation plan which would annotation all sequences in test-sample w
 	</steps>
 </plan>
 
+Users can find two example plans in the plans folder. One demonstrates a simple plan for running a detection job, the other a simple annotation job.
+
 UserControl (userControl.sh)
 ----------------------------
 
