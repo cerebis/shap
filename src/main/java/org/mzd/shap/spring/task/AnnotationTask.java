@@ -67,8 +67,9 @@ public class AnnotationTask extends AdvisableTask {
 		catch (AnalyzerException ex) {
 			throw new TaskException(ex);
 		}
-		catch (Exception ex) {
-			throw new TaskException(ex);
+		catch (Throwable t) {
+			t.printStackTrace();
+			throw new TaskException(t);
 		}
 	}
 	

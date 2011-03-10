@@ -68,6 +68,7 @@ public class DetectionTask extends AdvisableTask {
 			throw new TaskException(ex);
 		}
 		catch (Throwable t) {
+			t.printStackTrace();
 			throw new TaskException(t);
 		}
 	}
