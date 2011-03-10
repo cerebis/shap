@@ -20,14 +20,13 @@
  */
 package org.mzd.shap.spring.cli;
 
+import java.io.File;
 import java.util.List;
 
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.analysis.DetectorDao;
-import org.mzd.shap.domain.authentication.Role;
-import org.mzd.shap.domain.authentication.RoleDao;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -55,17 +54,30 @@ public class ConfigSetup {
 		this.detectors = detectors;
 	}
 
+	private final static String USAGE_MSG = "Usage: [analyzer_configuration]";
+	public static void exitOnError(int value, String message) {
+		if (message != null) {
+			System.err.println(message);
+		}
+		System.out.println(USAGE_MSG);
+		System.exit(value);
+	}
+	
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.out.println("Usage: [local|grid]");
-			System.exit(1);
+			exitOnError(1,null);
+		}
+		
+		File analyzerXML = new File(args[0]);
+		if (!analyzerXML.exists()) {
+			exitOnError(1, analyzerXML.getPath() + " did not exist\n");
 		}
 	
 		try {
 			String[] paths = new String[] {
 						"war/WEB-INF/spring/datasource-context.xml",
-						"war/WEB-INF/spring/analyzer-config.xml",
-						"war/WEB-INF/spring/orm-context.xml" };
+						"war/WEB-INF/spring/orm-context.xml",
+						analyzerXML.getPath()};
 	
 			ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
 	
@@ -83,10 +95,6 @@ public class ConfigSetup {
 				System.out.println("Adding detector: " + dt.getName());
 				detectorDao.saveOrUpdate(dt);
 			}
-	
-			RoleDao roleDao = (RoleDao) ctx.getBean("roleDao");
-			roleDao.saveOrUpdate(new Role("admin", "ROLE_ADMIN"));
-			roleDao.saveOrUpdate(new Role("user", "ROLE_USER"));
 	
 			System.exit(0);
 		}
