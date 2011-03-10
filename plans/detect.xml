@@ -1,0 +1,16 @@
+<!-- 
+	An example detection plan.
+	
+	Two detectors are run as a single step on all sequences in the sample "my-sample".
+ -->
+<plan id="example-detection-plan">
+	<targets>
+		<target project-name="my-project" sample-name="my-sample" />
+	</targets>
+	<steps>
+		<step id="two-detectors" type="DETECTION">
+			<analyzer>metagene</analyzer>
+			<analyzer>aragorn</analyzer>
+		</step>
+	</steps>
+</plan>

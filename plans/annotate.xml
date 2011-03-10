@@ -1,0 +1,20 @@
+<!-- 
+	An example annotation plan.
+
+	Three annotators are run on all sequences in the sample "my-sample".
+	The steps are only for demonstration purposes, all annotators could be run in a single step. 
+ -->
+<plan id="example-annotation-plan">
+	<targets>
+		<target project-name="my-project" sample-name="my-sample" />
+	</targets>
+	<steps>
+		<step id="blast" type="ANNOTATION">
+			<analyzer>swissprot</analyzer>
+			<analyzer>refseq_protein</analyzer>
+		</step>
+		<step id="hmm" type="ANNOTATION">
+			<analyzer>tigrfam</analyzer>
+		</step>
+	</steps>
+</plan>
