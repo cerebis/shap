@@ -114,6 +114,17 @@ public class User implements UserDetails {
 		return new HashSet<GrantedAuthority>(getRoles());
 	}
 
+	public User() {/*...*/}
+	
+	public User(String name, String username, String password, Role... roles) {
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		for (Role r : roles) {
+			addRole(r);
+		}
+	}
+
 	public Integer getId() {
 		return id;
 	}

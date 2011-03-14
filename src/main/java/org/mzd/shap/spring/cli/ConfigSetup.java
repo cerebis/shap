@@ -20,19 +20,29 @@
  */
 package org.mzd.shap.spring.cli;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
 import org.mzd.shap.analysis.DetectorDao;
+import org.mzd.shap.domain.authentication.Role;
+import org.mzd.shap.domain.authentication.RoleDao;
+import org.mzd.shap.domain.authentication.User;
+import org.mzd.shap.domain.authentication.UserDao;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * Simple tool for initial configuration of a new database.
- * 
+ * <p>
+ * Running this tool will cause the database to by initialized. In doing
+ * so, tables will be dropped and recreated. It is important that this tool
+ * not be run on a pre-existing system.
  */
 public class ConfigSetup {
 	private List<Annotator> annotators;
@@ -64,26 +74,64 @@ public class ConfigSetup {
 	}
 	
 	public static void main(String[] args) {
+		// check args
 		if (args.length != 1) {
 			exitOnError(1,null);
 		}
 		
+		// check file existance
 		File analyzerXML = new File(args[0]);
 		if (!analyzerXML.exists()) {
 			exitOnError(1, analyzerXML.getPath() + " did not exist\n");
 		}
-	
+		
+		// prompt user whether existing data should be purged
+		String ormContext = null;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			System.out.println("Do you wish to purge the database before running setup?");
+			System.out.println("WARNING: all existing data in SHAP will be lost!");
+			System.out.println("Really purge? [NO]/yes");
+			String ans = br.readLine();
+			if (ans.toLowerCase().equals("yes")) {
+				System.out.println("Purging enabled");
+				ormContext = "war/WEB-INF/spring/orm-purge-context.xml";
+				
+			}
+			else {
+				System.out.println("Purging disabled");
+				ormContext = "war/WEB-INF/spring/orm-context.xml";
+			}
+		}
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		// run tool
 		try {
 			String[] paths = new String[] {
 						"war/WEB-INF/spring/datasource-context.xml",
-						"war/WEB-INF/spring/orm-context.xml",
+						ormContext,
 						analyzerXML.getPath()};
 	
 			ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
-	
+
+			/*
+			 * Create an base admin user.
+			 */
+			RoleDao roleDao = (RoleDao)ctx.getBean("roleDao");
+			Role adminRole = roleDao.saveOrUpdate(new Role("admin","ROLE_ADMIN"));
+			Role userRole = roleDao.saveOrUpdate(new Role("user","ROLE_USER"));
+			UserDao userDao = (UserDao)ctx.getBean("userDao");
+			userDao.saveOrUpdate(new User("admin","admin","shap01",adminRole,userRole));
+			
+			/*
+			 * Create some predefined analyzers. Users should have modified
+			 * the configuration file to suit their environment.
+			 */
 			AnnotatorDao annotatorDao = (AnnotatorDao) ctx.getBean("annotatorDao");
 			DetectorDao detectorDao = (DetectorDao) ctx.getBean("detectorDao");
-	
+			
 			ConfigSetup config = (ConfigSetup) ctx.getBean("configuration");
 	
 			for (Annotator an : config.getAnnotators()) {

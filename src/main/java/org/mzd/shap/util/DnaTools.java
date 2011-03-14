@@ -71,13 +71,22 @@ public class DnaTools {
 			if (dnaSequence.equals("")) {
 				return ""; 
 			}
+			System.out.println("dnaSequence was: " + dnaSequence);
 			
-			return new TranscriptionEngine.Builder()
+			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
 				.table(tableNumber)
 				.trimStop(false)
-				.build()
-					.translate(new DNASequence(dnaSequence))
-						.getSequenceAsString();
+				.build();
+			
+			return transcriber.translate(new DNASequence(dnaSequence))
+				.getSequenceAsString();
+			
+//			return new TranscriptionEngine.Builder()
+//				.table(tableNumber)
+//				.trimStop(false)
+//				.build()
+//					.translate(new DNASequence(dnaSequence))
+//						.getSequenceAsString();
 		} catch (TranslationException ex) {
 			throw new DnaToolsException(ex);
 		}
