@@ -96,7 +96,7 @@ public class DnaTranslatorTest {
 	public void testRevcompEmpty() throws DnaToolsException {
 		Assert.assertEquals("empty string", "", DnaTools.reverseComplement(""));
 	}
-
+	
 	@Test(expected=java.lang.NullPointerException.class)
 	public void testRevcompNull() throws DnaToolsException {
 		DnaTools.reverseComplement(null);

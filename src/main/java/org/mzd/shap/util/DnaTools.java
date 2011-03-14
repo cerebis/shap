@@ -88,7 +88,16 @@ public class DnaTools {
 //				.build()
 //					.translate(new DNASequence(dnaSequence))
 //						.getSequenceAsString();
-		} catch (TranslationException ex) {
+		} 
+		catch (TranslationException ex) {
+			throw new DnaToolsException(ex);
+		}
+		catch (NullPointerException  ex) {
+			ex.printStackTrace();
+			System.out.println(
+					"Table=" + tableNumber + "\n" +
+					"Mod=" + dnaSequence.length()%3 + "\n" +
+					"Seq='" + dnaSequence + "'");
 			throw new DnaToolsException(ex);
 		}
 	}
