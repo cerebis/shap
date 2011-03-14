@@ -71,7 +71,8 @@ public class DnaTools {
 			if (dnaSequence.equals("")) {
 				return ""; 
 			}
-			System.out.println("dnaSequence was: " + dnaSequence);
+			
+			System.out.println("### DNA sequence MOD3: " + dnaSequence.length()%3);
 			
 			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
 				.table(tableNumber)
