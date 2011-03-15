@@ -77,6 +77,7 @@ public class DnaTools {
 			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
 				.table(tableNumber)
 				.trimStop(false)
+				.translateNCodons(true)
 				.build();
 			
 			return transcriber.translate(new DNASequence(dnaSequence))
