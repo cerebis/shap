@@ -16,7 +16,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
 				/WEB-INF/spring/datasource-context.xml
-				/WEB-INF/spring/orm-context.xml
+				/WEB-INF/spring/orm-webapp-context.xml
 				/WEB-INF/spring/service-context.xml
 				/WEB-INF/spring/security-context.xml
 			</param-value>

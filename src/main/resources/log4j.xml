@@ -35,7 +35,7 @@
 		This is configured to write to Tomcat's log/ folder
 	 -->
 	<appender name="toFile" class="org.apache.log4j.RollingFileAppender">
-		<param name="file" value="../log/shap.log" />
+		<param name="file" value="/opt/shap/logs/shap.log" />
 		<param name="MaxFileSize" value="5000KB" />
 		<!-- Keep one backup file -->
 		<param name="MaxBackupIndex" value="1" />
