@@ -74,14 +74,19 @@ public class DnaTools {
 			
 			System.out.println("### DNA sequence MOD3: " + dnaSequence.length()%3);
 			
-			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
-				.table(tableNumber)
-				.trimStop(false)
-				.translateNCodons(true)
-				.build();
+			return new DNASequence(dnaSequence)
+				.getRNASequence()
+					.getProteinSequence()
+						.getSequenceAsString();
 			
-			return transcriber.translate(new DNASequence(dnaSequence))
-				.getSequenceAsString();
+//			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
+//				.table(tableNumber)
+//				.trimStop(false)
+//				.translateNCodons(true)
+//				.build();
+//			
+//			return transcriber.translate(new DNASequence(dnaSequence))
+//				.getSequenceAsString();
 			
 //			return new TranscriptionEngine.Builder()
 //				.table(tableNumber)
