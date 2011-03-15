@@ -72,38 +72,16 @@ public class DnaTools {
 				return ""; 
 			}
 			
-			System.out.println("### DNA sequence MOD3: " + dnaSequence.length()%3);
-			
-			return new DNASequence(dnaSequence)
-				.getRNASequence()
-					.getProteinSequence()
+			return new TranscriptionEngine.Builder()
+				.table(tableNumber)
+				.trimStop(false)
+				.initMet(false)
+				.translateNCodons(true)
+				.build()
+					.translate(new DNASequence(dnaSequence))
 						.getSequenceAsString();
-			
-//			TranscriptionEngine transcriber = new TranscriptionEngine.Builder()
-//				.table(tableNumber)
-//				.trimStop(false)
-//				.translateNCodons(true)
-//				.build();
-//			
-//			return transcriber.translate(new DNASequence(dnaSequence))
-//				.getSequenceAsString();
-			
-//			return new TranscriptionEngine.Builder()
-//				.table(tableNumber)
-//				.trimStop(false)
-//				.build()
-//					.translate(new DNASequence(dnaSequence))
-//						.getSequenceAsString();
 		} 
 		catch (TranslationException ex) {
-			throw new DnaToolsException(ex);
-		}
-		catch (NullPointerException  ex) {
-			ex.printStackTrace();
-			System.out.println(
-					"Table=" + tableNumber + "\n" +
-					"Mod=" + dnaSequence.length()%3 + "\n" +
-					"Seq='" + dnaSequence + "'");
 			throw new DnaToolsException(ex);
 		}
 	}

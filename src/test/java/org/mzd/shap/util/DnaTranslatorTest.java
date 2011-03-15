@@ -32,8 +32,14 @@ public class DnaTranslatorTest {
 						"CKNNCAFCYYNRENDIERYRLTLEDIKKICQVLKTEEIHMVDLTMGEDPYFHNNPERLAELVRTVKEEVG" +
 						"KPIMISPGVVDNETLMLLKENGANFLALYQETYDKELFGKLRVEQSFEERINSRNHAKRIGYLVEDGILT" +
 						"AVEPDIESTLISLRGLGTSNPDMVRVMTFLPQKGTPLEGKDVEGSEAELRMISILRLMYPNLLIPASLDL" +
-						"EGIDGMVHRLNSGANVVTSIISSNSALEGVVNYDREHAERDRDVKSVIYRLKTMGMEPAKQSDFEKLLGQ";
+						"EGIDGMVHRLNSGANVVTSIISSNSALEGVVNYDREHAERDRDVKSVIYRLKTMGMEPAKQSDFEKLLGQ*";
+	
 
+	private static String geneWithAmbiguous = "TTGNNNCATATTTTTTTACTAAAATATGCTGAATCTCTATCTAACTCTA" +
+			"TTTTTAACTTGTTATCTTCAATTTCAAAACTTTTATACGCAGACTCAGGCATTTCGTGA";
+	
+	private static String ambiguousTranslation = "LXHIFLLKYAESLSNSIFNLLSSISKLLYADSGIS*";
+		
 	private static String gene = "ATGTTTGAGAAAATGGACCAAAATGATCTGGAAGACTATGCTGAGCAGATAATTACCGGATCAGAGGTTTCCG" +
 			"ATGAGAACATCAGGGCAATGCTTCAGATAAGCGATCCTGATGATATGGAAAAACTGCATTATGTGGCACGCCA" +
 			"CATACGGGATAATTTCTTTGGGAACAAAGTGTTCATGTACAGTTTCGTGTACTTTTCCACACACTGCAAGAAC" +
@@ -82,13 +88,19 @@ public class DnaTranslatorTest {
 	
 	@Test
 	public void geneToProteinUsingTable() throws DnaToolsException {
-		Assert.assertEquals("gene translation should equal protein",
+		Assert.assertEquals("translation did not agree with known",
 				protein,DnaTools.translate(11,gene));
 	}
 
 	@Test
+	public void ambiguousGeneTranslation() throws DnaToolsException {
+		Assert.assertEquals("translation did not agree with known", 
+				ambiguousTranslation, DnaTools.translate(geneWithAmbiguous));
+	}
+
+	@Test
 	public void geneToProteinUniversal() throws DnaToolsException {
-		Assert.assertEquals("gene translation should equal protein",
+		Assert.assertEquals("translation did not agree with known",
 				protein,DnaTools.translate(gene));
 	}
 	
