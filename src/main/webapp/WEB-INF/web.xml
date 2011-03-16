@@ -9,7 +9,12 @@
 	
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>annotation.root</param-value>
+		<param-value>shap.root</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j-webapp.xml</param-value>
 	</context-param>
 	
 	<context-param>
