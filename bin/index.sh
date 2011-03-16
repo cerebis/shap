@@ -10,6 +10,8 @@ else
 	echo "Removing old index"
 	rm -rf lucene
 	echo "Starting mass indexing"
-	bin/run.sh org.mzd.shap.spring.cli.Index
+	BIN_DIR=`type -p $0`
+	BIN_DIR=`dirname $BIN_DIR`
+	$BIN_DIR/run.sh org.mzd.shap.spring.cli.Index
 fi
 

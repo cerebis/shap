@@ -9,10 +9,13 @@ then
 	exit 1
 fi
 
+# Set to installed location
+SHAP_DIR=/home/ec2-user/build/shap
+
 # SHAP's dependent libraries
-PROG_LIBS=`find war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
+PROG_LIBS=`find $SHAP_DIR/war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
 
 # SHAP's class files.
-CLASSPATH=$PROG_LIBS"war/WEB-INF/classes"
+CLASSPATH=$PROG_LIBS"$SHAP_DIR/war/WEB-INF/classes:$SHAP_DIR/war/WEB-INF/spring"
 
 java -cp $CLASSPATH $*

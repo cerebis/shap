@@ -13,5 +13,7 @@ then
 	exit
 else
 	echo "Running initial configuration setup"
-	bin/run.sh org.mzd.shap.spring.cli.ConfigSetup $*
+	BIN_DIR=`type -p $0`
+	BIN_DIR=`dirname $BIN_DIR`
+	$BIN_DIR/run.sh org.mzd.shap.spring.cli.ConfigSetup $*
 fi
