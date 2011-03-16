@@ -1,6 +1,6 @@
 #/bin/bash
 echo -e "WARNING! Existing index will be recreated, this may take some time to complete."
-echo -e "Really run mass indexing? yes\[NO]\n"
+echo -e "Really run mass indexing? yes\[NO]"
 read ans
 if [ "$ans" != "yes" ]
 then

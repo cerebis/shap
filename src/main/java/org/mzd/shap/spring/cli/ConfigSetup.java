@@ -35,9 +35,6 @@ import org.mzd.shap.domain.authentication.RoleDao;
 import org.mzd.shap.domain.authentication.User;
 import org.mzd.shap.domain.authentication.UserDao;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -114,17 +111,14 @@ public class ConfigSetup {
 		
 		// run tool
 		try {
-			String[] paths = new String[] {
-						"datasource-context.xml",
-						ormContext,
-						analyzerXML.getPath()};
-	
+			// Using a generic application context since we're referencing
+			// both classpath and filesystem resources.
 			GenericApplicationContext ctx = new GenericApplicationContext();
-
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
-			xmlReader.loadBeanDefinitions("classpath:datasource-context.xml");
-			xmlReader.loadBeanDefinitions(new ClassPathResource(ormContext));
-			xmlReader.loadBeanDefinitions(new FileSystemResource(analyzerXML));
+			xmlReader.loadBeanDefinitions(
+					new ClassPathResource("datasource-context.xml"),
+					new ClassPathResource(ormContext),
+					new FileSystemResource(analyzerXML));
 			ctx.refresh();			
 			
 			/*
