@@ -24,11 +24,11 @@ The SHAP codebase is comprised of a web application for accessing analysis resul
 
 The system is built using the Maven build manager. Maven resolves dependencies using remote repositories and eliminates the need to bundle supporting libraries as part of the SHAP project. Therefore if building from source, you will need to have a working installation of Maven on your system. The first time the system is built and depending on your local repository, Maven may need to fetch many dependent libraries. 
 
-Once completed, you will find the deployable WAR file in the "target" folder. This WAR file contains both the web application and the server-side system. Currently, the two modes of  operation have not been made into separate codebases.
+Once completed, you will find the deployable WAR file in the "target" folder. This WAR file contains both the web application and the server-side system. Currently, the two modes of operation have not been made into separate codebases.
 
 The WAR file can be extracted to your filesystem and treated as the executable installation of the server-side analysis system.
 
-Only the web application makes use of user accounts. The server-side analysis is accessible to whomever has permission to run the elements of the system. Attention should be paid to who has access or data loss could occur.
+Only the web application makes use of user accounts. The server-side analysis is accessible to whoever has permission to run the elements of the system. Attention should be paid to who has access or data loss could occur.
 
 Source distribution
 -------------------
@@ -131,7 +131,7 @@ The XML file defining analyzers can be found at:
 
 	war/WEB-INF/spring/analyzer-config.xml
 
-This file follows the Spring bean definition schema. A few detectors and annotators have been defined. All defined analyzers mentioned in the the "configuration" bean will be created.
+This file follows the Spring bean definition schema. A few detectors and annotators have been defined. All defined analyzers mentioned in the "configuration" bean will be created.
 
 Once you are ready, run the tool
 
@@ -315,4 +315,5 @@ Issue the following to set up this directory for shared access:
 	chmod g+srwx,u+rwx /opt/shap/lucene
 	
 Note: it is recommended that no annotation be performed while indexing is occurring.
+
 
