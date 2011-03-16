@@ -37,6 +37,7 @@ import org.apache.commons.cli2.validation.FileValidator;
 import org.apache.commons.cli2.validation.NumberValidator;
 import org.mzd.shap.ApplicationException;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class CommandLineApplication {
@@ -61,7 +62,7 @@ public class CommandLineApplication {
 	public void startApplication(String[] xmlPaths, boolean registerShutdownHook) throws ApplicationException {
 		if (context == null) {
 			System.out.println("Starting application");
-			context = new FileSystemXmlApplicationContext(xmlPaths);
+			context = new ClassPathXmlApplicationContext(xmlPaths);
 			if (registerShutdownHook) {
 				context.registerShutdownHook();
 			}
