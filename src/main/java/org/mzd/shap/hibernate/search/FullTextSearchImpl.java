@@ -86,6 +86,7 @@ public class FullTextSearchImpl extends HibernateDaoSupport implements FullTextS
 	protected Query createMultiFieldQuery(String queryText, String[] queryfields, Operator defaultOperator) throws ParseException {
 		QueryParser qp = new MultiFieldQueryParser(LUCENE_VERSION, queryfields, new StandardAnalyzer(LUCENE_VERSION));
 		qp.setDefaultOperator(defaultOperator);
+		qp.setAllowLeadingWildcard(true);
 		return qp.parse(queryText);
 	}
 	
