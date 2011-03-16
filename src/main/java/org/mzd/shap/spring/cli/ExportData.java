@@ -486,9 +486,9 @@ public class ExportData extends BaseCommand {
 			CommandLine cl = getApp().parseArguments(args);
 		
 			String[] xmlPath = {
-					"war/WEB-INF/spring/datasource-context.xml",
-					"war/WEB-INF/spring/service-context.xml",
-					"war/WEB-INF/spring/orm-context.xml"
+					"datasource-context.xml",
+					"service-context.xml",
+					"orm-context.xml"
 			};
 			
 			getApp().startApplication(xmlPath, true);

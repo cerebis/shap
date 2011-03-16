@@ -38,7 +38,6 @@ import org.apache.commons.cli2.validation.NumberValidator;
 import org.mzd.shap.ApplicationException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class CommandLineApplication {
 	private AbstractApplicationContext context = null;

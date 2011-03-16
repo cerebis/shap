@@ -28,7 +28,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.Search;
 import org.mzd.shap.spring.orm.Reporting;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Simple class to manually instigate Hibernate Search (Lucene) indexing of an existing database.
@@ -48,9 +48,9 @@ public class Index {
 		}
 
 		try {
-			ApplicationContext ctx = new FileSystemXmlApplicationContext(
-					"war/WEB-INF/spring/datasource-context.xml",
-					"war/WEB-INF/spring/orm-massindex-context.xml");
+			ApplicationContext ctx = new ClassPathXmlApplicationContext(
+					"datasource-context.xml",
+					"orm-massindex-context.xml");
 
 			SessionFactory sessionFactory = (SessionFactory)ctx.getBean("sessionFactory");
 			Session session = sessionFactory.openSession();

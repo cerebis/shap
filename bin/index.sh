@@ -1,10 +1,6 @@
 #/bin/bash
-#
-# Warning message - configuration may
-#
-echo -e "\n             WARNING!"
-echo -e " Existing index will be recreated, this may take some time to complete."
-echo -e " Really run mass indexing? (yes\[no])\n"
+echo -e "WARNING! Existing index will be recreated, this may take some time to complete."
+echo -e "Really run mass indexing? yes\[NO]\n"
 read ans
 if [ "$ans" != "yes" ]
 then

@@ -34,8 +34,13 @@ import org.mzd.shap.domain.authentication.Role;
 import org.mzd.shap.domain.authentication.RoleDao;
 import org.mzd.shap.domain.authentication.User;
 import org.mzd.shap.domain.authentication.UserDao;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 /**
  * Simple tool for initial configuration of a new database.
@@ -91,16 +96,16 @@ public class ConfigSetup {
 		try {
 			System.out.println("Do you wish to purge the database before running setup?");
 			System.out.println("WARNING: all existing data in SHAP will be lost!");
-			System.out.println("Really purge? [NO]/yes");
+			System.out.println("Really purge? yes/[NO]");
 			String ans = br.readLine();
 			if (ans.toLowerCase().equals("yes")) {
 				System.out.println("Purging enabled");
-				ormContext = "war/WEB-INF/spring/orm-purge-context.xml";
+				ormContext = "orm-purge-context.xml";
 				
 			}
 			else {
 				System.out.println("Purging disabled");
-				ormContext = "war/WEB-INF/spring/orm-context.xml";
+				ormContext = "orm-context.xml";
 			}
 		}
 		catch (IOException ex) {
@@ -110,12 +115,18 @@ public class ConfigSetup {
 		// run tool
 		try {
 			String[] paths = new String[] {
-						"war/WEB-INF/spring/datasource-context.xml",
+						"datasource-context.xml",
 						ormContext,
 						analyzerXML.getPath()};
 	
-			ApplicationContext ctx = new FileSystemXmlApplicationContext(paths);
+			GenericApplicationContext ctx = new GenericApplicationContext();
 
+			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
+			xmlReader.loadBeanDefinitions("classpath:datasource-context.xml");
+			xmlReader.loadBeanDefinitions(new ClassPathResource(ormContext));
+			xmlReader.loadBeanDefinitions(new FileSystemResource(analyzerXML));
+			ctx.refresh();			
+			
 			/*
 			 * Create an base admin user.
 			 */
