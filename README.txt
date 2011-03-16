@@ -144,14 +144,15 @@ Note. Analyzer working temporary directories must be read/write accessible to al
 Analyzer Supporting Tools
 -------------------------
 
-A number of underlying analysis tools used output formats or commandline syntaxes which were awkward. A few of these tools have been wrapped within shell scripts. In some cases the output has also been reformatted to XML. A sourcecode patch has been created for Hmmpfam from the HMMER v2.3.2 release that adds the option for XML output.
+Helper scripts have been written for: Aragorn and Metagene. The scripts simply wrap each tool to standardise the command-line interfaces and convert output to XML format.
 
-Helper scripts exist for Aragorn and Metagene. These modify both the command-line and convert output to an XML schema.
+A source code patch has been created for HMMER release version 2.3.2. This patch adds the option for XML output to Hmmpfam. It also includes an alternate makefile (src/Makefile.local) for the Intel compiler. In our testing, ICC generated executables are 2-fold faster than those produced by GNU GCC v4.
 
-For Hmmpfam a patch must be applied to v2.3.2 to add XML output as an option. This patch also includes a makefile (src/Makefile.local) for the Intel compiler. In our testing, these executables are 2-fold faster than those produced by GNU GCC v4.
+To patch HMMER 2.3.2
 
-	change to HMMER-2.3.2 source package
+	cd to the HMMER-2.3.2 directory
 	patch -p1 < {path-to-patch}/hmmer-2.3.2-patch.txt
+	make clean && make install
 
 Note. All underlying tools, whether called directly or as a wrapper script must be accessible from any machine that intends to execute analysis jobs. Nothing stops users of SHAP from defining multiple analysers which reflect differing runtime environments, such as a local and grid definition.
 
@@ -170,9 +171,9 @@ The shap.properties file contains more commonly changed details, such as the num
 	analysis.workdir=/tmp
 	analysis.sge.specification=-o /dev/null -e /dev/null -w e -p 0 -b yes -V -shell yes -l hp=TRUE
 
-The delegate-context.xml file contains two bean definitions for the execution delegate. One provides local process execution, the other GRID execution.
+The delegate-context.xml file controls whether local (org.mzd.shap.exec.LocalDelegate) or GRID (org.mzd.shap.exec.GridDelegate) execution will be used job processing.
 
-By default, SHAP has been configured to use local processes and the parallelism is limited two 2 simultaneous processes.
+By default, SHAP has been configured to use local processes and the parallelism is limited a single process. Analysis throughput generally increases for larger values, assuming the local environment has a sufficient parallel CPU resources. On GRID systems, the maximum number of concurrent tasks is often dictated by queue constraints rather than absolute cluster size. SHAP will only queue as many jobs as is defined by analysis.jobdaemon.maxqueued. With GRID processing, it is recommended that analysis.jobdaemon.maxqueued to be set larger than analysis.executor.threads.
 
 SHAP Server-side Commands
 -------------------------
@@ -194,12 +195,14 @@ Multi-fasta DNA can be imported into existing Sample objects. Sequence names mus
 
 Coverage
 
-Coverage data can be used to infer cellular abundance and we find it convenient to include. Coverage data can only be imported into pre-existing Sequence objects. The file format is simply a tab delimited text file of sequence name and coverage value. Only one sample can be referred to per importation.
+Coverage data can be used to infer cellular abundance and we find it convenient to include, though not mandatory. Coverage data can only be imported into pre-existing Sequence objects. The file format is simply a tab delimited text file of sequence name and coverage value. Only one sample can be referred to per importation.
 
-Eg.
+Example file format
 
+----BEGIN----
 seq01	1.2
 seq02	20.3
+----END----
 
 XML objects
 
@@ -251,7 +254,7 @@ CVS tables of annotation results per Sample, Sequence or Feature.
 JobControl (jobControl.sh)
 --------------------------
 
-Jobs for analysis are submitted and restarted with this tool. It acts as both the submission agent and processing daemon. We presently do not run the processing daemon as a separate detached entity.
+Jobs for analysis are submitted and restarted with this tool. It acts as both the submission agent and processing daemon. Though submission is not tightly coupled to processing, we presently do not run the daemon as a separate detached entity.
 
 Job submission
 
@@ -263,7 +266,7 @@ A plan contains one or more targets and one or more steps. Steps must act on obj
 
 Targets can be a Sample, Sequence of Feature. Samples are referenced by project and sample name, Sequences and Features are referenced by database identifier.
 
-An example annotation plan which would annotation all sequences in test-sample with two annotators.
+An example annotation plan which would annotate all sequences in test-sample with two annotators.
 
 <plan id="annotation-plan-example">
 	<targets>
@@ -279,7 +282,37 @@ An example annotation plan which would annotation all sequences in test-sample w
 
 Users can find two example plans in the plans folder. One demonstrates a simple plan for running a detection job, the other a simple annotation job.
 
+Job processing can be effectively placed in the background with the standard Linux command nohup.
+
+	nohup jobControl.sh --submit myplan.xml &
+
+Where now console output will be written to the file "nohup.out", progress can be followed with
+
+	tail -f nohup.out
+
+Interrupting processing
+
+Interrupting task processing is as simple as signalling the running jobControl process. When sent a regular SIGINT (ctrl-c), the daemon will cease to queue new tasks and wait for existing tasks to complete before exiting. Depending on the level of concurrency and queue size, shutdown may take more than a few minutes. If sent a more immediate signal, tasks may be left in an intermediate state.
+
 UserControl (userControl.sh)
 ----------------------------
 
-Currently, user accounts only apply to web access to annotation results. Any account with administration privileges is able to create/remove/modify other users through the web UI. This command is provided as a means of creating accounts from the command-line and is useful at installation time and if the administration account has been accidentally lost.
+Currently, user accounts only apply to web access to annotation results. Any account with administration privileges is able to create/remove/modify other users through the web UI. This tool is provided as a means of creating accounts from the command-line and can be useful if the administration account has been accidentally lost.
+
+Lucene Indexing (index.sh)
+--------------------------
+
+The web application which accompanies the pipeline utilises the Apache Lucene search engine. Lucene operates on an document index which must be created. For SHAP the index is currently created by invoking a mass-indexing of the annotation database, which is stored on the filesystem.
+
+This filesystem backed index must by accessible by both the command-line indexing command and the web application. A web application's privileges and capacity to access system resources are dependent on the chosen application server. For Tomcat6, we use the path /opt/shap/lucene for the shared index location. The setting can be modified in shap.properties:
+
+	lucene.index=/opt/shap/lucene
+
+Issue the following to set up this directory for shared access:
+
+	mkdir -p /opt/shap/lucene 
+	chgrp tomcat /opt/shap/lucene
+	chmod g+srwx,u+rwx /opt/shap/lucene
+	
+Note: it is recommended that no annotation be performed while indexing is occurring.
+
