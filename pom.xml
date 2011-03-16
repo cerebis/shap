@@ -6,7 +6,7 @@
 	<artifactId>shap</artifactId>
 	<name>SHAP</name>
 	<packaging>war</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<dependencyManagement>
 		<dependencies>
 		</dependencies>
@@ -259,6 +259,7 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+	<description>Simple High-throughput Annotation Pipeline</description>
 	<build>
 		<plugins>
 			<plugin>
