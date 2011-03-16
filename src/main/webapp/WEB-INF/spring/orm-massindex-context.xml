@@ -31,7 +31,7 @@
 			<prop key="hibernate.generate_statistics">true</prop> 
 			<!-- Search --> 
 			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
-			<prop key="hibernate.search.default.indexBase">${webapp.lucene.location}</prop>
+			<prop key="hibernate.search.default.indexBase">${lucene.index}</prop>
 			<prop key="hibernate.search.autoregister_listeners">true</prop>
 			<!-- Second level cache -->
 			<prop key="hibernate.cache.use_second_level_cache">false</prop>

@@ -25,7 +25,7 @@
 			<prop key="hibernate.id.new_generator_mappings">true</prop>
 			<prop key="hibernate.generate_statistics">true</prop> 
 			<prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop> 
-			<prop key="hibernate.search.default.indexBase">${webapp.lucene.location}</prop>
+			<prop key="hibernate.search.default.indexBase">${lucene.index}</prop>
 			<!-- Automatic indexing is currently disabled -->
 			<!-- There is an unresolved issue with lazy associations and non-JPA access in Hibernate -->
 			<!-- Eventually, SHAP will be migrated to JPA access -->
