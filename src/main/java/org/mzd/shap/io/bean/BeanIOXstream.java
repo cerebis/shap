@@ -72,7 +72,7 @@ public class BeanIOXstream<BEAN> implements BeanIO<BEAN> {
 	public void write(BEAN bean, File file) throws BeanIOException {
 		Writer writer = null;
 		try {
-			writer = new FileWriter(file);
+			writer = new FileWriter(file, true);
 			getDelegate().toXML(bean, writer);
 		} 
 		catch (IOException ex) {
