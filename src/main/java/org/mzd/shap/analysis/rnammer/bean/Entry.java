@@ -44,7 +44,7 @@ public class Entry {
 	private Integer sequenceEntryLength;
 	@XStreamAlias("sequence")
 	private String sequence;
-	@XStreamAlias("model_ string")
+	@XStreamAlias("model_string")
 	private String modelString;
 	@XStreamAlias("match_string")
 	private String matchString;
