@@ -56,7 +56,7 @@
 			<bean parent="baseDetector" class="org.mzd.shap.analysis.SelfAnnotatingDetector">
 				<property name="name" value="rnammer-bac"/>
 				<property name="argumentString">
-					<value>rnammer -T /tmp -S bac -gff %2$s %1$s</value>
+					<value>rnammer -T /tmp -S bac -xml %2$s %1$s</value>
 				</property>
 				<property name="parserClass" value="org.mzd.shap.analysis.rnammer.RnammerParserXml"/>
 				<property name="implicitAnnotator">
@@ -121,7 +121,7 @@
 	<property name="parserClass" value="org.mzd.shap.analysis.blast.NcbiBlastParserXml"/>
 	<property name="supportedFeatureType" value="OpenReadingFrame"/>
 	<property name="supportedMoleculeType" value="Protein"/>
-	<property name="batchSize" value="50"/>
+	<property name="batchSize" value="10"/>
 </bean> 
 
 <bean id="baseHmmpfam" class="org.mzd.shap.analysis.SimpleAnnotator" abstract="true">
@@ -129,12 +129,12 @@
 	<property name="parserClass" value="org.mzd.shap.analysis.hmmer.HmmpfamParserXml"/>
 	<property name="supportedFeatureType" value="OpenReadingFrame"/>
 	<property name="supportedMoleculeType" value="Protein"/> 
-	<property name="batchSize" value="50"/>
+	<property name="batchSize" value="10"/>
 </bean>
 
 <bean id="baseDetector" abstract="true">
 	<property name="scratchPath" value="/tmp"/>
-	<property name="batchSize" value="10"/>
+	<property name="batchSize" value="20"/>
 </bean>
 
 
