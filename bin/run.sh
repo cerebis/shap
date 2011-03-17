@@ -10,7 +10,7 @@ then
 fi
 
 # Set to installed location
-SHAP_DIR=/home/ec2-user/build/shap
+SHAP_DIR=$HOME/shap
 
 # SHAP's dependent libraries
 PROG_LIBS=`find $SHAP_DIR/war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
