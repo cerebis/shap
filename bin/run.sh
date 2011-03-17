@@ -10,7 +10,7 @@ then
 fi
 
 # Set to installed location
-SHAP_DIR=$HOME/shap
+SHAP_DIR=.
 
 # SHAP's dependent libraries
 PROG_LIBS=`find $SHAP_DIR/war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
@@ -18,4 +18,4 @@ PROG_LIBS=`find $SHAP_DIR/war/WEB-INF/lib -name '*.jar' | tr '\n' ':'`
 # SHAP's class files.
 CLASSPATH=$PROG_LIBS"$SHAP_DIR/war/WEB-INF/classes:$SHAP_DIR/war/WEB-INF/spring"
 
-java -cp $CLASSPATH $*
+java -Xmx1024M -cp $CLASSPATH $*

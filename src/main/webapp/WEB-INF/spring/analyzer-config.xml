@@ -23,7 +23,7 @@
 			<bean parent="baseBlastp">
 				<property name="name" value="refseq"/>
 				<property name="argumentString">
-					<value>blastall -p blastp -d refseq-protein -a 1 -m 7 -e 1e-5 -i %s -o %s</value>
+					<value>blastall -p blastp -d refseq_protein -a 1 -m 7 -e 1e-5 -i %s -o %s</value>
 				</property>
 			</bean>
 			<bean parent="baseBlastp">
@@ -113,7 +113,7 @@
 	</property>
 </bean>
 
-<!--  
+<!--
 	The following base definitions help simplify the bean definitions above.
  -->
 <bean id="baseBlastp" abstract="true" class="org.mzd.shap.analysis.SimpleAnnotator">
