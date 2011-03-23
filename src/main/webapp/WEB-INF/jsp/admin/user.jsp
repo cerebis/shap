@@ -148,7 +148,6 @@ div#app_content { width: 350px; margin: 20px 0; }
 								}
 							},
 							error: function(jqXHR,textStatus,errorThrown) {
-								alert(textStatus);
 								$("#create-form").dialog("close");
 							}
 						});
@@ -180,9 +179,6 @@ div#app_content { width: 350px; margin: 20px 0; }
 							type: 'POST',
 							url: "<c:url value='/app/admin/update'/>",
 							data: $("#modify-form form").serialize(),
-							beforeSend: function() {
-								alert($("#modify-form form").serialize());
-							},
 							success: function(data){
 								if (data.statusOk) {
 									$("#modify-form").dialog("close");
