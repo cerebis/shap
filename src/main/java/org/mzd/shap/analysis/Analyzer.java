@@ -23,20 +23,20 @@ package org.mzd.shap.analysis;
 import org.mzd.shap.exec.Executable;
 
 /**
- * Base interface for performing analyses on an object of type {@link TARGET},
- * the result of which is returned as type {@link RESULT}.
+ * Base interface for performing analyses on an object of type {@code TARGET},
+ * the result of which is returned as type {@code RESULT}.
  *  
  */
 public interface Analyzer<TARGET,RESULT> {
 	
 	/**
-	 * Analyze a given target object. The supplied {@link Executable} provides
+	 * Analyze a given target object. The supplied {@link org.mzd.shap.exec.Executable Executable} provides
 	 * the means to execute the analysis as an external thread. This is most
 	 * often the case with binary tools like Blastall, Hmmpfam, etc. 
 	 * 
-	 * @param exec a concrete instance of {@link Executable}
-	 * @param target an instance of the target class type {@link TARGET}
-	 * @return the result of analysis as the class type {@link RESULT}
+	 * @param exec a concrete instance of {@link org.mzd.shap.exec.Executable Executable}
+	 * @param target an instance of the target class type {@code TARGET}
+	 * @return the result of analysis as the class type {@code RESULT}
 	 * @throws AnalyzerException other checked exceptions are wrapped.
 	 */
 	RESULT[] analyze(Executable exec, TARGET... target) throws AnalyzerException;
