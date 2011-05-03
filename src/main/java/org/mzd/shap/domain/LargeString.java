@@ -25,10 +25,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.Type;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -44,7 +43,7 @@ public class LargeString {
 	@Column(name="LRGSTR_ID")
 	private Integer id;
 	@Column(length=2147483647)
-	@Type(type="text")
+	@Lob
 	@NotNull
 	private String value;
 	
