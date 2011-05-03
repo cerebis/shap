@@ -95,7 +95,6 @@ public class Sequence {
 	@XStreamAsAttribute
 	@XStreamAlias("desc")
 	@Size(min=1,max=4095)
-	@Index(name="sequence_description")
 	private String description;
 	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="LRGSTR_ID")

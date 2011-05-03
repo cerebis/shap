@@ -254,6 +254,12 @@
 			<version>2.3.0</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.5.3.0_1</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<description>Simple High-throughput Annotation Pipeline</description>
 	<build>

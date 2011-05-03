@@ -124,6 +124,7 @@ public class Feature {
 	@Field
 	@XStreamAsAttribute
 	@Index(name="feature_partial")
+	@Column(name="partial_")
 	private Boolean partial = false;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="SEQUENCE_ID")
