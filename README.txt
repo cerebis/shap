@@ -37,7 +37,7 @@ Our development and production environments run on CentOS 5. CentOS is a redistr
 
 **Switching users**
 
-In Redhat based distributions, switching users is accomplished by the command "su". The command "sudo" is not enabled by default. To invoke commands are another user, switch to that user with "su" and then continue your work, remembering to logout when finished.
+In Redhat based distributions, switching users is accomplished by the command "su". The command "sudo" is not enabled by default. To invoke commands as another user, switch to that user with "su" and then continue your work, remembering to logout when finished.
 
 	> su postgres
 	> É
