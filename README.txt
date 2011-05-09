@@ -30,6 +30,38 @@ The WAR file can be extracted to your filesystem and treated as the executable i
 
 Only the web application makes use of user accounts. The server-side analysis is accessible to whoever has permission to run the elements of the system. Attention should be paid to who has access or data loss could occur.
 
+Differences between Unix platforms
+----------------------------------
+
+Our development and production environments run on CentOS 5. CentOS is a redistribution of Redhat Enterprise Linux (RHEL). You may come across conflicting environmental details that we have overlooked. The common issues are package management differences, application paths and some types of system commands.
+
+**Switching users**
+
+In Redhat based distributions, switching users is accomplished by the command "su". The command "sudo" is not enabled by default. To invoke commands are another user, switch to that user with "su" and then continue your work, remembering to logout when finished.
+
+	> su postgres
+	> É
+	> logout
+
+In Debian based distributions, sudo is typically enabled by default and commands can be put inline
+
+	> sudo postgres [your-command-here]
+
+In Mac OSX "sudo" is also the choice.
+
+**Application paths**
+
+PostgreSQL
+
+Redhat
+
+	> /var/lib/pgsql
+
+Debian
+
+	> /etc/postgresql/{version}/
+	
+
 Source distribution
 -------------------
 
