@@ -268,24 +268,66 @@ A feature object defined in XML
 Export Data (exportData.sh)
 ---------------------------
 
-After analysis has been completed, results and imported data can be exported from the system in various formats.
+After analysis has been completed, results and imported data can be exported from the system in various formats. 
 
-Exported data formats
-- Multi-fasta DNA or Protein sequence (per Sample, Sequence or Feature)
-- Genbank (per Sample or Sequence)
-- Annotation CSV tables (per Sample or Sequence)
+References to result objects (eg. a sample) must be unique. The most succinct reference type is by an object's globally unique database identifier. This value is assigned by the database system at creation or importation time. To use this form of reference, users may need to refer to the web application to learn what value was assigned to a given object.
 
-Multi-fasta
+Alternatively, objects can be referred to by name. In doing so, the complication arises that users must still uniquely define a single object. All project names are unique, however sample names are only unique per project and sequence names only unique per sample. This gives users flexibility in defining their data objects, but means that to uniquely reference a sequence, users will be required to specify its containing sample and project. 
+
+The tool can export the following file formats.
+
+**Multi-fasta**
 
 Samples, sequences and features can all be exported in FASTA format. DNA both as source scaffolds and gene sequences and protein translations of coding genes.
 
-Genbank 
+**Genbank**
 
 Genbank exports are defined per annotated Sequence. All sequences in a samples may be exported at once, though the result will be a multi-genbank file.
 
-Annotation tables
+**Annotation tables**
 
 CVS tables of annotation results per Sample, Sequence or Feature.
+
+Assuming the following data definitions exist,
+
+	Project
+		-id: 1
+		-name: project01
+
+	Sample
+		-id: 2
+		-name: sampleA
+		-project: project01
+
+	Sequence
+		-id: 3
+		-name: gene1
+		-sample: sampleA
+
+	Sequence
+		-id: 4
+		-name: gene2
+		-sample: sampleA
+
+A by-name reference is formed by concatenating each associated name together with comma delimiters. 
+
+Eg. For sample "sampleA" in project "project01":
+
+	project01,sampleA
+
+Or for sequence "gene2" in sample "sampleA":
+
+	project01,sampleA,gene2
+
+**Invocation examples**
+
+Extract FASTA sequence for all sequences in sampleA, using the sample's database ID.
+
+	> bin/exportData.sh --sample-id --list 2 --output-file sample-seq.fna --fasta
+
+Extract the same data, by name reference.
+
+	> bin/exportData.sh --by-name --list project01,sampleA --output-file sample-seq.fna --fasta
 
 JobControl (jobControl.sh)
 --------------------------

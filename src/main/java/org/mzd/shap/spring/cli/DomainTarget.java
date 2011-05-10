@@ -24,5 +24,6 @@ enum DomainTarget {
 	PROJECT,
 	SAMPLE,
 	SEQUENCE,
-	FEATURE;
+	FEATURE,
+	DEFERRED; // deferred as we do not know yet what the domain target is.
 }

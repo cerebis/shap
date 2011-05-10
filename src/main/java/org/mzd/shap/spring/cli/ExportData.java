@@ -45,6 +45,7 @@ import org.mzd.shap.io.FastaWriter;
 import org.mzd.shap.io.GenbankWriter;
 //import org.mzd.shap.io.ReportWriter;
 import org.mzd.shap.io.TableWriter;
+import org.mzd.shap.spring.DataViewService;
 
 public class ExportData extends BaseCommand {
 	
@@ -124,21 +125,26 @@ public class ExportData extends BaseCommand {
 			.withDescription("Annotation table")
 			.create();
 	
-	private final static Option SAMPLE = CommandLineApplication.buildOption()
+	private final static Option SAMPLE_ID = CommandLineApplication.buildOption()
 			.withLongName("sample-id")
-			.withDescription("Sample objects")
+			.withDescription("Sample database ID")
 			.create();
 	
-	private final static Option SEQUENCE = CommandLineApplication.buildOption()
+	private final static Option SEQUENCE_ID = CommandLineApplication.buildOption()
 			.withLongName("sequence-id")
-			.withDescription("Sequence objects")
+			.withDescription("Sequence database ID")
 			.create();
 	
-	private final static Option FEATURE = CommandLineApplication.buildOption()
+	private final static Option FEATURE_ID = CommandLineApplication.buildOption()
 			.withLongName("feature-id")
-			.withDescription("Feature objects")
+			.withDescription("Feature database ID")
 			.create();
 	
+	private final static Option REF_BY_ASSOC = CommandLineApplication.buildOption()
+			.withLongName("by-name")
+			.withDescription("Reference by assocation [PROJECT_NAME,SAMPLE_NAME,SEQUENCE_NAME]")
+			.create();
+
 	private final static Set<String> TAXON_ARGS;
 	static {
 		TAXON_ARGS = new java.util.TreeSet<String>(); 
@@ -204,15 +210,16 @@ public class ExportData extends BaseCommand {
 //			.withOption(HISTOGRAM)
 			.create();
 		
-		Group targetGroup = CommandLineApplication.buildGroup()
-			.withName("Target")
-			.withDescription("Target object type which is being referenced")
+		Group referenceTypeGroup = CommandLineApplication.buildGroup()
+			.withName("Reference Type")
+			.withDescription("Reference type used for objects")
 //			.withRequired(true)
 			.withMinimum(1)
 			.withMaximum(1)
-			.withOption(SAMPLE)
-			.withOption(SEQUENCE)
-			.withOption(FEATURE)
+			.withOption(SAMPLE_ID)
+			.withOption(SEQUENCE_ID)
+			.withOption(FEATURE_ID)
+			.withOption(REF_BY_ASSOC)
 			.create();
 			
 		Group sourceGroup = CommandLineApplication.buildGroup()
@@ -243,7 +250,7 @@ public class ExportData extends BaseCommand {
 		
 		setApp(new CommandLineApplication(
 				CommandLineApplication.buildGroup()
-					.withOption(targetGroup)
+					.withOption(referenceTypeGroup)
 					.withOption(sourceGroup)
 					.withOption(destinationGroup)
 					.withOption(formatGroup)
@@ -287,15 +294,69 @@ public class ExportData extends BaseCommand {
 			.getContext()
 				.getBean("fastaWriter");
 
+		SequenceDao sequenceDao = (SequenceDao)getApp()
+			.getContext()
+				.getBean("sequenceDao");
+
+		SampleDao sampleDao = (SampleDao)getApp()
+			.getContext()
+				.getBean("sampleDao");
+
+		DataViewService dataService = (DataViewService)getApp()
+			.getContext()
+				.getBean("dataAdminService");
+
 		switch (target) {
 		default:
 			throw new ApplicationException("Unimplemented");
+			
+		case DEFERRED:
+			
+			for (String s : idList) {
+				String[] fields = s.split(",");
+				if (fields.length == 2) {
+					// Project and sample
+					Sample sample = dataService.getSample(fields[0], fields[1]);
+					if (sample == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					if (isFeatures) {
+						writer.writeFeatures(sample, molType, outputFile, longHeader, true, excludedTaxa);
+					}
+					else {
+						writer.writeSequences(sample,outputFile,true,excludedTaxa);
+					}
+					sampleDao.evict(sample);
+				}
+				else if (fields.length == 3) {
+					// Project, sample and sequence
+					Sequence seq = dataService.getSequence(fields[0], fields[1], fields[2]);
+					if (seq == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					if (!excludedTaxa.contains(seq.getTaxonomy())) {
+						if (isFeatures) {
+							writer.writeFeatures(seq, molType, outputFile, longHeader, true);
+						}
+						else {
+							writer.writeSequence(seq, outputFile, true);
+						}
+					}
+					sequenceDao.evict(seq);
+				}
+				else {
+					System.err.println("Reference by association requires at least a project " +
+						"and sample. It cannot be used to reference objects deeper than sequences.");
+					continue;
+				}
+			}
+			
+			break;
 
 		case SEQUENCE:
-			SequenceDao sequenceDao = (SequenceDao)getApp()
-				.getContext()
-					.getBean("sequenceDao");
-			
+
 			for (String s : idList) {
 				Integer id = Integer.parseInt(s);
 				Sequence seq = sequenceDao.findById(id,true);
@@ -311,14 +372,12 @@ public class ExportData extends BaseCommand {
 						writer.writeSequence(seq, outputFile, true);
 					}
 				}
+				sequenceDao.evict(seq);
 			}
 			
 			break;
 			
 		case SAMPLE:
-			SampleDao sampleDao = (SampleDao)getApp()
-				.getContext()
-					.getBean("sampleDao");
 			
 			for (String s : idList) {
 				Sample sample = sampleDao.findByID(Integer.parseInt(s));
@@ -346,14 +405,63 @@ public class ExportData extends BaseCommand {
 			.getContext()
 				.getBean("tableWriter");
 		
+		FeatureDao featureDao = (FeatureDao)getApp()
+			.getContext()
+				.getBean("featureDao");
+
+		SequenceDao sequenceDao = (SequenceDao)getApp()
+			.getContext()
+				.getBean("sequenceDao");
+
+		SampleDao sampleDao = (SampleDao)getApp()
+			.getContext()
+				.getBean("sampleDao");
+
+		DataViewService dataService = (DataViewService)getApp()
+			.getContext()
+				.getBean("dataAdminService");
+
 		switch (target) {
 		default:
 			throw new ApplicationException("Unimplemented");
+			
+		case DEFERRED:
+			
+			for (String s : idList) {
+				String[] fields = s.split(",");
+				if (fields.length == 2) {
+					// Project and sample
+					Sample sample = dataService.getSample(fields[0], fields[1]);
+					if (sample == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					writer.writeFeatures(sample, excludedTaxa, outputFile, true);
+					sampleDao.evict(sample);
+				}
+				else if (fields.length == 3) {
+					// Project, sample and sequence
+					Sequence seq = dataService.getSequence(fields[0], fields[1], fields[2]);
+					if (seq == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					if (!excludedTaxa.contains(seq.getTaxonomy())) {
+						writer.writeFeatures(seq, outputFile, true);
+					}
+					sequenceDao.evict(seq);
+				}
+				else {
+					System.err.println("Reference by association requires at least a project " +
+						"and sample. It cannot be used to reference objects deeper than sequences.");
+					continue;
+				}
+			}
+			
+			break;
 		
 		case FEATURE:
-			FeatureDao featureDao = (FeatureDao)getApp()
-				.getContext()
-					.getBean("featureDao");
+
 			List<Feature> featuresToWrite = new ArrayList<Feature>();
 			for (String strId : idList) {
 				Feature f = featureDao.findByID(Integer.parseInt(strId));
@@ -368,9 +476,6 @@ public class ExportData extends BaseCommand {
 			break;
 			
 		case SEQUENCE:
-			SequenceDao sequenceDao = (SequenceDao)getApp()
-				.getContext()
-					.getBean("sequenceDao");
 			
 			for (String s : idList) {
 				Integer id = Integer.parseInt(s);
@@ -386,9 +491,6 @@ public class ExportData extends BaseCommand {
 			}
 			
 		case SAMPLE:
-			SampleDao sampleDao = (SampleDao)getApp()
-				.getContext()
-					.getBean("sampleDao");
 			
 			for (String s: idList) {
 				Sample sample = sampleDao.findByID(Integer.parseInt(s));
@@ -414,9 +516,58 @@ public class ExportData extends BaseCommand {
 				.getContext()
 					.getBean("sequenceDao");
 		
+		SampleDao sampleDao = (SampleDao)getApp()
+				.getContext()
+					.getBean("sampleDao");
+
+		DataViewService dataService = (DataViewService)getApp()
+				.getContext()
+					.getBean("dataAdminService");
+
 		switch (target) {
 		default:
 			throw new ApplicationException("Unimplemented");
+			
+		case DEFERRED:
+			
+			for (String s : idList) {
+				String[] fields = s.split(",");
+				if (fields.length == 2) {
+					// Project and sample
+					Sample sample = dataService.getSample(fields[0], fields[1]);
+					if (sample == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					List<Sequence> sequences = sequenceDao.findBySample(sample);
+					for (Sequence seq : sequences) {
+						if (!excludedTaxa.contains(seq.getTaxonomy())) {
+							writer.writeFile(seq, outputFile);
+						}
+						sequenceDao.evict(seq);
+					}
+					sampleDao.evict(sample);
+				}
+				else if (fields.length == 3) {
+					// Project, sample and sequence
+					Sequence seq = dataService.getSequence(fields[0], fields[1], fields[2]);
+					if (seq == null) {
+						System.err.println("No object found for association [" + s + "]");
+						continue;
+					}
+					if (!excludedTaxa.contains(seq.getTaxonomy())) {
+						writer.writeFile(seq, outputFile);
+					}
+					sequenceDao.evict(seq);
+				}
+				else {
+					System.err.println("Reference by association requires at least a project " +
+						"and sample. It cannot be used to reference objects deeper than sequences.");
+					continue;
+				}
+			}
+			
+			break;
 			
 		case SEQUENCE:
 			for (String s : idList) {
@@ -433,12 +584,11 @@ public class ExportData extends BaseCommand {
 			}
 			
 		case SAMPLE: 
-			SampleDao sampleDao = (SampleDao)getApp()
-				.getContext()
-					.getBean("sampleDao");
-			
 			for (String s : idList) {
 				Sample sample = sampleDao.findByID(Integer.parseInt(s));
+				if (sample == null) {
+					System.err.println("Sample [" + s + "] not found");
+				}
 				List<Sequence> sequences = sequenceDao.findBySample(sample);
 				for (Sequence seq : sequences) {
 					if (!excludedTaxa.contains(seq.getTaxonomy())) {
@@ -494,14 +644,17 @@ public class ExportData extends BaseCommand {
 
 			// Target
 			DomainTarget target = null;
-			if (cl.hasOption(SAMPLE)) {
+			if (cl.hasOption(SAMPLE_ID)) {
 				target = DomainTarget.SAMPLE;
 			}
-			else if (cl.hasOption(SEQUENCE)) {
+			else if (cl.hasOption(SEQUENCE_ID)) {
 				target = DomainTarget.SEQUENCE;
 			}
-			else if (cl.hasOption(FEATURE)) {
+			else if (cl.hasOption(FEATURE_ID)) {
 				target = DomainTarget.FEATURE;
+			}
+			else if (cl.hasOption(REF_BY_ASSOC)) {
+				target = DomainTarget.DEFERRED;
 			}
 			
 			// Taxonomy filter
