@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
@@ -82,16 +83,16 @@ public class ConfigSetup {
 		}
 		
 		// check file existance
-		File analyzerXML = new File(args[0]);
+		File analyzerXML = new File("\"" + StringUtils.join(args, ' ') + "\"");
 		if (!analyzerXML.exists()) {
-			exitOnError(1, analyzerXML.getPath() + " did not exist\n");
+			exitOnError(1, "'" + analyzerXML.getPath() + "' did not exist\n");
 		}
 		
 		// prompt user whether existing data should be purged
 		String ormContext = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
-			System.out.println("Do you wish to purge the database before running setup?");
+			System.out.println("\nDo you wish to purge the database before running setup?");
 			System.out.println("WARNING: all existing data in SHAP will be lost!");
 			System.out.println("Really purge? yes/[NO]");
 			String ans = br.readLine();

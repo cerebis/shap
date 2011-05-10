@@ -346,6 +346,11 @@ public class ImportData extends BaseCommand {
 	@Override
 	public void execute(String[] args) {
 		try {
+			int n = 0;
+			for (String s : args) {
+				System.out.println(n++ + " " + s);
+			}
+			
 			CommandLine cl = getApp().parseArguments(args);
 			
 			String[] xmlPath = {
