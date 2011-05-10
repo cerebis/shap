@@ -40,7 +40,7 @@ Our development and production environments run on CentOS 5. CentOS is a redistr
 In Redhat based distributions, switching users is accomplished by the command "su". The command "sudo" is not enabled by default. To invoke commands as another user, switch to that user with "su" and then continue your work, remembering to logout when finished.
 
 	> su postgres
-	> É
+	> ...
 	> logout
 
 In Debian based distributions, sudo is typically enabled by default and commands can be put inline
@@ -110,21 +110,21 @@ Follow the steps in the source distribution, starting from step 5.
 Database Setup
 --------------
 
-SHAP uses a relational database to store its analysis results. Development has been using PostgreSQL but any other database which transactional support could be supported. There are inevitably minute details with respect to some storage types which could pop up. Please report any problems to the developer.
+SHAP uses a relational database to store its analysis results. Development has been using PostgreSQL, other SQL compliant databases with concurrent transactional support are a possibility. Inevitable minute details with respect to storage types and SQL implementation means, that for now, this is not offered out of the box and will not be discussed here.
 
-Note. The system account used to invoke these commands will need superuser authority in PostgreSQL. This may be most easily accomplished using the "postgres" user.
+**Note** The system account used to invoke these commands will require superuser authority in PostgreSQL. This may be most easily accomplished using the "postgres" user (distribution dependent, see above).
 
 1) Create a database user with full privileges to the SHAP database.
 
 	createuser -SDRPE shapuser
 
-The predefined password for this user is simply "shap01". If a stronger password is used here remember to update the shap.properties file. You will need to remember this password for step 3. To improve data security PostgreSQL client authentication (pg_hba.conf) can be used. In addition, the web application for SHAP needs only write access to the Users and UserRoles tables. A further step could be the definition of a second PostgreSQL user with read-only (select) access to all other tables.
+The predefined password for this user is simply "shap01". If a stronger password is used here remember to update the shap.properties file. You will need to remember this password for step 3. To improve data security PostgreSQL client authentication (pg_hba.conf) can be used. In addition, the web application for SHAP needs only write access to the Users and UserRoles tables, therefore a second PostgreSQL user with read-only (select) access to all other tables could be employed. The analysis pipeline however will still require full access to all tables, so a single restricted user is not an option.
 
 2) Create a database for SHAP.
 
 	createdb -O shapuser shap
 
-3) In the extracted SHAP folder from the earlier source or binary installation section, carry over any changes you made to the user in the shap.properties file.
+3) In the extracted SHAP folder from the earlier source or binary installation section, carry over any changes you made to the user in the shap.properties file (war/WEB-INF/classes/shap.properties).
 
 The line should read:
 
@@ -137,6 +137,8 @@ For application servers, if you changed the password, user or database name you 
 
 For most Linux systems, the file is located at: 
 
+	On Redhat distributions
+
 	/var/lib/pgsql/data/postgresql.conf
 
 Uncomment the "listen_address" line. If the web application, annotation pipeline all reside on the same physical server, you need only listen to the localhost IP address.
@@ -144,6 +146,8 @@ Uncomment the "listen_address" line. If the web application, annotation pipeline
 	listen_address = 'localhost'
 
 5) PostgreSQL provides fine-grained control of client authentication. The SHAP user needs permission to authenticate by password which is commonly not part of PostgreSQLs default configuration. Client authentication is defined in the filet:
+
+	On Redhat distributions
 
 	/var/lib/pgsql/data/pg_hba.conf
 
@@ -157,21 +161,21 @@ The order of rules is important. The more explicit the rule, the earlier it shou
 Setup Analyzers
 ---------------
 
-A tool has been written to help configure an initial set of analyzers. Since these definitions are highly system dependent, it is expected that users of SHAP will want to make modifications before running the tool. Re-running this tool will not delete previous definitions and since analyzer names are unique, you will need to manually delete rows from the Analyzers table if you wish to use the same names.
+A tool has been written to help configure an initial set of analyzers. Since these definitions are highly system dependent, it is expected that users of SHAP will want to make modifications before running the tool. Analyzer names must be unique, with multiple invocations you may run into naming conflicts. To aid in experimenting with an initial setup, you have to option to purge the previous database. **WARNING** This will purge all data from the database, not just analyser configurations -- use it wisely.
 
-The XML file defining analyzers can be found at:
+An example configuration file can be found at:
 
-	war/WEB-INF/spring/analyzer-config.xml
+	helpers/analyzer-config.xml
 
 This file follows the Spring bean definition schema. A few detectors and annotators have been defined. All defined analyzers mentioned in the "configuration" bean will be created.
 
 Once you are ready, run the tool
 
-	bin/configSetup.sh
+	bin/configSetup.sh <analyzer XML file>
 
 A more user-friendly approach to analyzer definition is planned. This is an obvious need now that SHAP has been released to the public.
 
-Note. Analyzer working temporary directories must be read/write accessible to all machines which will participate in analysis. On grid systems this must be a shared directory.
+**Note** The scratch path must be read/write accessible to all machines which will participate in analysis and on clustered systems this must be a shared location.
 
 Analyzer Supporting Tools
 -------------------------
