@@ -83,7 +83,7 @@ public class ConfigSetup {
 		}
 		
 		// check file existance
-		File analyzerXML = new File("\"" + StringUtils.join(args, ' ') + "\"");
+		File analyzerXML = new File(args[0]);
 		if (!analyzerXML.exists()) {
 			exitOnError(1, "'" + analyzerXML.getPath() + "' did not exist\n");
 		}
