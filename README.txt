@@ -39,27 +39,29 @@ Our development and production environments run on CentOS 5. CentOS is a redistr
 
 In Redhat based distributions, switching users is accomplished by the command "su". The command "sudo" is not enabled by default. To invoke commands as another user, switch to that user with "su" and then continue your work, remembering to logout when finished.
 
-	> su postgres
-	> ...
-	> logout
+	su postgres
+	...
+	logout
 
 In Debian based distributions, sudo is typically enabled by default and commands can be put inline
 
-	> sudo postgres [your-command-here]
+	sudo postgres [your-command-here]
+
 
 In Mac OSX "sudo" is also the choice.
 
 **Application paths**
 
-PostgreSQL
+PostgreSQL base location
 
 Redhat
 
-	> /var/lib/pgsql
+	/var/lib/pgsql
+
 
 Debian
 
-	> /etc/postgresql/{version}/
+	/etc/postgresql/{version}/
 	
 
 Source distribution
@@ -135,11 +137,13 @@ For application servers, if you changed the password, user or database name you 
 
 4) Make sure the PostgreSQL server has been configured to listen for TCP connections. SHAP connects to the database server by TCP, whether it is hosted on the same system or not. Without this feature being enabled, any attempt by SHAP to connect to the database will fail.
 
-For most Linux systems, the file is located at: 
-
-	On Redhat distributions
+For Redhat based distributions
 
 	/var/lib/pgsql/data/postgresql.conf
+
+On Debian based distributions, this becomes
+
+	/etc/postgresql/{version}/main/postgresql.conf
 
 Uncomment the "listen_address" line. If the web application, annotation pipeline all reside on the same physical server, you need only listen to the localhost IP address.
 
@@ -147,16 +151,26 @@ Uncomment the "listen_address" line. If the web application, annotation pipeline
 
 5) PostgreSQL provides fine-grained control of client authentication. The SHAP user needs permission to authenticate by password which is commonly not part of PostgreSQLs default configuration. Client authentication is defined in the filet:
 
-	On Redhat distributions
+On Redhat based distributions
 
 	/var/lib/pgsql/data/pg_hba.conf
+
+On Debian based distributions, this becomes
+
+	/etc/postgresql/{version}/main/pg_hba.conf
 
 The order of rules is important. The more explicit the rule, the earlier it should come. It is recommended to place the SHAP rules before the default rules. Add the following lines to permit file and TCP/IP socket connections to the SHAP DB with password authentication from the localhost.
 
 	local shap shapuser md5
 	host  shap shapuser 127.0.0.1/32 md5
 
-6) On first invocation, SHAP will automatically create its table structure.
+6) For the changes to take effect, PostgreSQL will need to be restarted.
+
+On systems with sysvconfig, with root authority invoke the following command.
+
+	service postgresql restart
+
+7) On first invocation, SHAP will automatically create its table structure.
 	
 Setup Analyzers
 ---------------
@@ -235,10 +249,10 @@ Coverage data can be used to infer cellular abundance and we find it convenient 
 
 Example file format
 
-----BEGIN----
-seq01	1.2
-seq02	20.3
-----END----
+	----BEGIN----
+	seq01	1.2
+	seq02	20.3
+	----END----
 
 XML objects
 
@@ -246,6 +260,7 @@ Sequence and Feature XML objects permit the importation of externally annotated 
 
 A Sequence object defined in XML
 
+~~~~~~
 <sequence coverage="1.1" desc="test-description" name="myseq" taxonomy="UNCLASSIFIED">
   <data>acgt</data>
   <feature partial="false" type="Undefined" conf="2.2">
@@ -257,13 +272,16 @@ A Sequence object defined in XML
     <data>MAR*</data>
   </feature>
 </sequence>
+~~~~~~
 
 A feature object defined in XML
 
+~~~~~~
 <feature partial="false" type="Undefined" conf="2.2">
   <location start="1" end="12" strand="Forward" frame="1"/>
   <data>MAR*</data>
 </feature>
+~~~~~~
 
 Export Data (exportData.sh)
 ---------------------------
@@ -323,11 +341,11 @@ Or for sequence "gene2" in sample "sampleA":
 
 Extract FASTA sequence for all sequences in sampleA, using the sample's database ID.
 
-	> bin/exportData.sh --sample-id --list 2 --output-file sample-seq.fna --fasta
+	bin/exportData.sh --sample-id --list 2 --output-file sample-seq.fna --fasta
 
 Extract the same data, by name reference.
 
-	> bin/exportData.sh --by-name --list project01,sampleA --output-file sample-seq.fna --fasta
+	bin/exportData.sh --by-name --list project01,sampleA --output-file sample-seq.fna --fasta
 
 JobControl (jobControl.sh)
 --------------------------
@@ -346,6 +364,7 @@ Targets can be a Sample, Sequence of Feature. Samples are referenced by project 
 
 An example annotation plan which would annotate all sequences in test-sample with two annotators.
 
+~~~~~~
 <plan id="annotation-plan-example">
 	<targets>
 		<target project-name="test-project" sample-name="test-sample"/>
@@ -357,6 +376,7 @@ An example annotation plan which would annotate all sequences in test-sample wit
 		</step>
 	</steps>
 </plan>
+~~~~~~
 
 Users can find two example plans in the plans folder. One demonstrates a simple plan for running a detection job, the other a simple annotation job.
 
@@ -393,5 +413,3 @@ Issue the following to set up this directory for shared access:
 	chmod g+srwx,u+rwx /opt/shap/lucene
 	
 Note: it is recommended that no annotation be performed while indexing is occurring.
-
-
