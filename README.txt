@@ -231,7 +231,7 @@ SHAP Server-side Commands
 Import Data (importData.sh)
 ---------------------------
 
-Data definition and importation, this command permits the definition of Projects, and Samples container objects as well as the importation of various data types.
+This tool is used for the creation of user-defined objects and importation of biological data. User-defined objects include Project and Sample containers, and importation of biological data from FASTA and XML formatted source files, as well as coverage information if applicable.
 
 Importable data types
 - DNA sequence in multi-fasta format. 
@@ -239,11 +239,29 @@ Importable data types
 - Sequence objects in XML
 - Feature objects in XML
 
-Multi-fasta
+**User-defined**
 
-Multi-fasta DNA can be imported into existing Sample objects. Sequence names must be unique per Sample.
+Creating a project or sample is straight-forward. The name of a project must be unique across the entire system. Names with spaces should be enclosed in double-quotes. A description is mandatory. 
 
-Coverage
+A new project "myproject" would be created as follows:
+
+	bin/importData.sh --add-project --project myproject --description "my first project ever!"
+
+A sample can be added to an existing project, referring to the project by the chosen name. Sample names must be unique per project. A description is mandatory. 
+
+A sample would be created in an existing project "myproject" as follows:
+
+	bin/importData.sh --add-sample --project myproject --sample sampleA --description "Assembled forest soil A"
+
+**Multi-fasta**
+
+Multi-fasta DNA can be imported into existing Sample objects, sequence names must be unique per sample. 
+
+Fasta sequence would be imported to "myproject, sampleA" as follows:
+
+	bin/importData.sh --import-sequence forest-contigs.fna --project myproject --sample sampleA
+
+**Coverage**
 
 Coverage data can be used to infer cellular abundance and we find it convenient to include, though not mandatory. Coverage data can only be imported into pre-existing Sequence objects. The file format is simply a tab delimited text file of sequence name and coverage value. Only one sample can be referred to per importation.
 
@@ -254,7 +272,11 @@ Example file format
 	seq02	20.3
 	----END----
 
-XML objects
+Coverage data is imported to an existing project and sample "myproject, sampleA" as follows:
+
+	bin/importData.sh --set-coverage forest-coverage.csv --project myproject --sample sampleA
+
+**XML objects**
 
 Sequence and Feature XML objects permit the importation of externally annotated data. Below are example definitions following our XML schema. The schema are simply serialised versions of the application objects org.mzd.shap.domain.Sequence and org.mzd.shap.domain.Feature. Multiple objects can be imported at once, though the two object types cannot by mixed in a single importation step.
 
@@ -282,6 +304,10 @@ A feature object defined in XML
   <data>MAR*</data>
 </feature>
 ~~~~~~
+
+A sequence defined in valid XML as above would be imported to an existing project and sample "myproject, sampleB" as follows:
+
+	bin/importData.sh --import-sequence-xml external-annotation.xml --project myproject --sample sampleB
 
 Export Data (exportData.sh)
 ---------------------------
