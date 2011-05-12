@@ -109,6 +109,21 @@ Binary Distribution
 
 Follow the steps in the source distribution, starting from step 5.
 
+Virtual Appliance (Amazon EC2 AMI)
+----------------------------------
+
+To aid potential users in trailing the application, we have made a virtual appliance available, in the form of an Amazon Machine Image (AMI). This publicly available AMI can be found in the AWS EC2 Community section by the name shap-{version}, where {version} is replaced by the release version number.
+
+Currently, we only provide an AMI for the latest release, version 1.1.0. Therefore you should filter the long list of community AMIs with "shap-1.1.0".
+
+1) Log into or create an account on the Amazon Web Service.
+2) Once in the system, select the "EC2" tab and click "Launch Instance"
+3) Select the "Community AMIs" tab and filter the list for "shap-1.1.0"
+4) Click "Select" for the appropriate AMIl=,
+5) Configure your instance, as per the Amazon documentation. You can use a micro instance to be eligible for the free tier.
+6) Once the instance is created and running, you can log in. The ec2-user has a pre-configured installation of SHAP available in its home directory. The web interface should already be up and running with example data.
+
+
 Database Setup
 --------------
 
