@@ -68,8 +68,8 @@ public class Index {
 					.optimizeOnFinish(true)
 					.startAndWait();
 
-			LOGGER.debug(Reporting.reportQueryCacheStatistics(sessionFactory));
-			LOGGER.debug(Reporting.reportSecondLevleCacheStatistics(sessionFactory));
+			//LOGGER.debug(Reporting.reportQueryCacheStatistics(sessionFactory));
+			//LOGGER.debug(Reporting.reportSecondLevleCacheStatistics(sessionFactory));
 			
 			System.out.println(FINISH_MSG);
 			LOGGER.info(FINISH_MSG);

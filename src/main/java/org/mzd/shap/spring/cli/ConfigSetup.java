@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.mzd.shap.analysis.Annotator;
 import org.mzd.shap.analysis.AnnotatorDao;
 import org.mzd.shap.analysis.Detector;
@@ -89,6 +88,7 @@ public class ConfigSetup {
 		}
 		
 		// prompt user whether existing data should be purged
+		boolean isPurged = false;
 		String ormContext = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -99,7 +99,7 @@ public class ConfigSetup {
 			if (ans.toLowerCase().equals("yes")) {
 				System.out.println("Purging enabled");
 				ormContext = "orm-purge-context.xml";
-				
+				isPurged = true;
 			}
 			else {
 				System.out.println("Purging disabled");
@@ -125,11 +125,14 @@ public class ConfigSetup {
 			/*
 			 * Create an base admin user.
 			 */
-			RoleDao roleDao = (RoleDao)ctx.getBean("roleDao");
-			Role adminRole = roleDao.saveOrUpdate(new Role("admin","ROLE_ADMIN"));
-			Role userRole = roleDao.saveOrUpdate(new Role("user","ROLE_USER"));
-			UserDao userDao = (UserDao)ctx.getBean("userDao");
-			userDao.saveOrUpdate(new User("admin","admin","shap01",adminRole,userRole));
+			if (isPurged) {
+				//only attempted if we've wiped the old database.
+				RoleDao roleDao = (RoleDao)ctx.getBean("roleDao");
+				Role adminRole = roleDao.saveOrUpdate(new Role("admin","ROLE_ADMIN"));
+				Role userRole = roleDao.saveOrUpdate(new Role("user","ROLE_USER"));
+				UserDao userDao = (UserDao)ctx.getBean("userDao");
+				userDao.saveOrUpdate(new User("admin","admin","shap01",adminRole,userRole));
+			}
 			
 			/*
 			 * Create some predefined analyzers. Users should have modified
