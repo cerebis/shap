@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="placeholderConfig" class="org.mzd.shap.spring.io.ExposeablePropertyPlaceholderConfigurer">    
+	<property name="location" value="classpath:shap.properties"/>
+</bean>
+ 
+<bean name="webServer" class="org.mortbay.jetty.Server" init-method="start">
+	<property name="connectors">
+		<list>
+			<bean name="LocalSocket" class="org.mortbay.jetty.nio.SelectChannelConnector">
+				<property name="host" value="localhost" />
+				<property name="port" value="${embedded.server.port}" />
+			</bean>
+		</list>
+	</property>
+	<property name="handlers">
+		<list>
+			<bean class="org.mortbay.jetty.webapp.WebAppContext">
+				<property name="contextPath" value="${embedded.server.path}" />
+				<property name="sessionHandler">
+					<bean class="org.mortbay.jetty.servlet.SessionHandler" />
+				</property>
+				<property name="resourceBase" value="war" />
+			</bean>
+			<bean class="org.mortbay.jetty.handler.DefaultHandler">
+				<property name="serveIcon" value="false"/>
+			</bean>
+		</list>
+	</property>
+</bean>
+
+</beans>
