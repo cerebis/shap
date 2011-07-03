@@ -14,19 +14,19 @@ Building
 
 Runtime
 	- Java SDK 1.6 (tested with 1.6.0_17)
-	- PostgreSQL (tested with 8.3.6)
-	- Tomcat (tested with 6.0.10)
+	- PostgreSQL (tested with 8.3.6)  (server build only)
+	- Tomcat (tested with 6.0.10)  (server build only)
 
 Discussion
 ----------
 
-The SHAP codebase is comprised of a web application for accessing analysis results and a server-side command-line based analysis system. The web application is deployed to a Servlet container such as Tomcat. The analysis system is invoked, as you would expect, from the command-line.
+The SHAP codebase is comprised of a web application for accessing analysis results and a server-side command-line based analysis system. The web application can be deployed to a Servlet container such as Tomcat or, if the embedded build is chosen, an embedded instance of Jetty will be used. The analysis system is invoked, as you would expect, from the command-line.
 
 The system is built using the Maven build manager. Maven resolves dependencies using remote repositories and eliminates the need to bundle supporting libraries as part of the SHAP project. Therefore if building from source, you will need to have a working installation of Maven on your system. The first time the system is built and depending on your local repository, Maven may need to fetch many dependent libraries. 
 
-Once completed, you will find the deployable WAR file in the "target" folder. This WAR file contains both the web application and the server-side system. Currently, the two modes of operation have not been made into separate codebases.
+Once completed, you will find the built system in the form of a WAR file in the "target" folder. This WAR file contains both the web application and the server-side system. Currently, the two modes of operation have not been made into separate codebases.
 
-The WAR file can be extracted to your filesystem and treated as the executable installation of the server-side analysis system.
+The WAR file can be extracted to your filesystem and treated as the executable installation of the server-side analysis system. In the case of an embedded build, you will be able to start the web application in userspace. For the server build, you will be required to deploy the WAR file to an application server of your choice.
 
 Only the web application makes use of user accounts. The server-side analysis is accessible to whoever has permission to run the elements of the system. Attention should be paid to who has access or data loss could occur.
 
@@ -58,13 +58,11 @@ Redhat
 
 	/var/lib/pgsql
 
-
 Debian
 
 	/etc/postgresql/{version}/
-	
 
-Source distribution
+Source Distribution
 -------------------
 
 Building from source
@@ -81,23 +79,38 @@ Building from source
 
 	bin/prep_repo.sh
 
-4) Now launch the maven build of SHAP. As four additional remote repositories are required to satisfy all the dependencies, the fallback process within Maven delays things considerably. This can take more than 10 minutes if you do not have any of the dependent libraries.
+4) Now start the maven build of SHAP.
+
+By default, the server version will be built. This has the prerequisites of PostgreSQL 8.x and Tomcat 6.x be installed and configured. An embedded version of SHAP is also available by specifying the "embedded" profile. This version will be built using embedded Derby for relational storage and Jetty as a servlet container. The embedded version should require very little configuration by the end user.
+
+As four additional remote repositories are required to satisfy all the dependencies, the fallback process within Maven delays things considerably. This can take more than 10 minutes if you do not have any of the dependent libraries.
+
+Though the embedded system is extremely easy to deploy, it does not support concurrent access to the database. Users should be cautious when attempting to analyze samples in a highly concurrent manner.
+
+To build the server system
 
 	mvn install
+	or 
+	mvn -Pserver install
+
+To build the embedded system
+
+	mvn -Pembedded install
 	
 5) Once completed, there will be a directory "target/" which contains the built WAR file.
 
-	shap-{version}.war
+	shap_{profile}-{version}.war
 	
-This can be deployed to an application server such as Tomcat for web access to analysis results.
+This can be deployed to an application server such as Tomcat for web access to analysis results or used immediately if you selected the embedded version.
 
 6) The server-side analysis tools are contained in the WAR file. Extract this file within the SHAP folder as follows:
 
-	unzip -q target/shap-{version}.war -d war
+	unzip -q target/shap_{profile}-{version}.war -d war
 	
 You should now have a folder "war/" containing the contents of the WAR file. All the helper scripts in "bin/" have been written assuming this path.
 
 Binary Distribution
+-------------------
 
 1) Untar the binary distribution 
 
@@ -108,6 +121,11 @@ Binary Distribution
 	cd shap
 
 Follow the steps in the source distribution, starting from step 5.
+
+SHAP-basic Distribution (shap-basic)
+------------------------------------
+
+A fully self-contained distribution of SHAP is available. This uses the embedded system and includes a set of external analyzers: blastall, hmmpfam, metagene and aragorn. The system comes with scripts to initialize the system for these analyzers and includes some simple reference databases to make it possible to test an included example data set. Users will find it easy to add analyzers for larger reference databases such as Refseq, NR, PFAM etc.
 
 Virtual Appliance (Amazon EC2 AMI)
 ----------------------------------
@@ -123,6 +141,8 @@ Currently, we only provide an AMI for the latest release, version 1.1.0. Therefo
 5) Configure your instance, as per the Amazon documentation. You can use a micro instance to be eligible for the free tier.
 6) Once the instance is created and running, you can log in. The ec2-user has a pre-configured installation of SHAP available in its home directory. The web interface should already be up and running with example data.
 
+Configuring Server System
+=========================
 
 Database Setup
 --------------
@@ -240,8 +260,8 @@ The delegate-context.xml file controls whether local (org.mzd.shap.exec.LocalDel
 
 By default, SHAP has been configured to use local processes and the parallelism is limited a single process. Analysis throughput generally increases for larger values, assuming the local environment has a sufficient parallel CPU resources. On GRID systems, the maximum number of concurrent tasks is often dictated by queue constraints rather than absolute cluster size. SHAP will only queue as many jobs as is defined by analysis.jobdaemon.maxqueued. With GRID processing, it is recommended that analysis.jobdaemon.maxqueued to be set larger than analysis.executor.threads.
 
-SHAP Server-side Commands
--------------------------
+SHAP Analysis-side Commands
+===========================
 
 Import Data (importData.sh)
 ---------------------------
