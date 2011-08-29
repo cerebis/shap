@@ -56,9 +56,9 @@ public abstract class BaseTask implements Task {
 	private Integer id;
 	@Version
 	private Integer version;
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date start;
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date finish;
 	@Enumerated(EnumType.STRING)
 	@Index(name="tasks_status_jobid_index")
