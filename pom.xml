@@ -6,7 +6,7 @@
 	<artifactId>shap</artifactId>
 	<name>SHAP</name>
 	<packaging>war</packaging>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -178,10 +178,9 @@
 		    <version>2.9.2</version>
 		</dependency>
 		<dependency>
-			<groupId>opensymphony</groupId>
+			<groupId>org.opensymphony.quartz</groupId>
 			<artifactId>quartz</artifactId>
-			<version>1.6.2</version>
-			<scope>compile</scope>
+			<version>1.6.1</version>
 		</dependency>
 		<!-- Local maven -->
 		<dependency>
@@ -228,7 +227,6 @@
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
