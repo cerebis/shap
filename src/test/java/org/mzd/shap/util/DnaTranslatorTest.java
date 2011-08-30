@@ -87,12 +87,6 @@ public class DnaTranslatorTest {
 	}
 	
 	@Test
-	public void geneToProteinUsingTable() throws DnaToolsException {
-		Assert.assertEquals("translation did not agree with known",
-				protein,DnaTools.translate(11,gene));
-	}
-
-	@Test
 	public void ambiguousGeneTranslation() throws DnaToolsException {
 		Assert.assertEquals("translation did not agree with known", 
 				ambiguousTranslation, DnaTools.translate(geneWithAmbiguous));

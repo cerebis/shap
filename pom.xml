@@ -191,24 +191,9 @@
 		</dependency>
 		<dependency>
 			<groupId>shap-extra</groupId>
-			<artifactId>biojava3-core</artifactId>
-			<version>3.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>shap-extra</groupId>
 			<artifactId>commons-cli</artifactId>
 			<version>2.0-beta2-SNAPSHOT</version>
 		</dependency>
-		<!-- Biojava Maven Repository causes timeout problems when resolving a large number
-		     of dependencies. This is quite likely rate-limiting protective measure on their
-		     server. Reverting back to a locally provide library. -->
-		<!--
-		<dependency>
-			<groupId>org.biojava</groupId>
-			<artifactId>biojava3-core</artifactId>
-			<version>3.0.2-SNAPSHOT</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
