@@ -109,7 +109,13 @@ public class AragornParserXml implements DetectorParser {
 					Feature f = Feature.newTransferRNAFeature();
 					f.setLocation(loc);
 					f.setConfidence(null);
-					f.setPartial(false);
+					if (f.getLocation().getStart() < 0) {
+						f.getLocation().setStart(0);
+						f.setPartial(true);
+					}
+					else {
+						f.setPartial(false);
+					}
 					
 					Annotation anno = Annotation.newProductAnnotation();
 					if (gene.getIntronPosition() == null) {

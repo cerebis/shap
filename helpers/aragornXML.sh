@@ -37,7 +37,7 @@ then
 	exit 1
 fi
 
-$ARAGORN -t -i -w 2>&1 $1 | awk -v outfile=$2 '
+$ARAGORN -t -i -w -l 2>&1 $1 | awk -v outfile=$2 '
 
 BEGIN {
 	print "<aragorn>" > outfile
@@ -65,7 +65,7 @@ BEGIN {
 		if (numGenes > 0) {
 			n = 0
 			while (n<numGenes && getline) {
-				match($3,/(c?)\[([0-9]+),([0-9]+)\]/,locus)
+				match($3,/(c?)\[(-?[0-9]+),([0-9]+)\]/,locus)
 				match($5,/^\(([\.[:alpha:]]+)\)(i\(([0-9]+),([0-9]+)\))?$/,ac)
 				if (length(ac[2])>0) {
 					intron = " intron-position=\"" ac[3] "\" intron-length=\"" ac[4] "\""
