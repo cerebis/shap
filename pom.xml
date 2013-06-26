@@ -6,7 +6,7 @@
 	<artifactId>shap</artifactId>
 	<name>SHAP</name>
 	<packaging>war</packaging>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -39,7 +39,7 @@
 		<profile>
 			<id>embedded</id>
 			<build>
-				<finalName>${artifactId}_embedded-${version}</finalName>
+				<finalName>${project.artifactId}_embedded-${project.version}</finalName>
 			</build>
 			<dependencies>
 				<dependency>
@@ -62,7 +62,7 @@
 		<profile>
 			<id>server</id>
 			<build>
-				<finalName>${artifactId}_server-${version}</finalName>
+				<finalName>${project.artifactId}_server-${project.version}</finalName>
 			</build>
 			<activation>
 				<activeByDefault>true</activeByDefault>

@@ -25,6 +25,15 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * A common use case in parsing annotation data is selecting a subrange of text. This might be to
+ * create a more generic description, remove reference database specific chaff or zero-in on a
+ * piece of information (Eg. EC number).
+ *
+ * NOTE!! The editPattern must match the entire line.
+ * 
+ * @author Matthew DeMaere
+ */
 public class DescriptionEditor implements InitializingBean {
 	private String editPattern;
 	private Pattern pattern = null;
@@ -57,6 +66,12 @@ public class DescriptionEditor implements InitializingBean {
 	protected Pattern getPattern() {
 		return pattern;
 	}
+	/**
+	 * The regex pattern used for matching. This pattern must describe the entire
+	 * line, not just the region of interest.
+	 * 
+	 * @param pattern
+	 */
 	protected void setPattern(Pattern pattern) {
 		this.pattern = pattern;
 	}
@@ -68,4 +83,17 @@ public class DescriptionEditor implements InitializingBean {
 		this.editPattern = editPattern;
 	}
 	
+	/**
+	 * Convenience method for testing pattern matching.
+	 * @param args
+	 * @throws Exception
+	 */
+	public static void main(String[] args) throws Exception {
+		if (args.length != 2) {
+			throw new Exception("Usage: [pattern] [description text]");
+		}
+		System.out.println("Pattern: " + args[0]);
+		System.out.println("Descrip: " + args[1]);
+		System.out.println("Result:  " + new DescriptionEditor(args[0]).getMinimalDescription(args[1]));
+	}
 }

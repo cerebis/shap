@@ -111,6 +111,7 @@
 				<tr><td class="label">Name</td><td>${sequence.name}</td></tr>
 				<tr><td class="label">Description</td><td>${sequence.description}</td></tr>
 				<tr><td class="label">Taxonomy</td><td>${fn:toLowerCase(sequence.taxonomy)}</td></tr>
+				<tr><td class="label">Length</td><td>${sequence.dataLength}</td></tr></tr>
 				<tr><td class="label">Coverage</td><td><fmt:formatNumber maxFractionDigits="2" value="${sequence.coverage}"/></td></tr>
 				<c:if test="${not empty featureBreakdown}">
 				<tr>
@@ -141,6 +142,7 @@
 				<li><a href="${proteinURL}">Feature Protein Fasta</a></li>
 				<li><a href="<c:url value='/app/export/object/${sequence.id}/genbank'/>">Genbank File</a></li>
 				<li><a href="<c:url value='/app/export/object/${sequence.id}/table'/>">Annotation Table</a></li>
+				<li><a href="<c:url value='/app/export/object/${sequence.id}/genbanktable'/>">Genbank Feature Table</a></li>
 			</ul>
 		</div>
 

@@ -28,9 +28,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("Statistics")
 public class Statistics {
 	@XStreamAlias("Statistics_db-num")
-	private Integer numberSequences;
+	private Long numberSequences;
 	@XStreamAlias("Statistics_db-len")
-	private Integer databaseLength; 
+	private Long databaseLength; 
 	@XStreamAlias("Statistics_hsp-len")
 	private Integer hspLength; 
 	@XStreamAlias("Statistics_eff-space")
@@ -55,17 +55,17 @@ public class Statistics {
 			.toString();
 	}
 	
-	public Integer getNumberSequences() {
+	public Long getNumberSequences() {
 		return numberSequences;
 	}
-	public void setNumberSequences(Integer numberSequences) {
+	public void setNumberSequences(Long numberSequences) {
 		this.numberSequences = numberSequences;
 	}
 	
-	public Integer getDatabaseLength() {
+	public Long getDatabaseLength() {
 		return databaseLength;
 	}
-	public void setDatabaseLength(Integer databaseLength) {
+	public void setDatabaseLength(Long databaseLength) {
 		this.databaseLength = databaseLength;
 	}
 	

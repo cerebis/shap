@@ -86,11 +86,6 @@ public class BatchAdminServiceImpl extends BaseObservable implements BatchAdminS
 			int last = first + detector.getBatchSize() > sequences.size() ?
 					sequences.size() : first + detector.getBatchSize();
 
-//			System.out.println("\t##Batch from " + first + "," + last);
-//			for (int n=first; n<last; n++) {
-//				System.out.println("\t\tsequence " + sequences.get(n).getId());
-//			}
-
 			DetectionTask t = new DetectionTask();
 			t.setTarget(sequences.subList(first, last));
 			t.setDetector(detector);

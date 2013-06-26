@@ -106,6 +106,43 @@
 	</property>
 </bean>
 
+<bean id="genbankTableWriterTarget"  class="org.mzd.shap.spring.io.GenbankAnnotationTableWriter">
+	<property name="sequenceDao" ref="sequenceDao"/>
+	<property name="featureDao" ref="featureDao"/>
+	<property name="annotatorDao" ref="annotatorDao"/>
+	<property name="annotationDao" ref="annotationDao"/>
+	<property name="proteinAnnotatorName" value="refseq_protein"/>
+	<property name="trnaAnnotatorName" value="aragorn_anno"/>
+	<property name="rrnaAnnotatorName" value="rnammer-bac_anno"/>
+	<property name="proteinEditor">
+		<bean class="org.mzd.shap.spring.io.DescriptionEditor">
+			<property name="editPattern" value="^([^\[]+).*$"/>
+		</bean>
+	</property>
+	<property name="trnaEditor">
+		<bean class="org.mzd.shap.spring.io.DescriptionEditor">
+			<property name="editPattern" value="^([^ ]+).*$"/>
+		</bean>
+	</property>
+	<property name="rrnaEditor">
+		<bean class="org.mzd.shap.spring.io.DescriptionEditor">
+			<property name="editPattern" value="^(.*)$"/>
+		</bean>
+	</property>
+</bean>
+
+<bean id="genbankTableWriter" class="org.springframework.aop.framework.ProxyFactoryBean">
+	<property name="target"><ref local="genbankTableWriterTarget"/></property>
+	<property name="proxyInterfaces">
+		<value>org.mzd.shap.io.TableWriter</value>
+	</property>
+	<property name="interceptorNames">
+		<list>
+			<value>hibernateInterceptor</value>
+		</list>
+	</property>
+</bean>
+
 <bean id="annotatorHistographicReportWriterTarget" class="org.mzd.shap.spring.io.AnnotatorHistographicReportWriter">
 	<property name="sampleDao" ref="sampleDao"/>
 	<property name="annotatorDao" ref="annotatorDao"/>
@@ -132,6 +169,7 @@
 	<property name="featureDao" ref="featureDao"/>
 	<property name="annotatorPrecendence">
 		<list>
+			<value>refseq_protein</value>
 			<value>ncbi-nr</value>
 			<value>swissprot</value>
 			<value>tigrfam</value>

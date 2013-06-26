@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/export")
 public class DataExportController extends AbstractControllerSupport {
 	private GenbankWriter genbankWriter;
+	private TableWriter genbankTableWriter;
 	private TableWriter tableWriter;
 	private FastaWriter fastaWriter;
 	
@@ -52,6 +53,20 @@ public class DataExportController extends AbstractControllerSupport {
 
 	protected void setAsAttachment(String fileName, HttpServletResponse response) {
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+	}
+	
+	protected String buildName(String baseName, boolean isSequence, boolean isProtein) {
+		if (isSequence) {
+			return baseName + ".fna";
+		}
+		else {
+			if (isProtein) {
+				return baseName + "-protein.faa";
+			}
+			else {
+				return baseName + "-gene.fna";
+			}
+		}
 	}
 	
 	@RequestMapping("/object/{id}/fasta")
@@ -67,29 +82,45 @@ public class DataExportController extends AbstractControllerSupport {
 		
 		if (obj instanceof Sample) {
 			Sample sample = (Sample)obj;
-			setAsAttachment(sample.getName() + ".fasta", response);
+			
+			setAsAttachment(
+					buildName(sample.getName(), isSequence, isProtein),
+					response);
+			
 			if (isSequence) {
+				// Request is for source DNA
 				getFastaWriter().writeSequences(sample, response.getWriter(), null);
 			}
 			else {
+				// Request is for genes
 				MoleculeType molType = getMoleculeType(isProtein);
 				getFastaWriter().writeFeatures(sample, molType, response.getWriter(), false, null);
 			}
 		}
 		else if (obj instanceof Sequence) {
 			Sequence sequence = (Sequence)obj;
-			setAsAttachment(sequence.getId() + ".fasta", response);
+			
+			setAsAttachment(
+					buildName(sequence.getId().toString(), isSequence, isProtein),
+					response);
+			
 			if (isSequence) {
+				// Request is for source DNA
 				getFastaWriter().writeSequence(sequence,response.getWriter());
 			}
 			else {
+				// Request is for genes
 				MoleculeType molType = getMoleculeType(isProtein);
 				getFastaWriter().writeFeatures(sequence, molType, response.getWriter(), false);
 			}
 		}
 		else if (obj instanceof Feature) {
 			Feature feature = (Feature)obj;
-			setAsAttachment(feature.getId() + ".fasta", response);
+			
+			setAsAttachment(
+					buildName(feature.getId().toString(), isSequence, isProtein),
+					response);
+			
 			MoleculeType molType = getMoleculeType(isProtein);
 			getFastaWriter().write(feature, molType, response.getWriter(), false);
 		}
@@ -97,7 +128,27 @@ public class DataExportController extends AbstractControllerSupport {
 			throw new ApplicationException("Requested object is not supported for export");
 		}
 	}
-	
+
+	@RequestMapping("/object/{id}/genbanktable")
+	public void getObjectGenbankAnnotationTable(
+			@PathVariable Integer id, 
+			HttpServletResponse response) throws IOException, ApplicationException {
+		
+		Object obj = getDataAdmin().getObject(id,null);
+		if (obj == null) {
+			throw new NotFoundException("Failed to retrieve an object using the identifier [" + id + "]");
+		}
+		
+		if (obj instanceof Sequence) {
+			Sequence sequence = (Sequence)obj;
+			setAsAttachment(sequence.getId() + ".tbl", response);
+			getGenbankTableWriter().writeFeatures(sequence,response.getWriter());
+		}
+		else {
+			throw new ApplicationException("Requested object is not supported for export");
+		}
+	}
+
 	@RequestMapping("/object/{id}/table")
 	public void getObjectAnnotationTable(
 			@PathVariable Integer id, 
@@ -135,7 +186,7 @@ public class DataExportController extends AbstractControllerSupport {
 		
 		if (obj instanceof Sequence) {
 			Sequence sequence = (Sequence)obj;
-			setAsAttachment(sequence.getId() + ".gbk", response);
+			setAsAttachment(sequence.getId() + ".gbf", response);
 			getGenbankWriter().write(sequence,response.getWriter());
 		}
 		else {
@@ -253,6 +304,14 @@ public class DataExportController extends AbstractControllerSupport {
 		return genbankWriter;
 	}
 
+	@Autowired
+	public void setGenbankTableWriter(TableWriter genbankTableWriter) {
+		this.genbankTableWriter = genbankTableWriter;
+	}
+	public TableWriter getGenbankTableWriter() {
+		return genbankTableWriter;
+	}
+	
 	@Autowired
 	public void setTableWriter(TableWriter tableWriter) {
 		this.tableWriter = tableWriter;

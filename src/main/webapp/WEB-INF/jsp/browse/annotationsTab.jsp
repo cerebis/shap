@@ -109,11 +109,13 @@
 		<div id="app_export">
 			<ul>
 				<c:url value='/app/export/object/${feature.id}/fasta' var="dnaURL">
+					<c:param name="seq" value="false"/>
 					<c:param name="aa" value="false"/>
 				</c:url>
 				<li><a href="${dnaURL}">DNA Fasta</a></li>
 				<c:if test="${feature.type == 'OpenReadingFrame'}">
 					<c:url value='/app/export/object/${feature.id}/fasta' var="proteinURL">
+						<c:param name="seq" value="false"/>
 						<c:param name="aa" value="true"/>
 					</c:url>
 					<li><a href="${proteinURL}">Protein Fasta</a></li>
