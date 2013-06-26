@@ -1,0 +1,7 @@
+<sequence name="myseq" taxonomy="UNCLASSIFIED">
+  <data>acgt</data>
+  <feature partial="false" type="OpenReadingFrame">
+    <location start="1" end="12" strand="Forward" frame="1"/>
+    <data>MAR*</data>
+  </feature>
+</sequence>
