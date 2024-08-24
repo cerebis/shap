@@ -69,11 +69,11 @@ Building from source
 
 1) Obtain the source tree from SourceForge
 
-	git clone git://git.code.sf.net/p/shap/git shap
+	git clone https://github.com/cerebis/SHAP
 
 2) Go into the SHAP folder
 
-	cd shap
+	cd SHAP
 	
 3) We need to add a few missing dependencies to your local .m2 maven repository. The following command will install BioJava v3, Apache CLI v2 and the Sun DRMAA libraries.
 
